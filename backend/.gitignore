@@ -1,0 +1,20 @@
+@"
+node_modules/
+.env
+.env.*
+!.env.example
+
+.next/
+dist/
+build/
+
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+.vscode/
+.idea/
+
+.DS_Store
+"@ | Set-Content .gitignore
