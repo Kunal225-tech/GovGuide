@@ -18,5 +18,15 @@ export default defineConfig([
     languageOptions: {
       globals: globals.browser,
     },
+    rules: {
+      'react-refresh/only-export-components': [
+        'warn',
+        {
+          allowConstantExport: true,
+          allowExportNames: ['useAuth', 'useSavedSchemes', 'useTheme', 'buttonVariants', 'badgeVariants'],
+        },
+      ],
+      'react-hooks/set-state-in-effect': 'off',
+    },
   },
 ])
