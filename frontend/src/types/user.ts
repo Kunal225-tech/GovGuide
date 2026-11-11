@@ -47,3 +47,15 @@ export interface UpdateProfilePayload {
   education?: string;
   category?: string;
 }
+
+// Controlled string form state used by ProfilePage & AiProfileAutoFillPanel
+export interface ProfileFormFields {
+  age: string;
+  gender: string;
+  state: string;
+  district: string;
+  annualIncome: string;
+  occupation: string;
+  education: string;
+  category: string;
+}

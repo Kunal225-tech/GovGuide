@@ -51,8 +51,8 @@ export function AboutPage() {
             </h2>
             <p className="text-muted-foreground text-sm md:text-base mt-2">
               {isHi
-                ? "भारत सरकार और राज्य सरकारें प्रतिवर्ष सैकड़ों कल्याणकारी योजनाएं शुरू करती हैं, लेकिन सूचना के अभाव में करोड़ों पात्र नागरिक लाभ से वंचित रह जाते हैं।"
-                : "Every year, both Central and State governments launch numerous initiatives for education, agriculture, healthcare, and financial assistance. Yet, eligible citizens often miss out due to critical discovery barriers."}
+                ? "बिहार सरकार और भारत सरकार जनहित में अनेक कल्याणकारी योजनाएं चलाती हैं, लेकिन सही जानकारी के अभाव में करोड़ों पात्र नागरिक लाभ से वंचित रह जाते हैं।"
+                : "Both the Government of Bihar and Central Ministries run impactful initiatives for education, agriculture, healthcare, and entrepreneurship. Yet, eligible citizens in Bihar often miss out due to critical discovery barriers."}
             </p>
           </div>
 

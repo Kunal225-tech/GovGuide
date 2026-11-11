@@ -39,25 +39,14 @@ class SchemeRetriever:
         # 1. Embed query
         query_vector = embedding_service.embed_text(clean_query)
 
-        # 2. Build filters (State matching: scheme is "All" / Central OR matches user's state)
-        filter_conditions = []
-        q_lower = clean_query.lower()
-        
-        # Don't restrict by user_state if query explicitly mentions another state or specific scheme
-        cross_state_markers = [
-            "karnataka", "maharashtra", "uttar pradesh", "bihar", "rajasthan",
-            "gruha", "lakshmi", "yuva", "ladki", "bahin", "sumangala"
-        ]
-        is_cross_state = any(m in q_lower for m in cross_state_markers)
-
-        if user_state and user_state.strip() and user_state.lower() != "all" and not is_cross_state:
-            st = user_state.strip()
-            filter_conditions.append(
-                qmodels.FieldCondition(
-                    key="state",
-                    match=qmodels.MatchAny(any=["All", "central", st, st.title(), st.lower()]),
-                )
+        # 2. Build filters (Strict Bihar-only portal scope: Bihar state schemes + Central schemes)
+        filter_conditions = [
+            qmodels.FieldCondition(
+                key="state",
+                match=qmodels.MatchAny(any=["All", "all", "central", "Central", "Bihar", "bihar"]),
             )
+        ]
+        q_lower = clean_query.lower()
 
         if category and category.strip():
             filter_conditions.append(
@@ -90,7 +79,7 @@ class SchemeRetriever:
                     with_payload=True,
                 )
 
-            # Bilingual keyword mapping for hybrid boosting across English and Devanagari Hindi
+            # Bilingual keyword mapping for hybrid boosting across Bihar State and Central schemes
             bilingual_scheme_boost_map = {
                 "kisan": ["kisan", "pm-kisan", "pmkisan", "किसान", "पीएम-किसान", "पीएम किसान"],
                 "mudra": ["mudra", "pmmy", "मुद्रा", "पीएमएमवाई"],
@@ -98,13 +87,19 @@ class SchemeRetriever:
                 "ayushman": ["ayushman", "pm-jay", "pmjay", "jan arogya", "arogya", "आयुष्मान", "पीएम-जय", "आरोग्य", "स्वास्थ्य कार्ड"],
                 "sukanya": ["sukanya", "samriddhi", "ssy", "सुकन्या", "समृद्धि"],
                 "svanidhi": ["svanidhi", "vendor", "hawker", "स्वनिधि", "वेंडर", "रेहड़ी", "पटरी"],
-                "gruha": ["gruha", "gruhalakshmi", "गृह लक्ष्मी", "गृहलक्ष्मी"],
-                "lakshmi": ["lakshmi", "लक्ष्मी"],
-                "yuva": ["yuva", "yuvanidhi", "युवा निधि", "युवानिधि", "युवा"],
-                "ladki": ["ladki", "bahin", "माझी लाड़की", "लाड़की बहिन", "माझी लड़की", "लड़की बहिन"],
-                "sumangala": ["sumangala", "kanya sumangala", "mksy", "कन्या सुमंगला", "सुमंगला"],
-                "scholarship": ["scholarship", "fellowship", "छात्रवृत्ति", "स्कॉलरशिप"],
-                "pension": ["pension", "old age", "वृद्धावस्था", "पेंशन"],
+                "bsccs": ["bsccs", "student credit card", "credit card", "स्टूडेंट क्रेडिट कार्ड", "क्रेडिट कार्ड", "शिक्षा ऋण"],
+                "kanya": ["kanya utthan", "kanya vivah", "kanya", "कन्या उत्थान", "कन्या विवाह", "कन्या"],
+                "udyami": ["udyami", "entrepreneur", "उद्यमी", "मुख्यमंत्री उद्यमी"],
+                "bhatta": ["mnssby", "bhatta", "swayam sahayata", "स्वयं सहायता भत्ता", "भत्ता"],
+                "kyp": ["kyp", "kushal yuva", "कुशल युवा"],
+                "protsahan": ["protsahan", "medhasoft", "balak", "balika", "bpsc", "upsc", "प्रोत्साहन", "मेधासॉफ्ट"],
+                "scholarship": ["scholarship", "post-matric", "pms", "छात्रवृत्ति", "पोस्ट मैट्रिक", "स्कॉलरशिप"],
+                "pension": ["pension", "vridhajan", "mvpy", "laxmi bai", "divyangjan", "वृद्धजन", "पेंशन", "लक्ष्मी बाई", "दिव्यांगजन"],
+                "krishi": ["krishi", "diesel", "yantrikikaran", "कृषि इनपुट", "डीजल", "यांत्रिकीकरण"],
+                "jeevika": ["jeevika", "shg", "जीविका", "स्वयं सहायता समूह"],
+                "parivahan": ["parivahan", "mgpy", "ग्राम परिवहन", "परिवहन"],
+                "chikitsa": ["chikitsa", "bal hriday", "heart", "चिकित्सा", "बाल हृदय"],
+                "pravasi": ["pravasi", "mazdoor", "migrant", "प्रवासी मजदूर", "मजदूर"],
             }
 
             # Pre-compute matched canonical scheme keys

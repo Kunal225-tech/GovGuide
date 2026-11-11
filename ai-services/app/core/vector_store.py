@@ -50,6 +50,28 @@ class VectorStoreManager:
 
         if recreate and collection_name in collections:
             logger.info(f"Recreating Qdrant collection: {collection_name}")
+            try:
+                # Explicitly purge all existing points first so Windows SQLite handles never retain stale records
+                while True:
+                    existing_pts, next_offset = client.scroll(
+                        collection_name=collection_name,
+                        limit=256,
+                        with_payload=False,
+                        with_vectors=False,
+                    )
+                    if not existing_pts:
+                        break
+                    client.delete(
+                        collection_name=collection_name,
+                        points_selector=qmodels.PointIdsList(
+                            points=[pt.id for pt in existing_pts]
+                        ),
+                    )
+                    if next_offset is None:
+                        break
+            except Exception as e:
+                logger.warning(f"Failed pre-purge of collection points: {e}")
+
             client.delete_collection(collection_name=collection_name)
             collections.remove(collection_name)
 

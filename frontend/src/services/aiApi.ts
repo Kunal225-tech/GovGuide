@@ -51,6 +51,7 @@ export interface ExtractedProfile {
   education?: string | null;
   category?: string | null;
   confidence_notes?: string | null;
+  privacy_warning?: string | null;
   missing_fields?: string[];
 }
 
@@ -58,6 +59,7 @@ export interface ProfileExtractResponse {
   success: boolean;
   profile: ExtractedProfile;
   message: string;
+  extraction_source?: 'llm' | 'fallback' | string;
 }
 
 // Support both proxied endpoint and direct localhost:8000
@@ -92,25 +94,50 @@ export async function askSaathi(request: ChatRequest): Promise<ChatResponse> {
   return response.json();
 }
 
-export async function extractProfileWithAi(text: string): Promise<ProfileExtractResponse> {
+export async function extractProfileWithAi(
+  text: string,
+  language: 'en' | 'hi' = 'en'
+): Promise<ProfileExtractResponse> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 20000);
+
+  const payload = JSON.stringify({ text, language });
   let response: Response;
+
   try {
-    response = await fetch(PRIMARY_EXTRACT_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text }),
-    });
-  } catch {
-    response = await fetch(FALLBACK_EXTRACT_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text }),
-    });
+    try {
+      response = await fetch(PRIMARY_EXTRACT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: payload,
+        signal: controller.signal,
+      });
+    } catch (err) {
+      if (err instanceof DOMException && err.name === 'AbortError') {
+        throw new Error('AI extraction timed out. Please try again or fill the form directly.');
+      }
+      // If Vite proxy failed, retry directly against AI service port
+      response = await fetch(FALLBACK_EXTRACT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: payload,
+        signal: controller.signal,
+      });
+    }
+  } finally {
+    clearTimeout(timeoutId);
   }
 
   if (!response.ok) {
     const errorText = await response.text();
-    throw new Error(`Profile extraction error (${response.status}): ${errorText}`);
+    let detail = errorText;
+    try {
+      const parsed = JSON.parse(errorText);
+      if (parsed?.detail) detail = String(parsed.detail);
+    } catch {
+      // keep raw errorText
+    }
+    throw new Error(detail || `Profile extraction error (${response.status})`);
   }
 
   return response.json();

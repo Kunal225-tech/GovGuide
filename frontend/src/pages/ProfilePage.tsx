@@ -9,12 +9,18 @@ import {
   Loader2,
   Save,
   RotateCcw,
+  Sparkles,
 } from "lucide-react";
 import { getProfile, updateProfile, AuthError } from "@/services/profileApi";
-import type { UpdateProfilePayload, UserProfile } from "@/types/user";
+import type {
+  ProfileFormFields,
+  UpdateProfilePayload,
+  UserProfile,
+} from "@/types/user";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
+import { AiProfileAutoFillPanel } from "@/components/profile/AiProfileAutoFillPanel";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 
@@ -23,54 +29,16 @@ import { useAuth } from "@/context/AuthContext";
 // Route: /profile
 // ============================================================
 
-interface FormFields {
-  age: string;
-  gender: string;
-  state: string;
-  district: string;
-  annualIncome: string;
-  occupation: string;
-  education: string;
-  category: string;
-}
+type FormFields = ProfileFormFields;
 
 type PageState = "loading" | "fetch-error" | "auth-error" | "ready";
 type SaveState = "idle" | "saving" | "saved" | "error";
 
 type FormErrors = Partial<Record<keyof FormFields, string>>;
 
-const INDIAN_STATES = [
-  "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar",
-  "Chhattisgarh", "Goa", "Gujarat", "Haryana", "Himachal Pradesh",
-  "Jharkhand", "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra",
-  "Manipur", "Meghalaya", "Mizoram", "Nagaland", "Odisha",
-  "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana",
-  "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal",
-  "Andaman and Nicobar Islands", "Chandigarh",
-  "Dadra and Nagar Haveli and Daman and Diu", "Delhi",
-  "Jammu and Kashmir", "Ladakh", "Lakshadweep", "Puducherry",
-];
+const BIHAR_STATES = ["Bihar"];
 
 const STATE_DISTRICTS: Record<string, string[]> = {
-  "Andhra Pradesh": [
-    "Alluri Sitharama Raju", "Anakapalli", "Ananthapuramu", "Annamayya", "Bapatla", "Chittoor",
-    "Dr. B.R. Ambedkar Konaseema", "East Godavari", "Eluru", "Guntur", "Kakinada", "Krishna",
-    "Kurnool", "Nandyal", "NTR", "Palnadu", "Parvathipuram Manyam", "Prakasam", "Sri Potti Sriramulu Nellore",
-    "Sri Sathya Sai", "Srikakulam", "Tirupati", "Visakhapatnam", "Vizianagaram", "West Godavari", "YSR Kadapa",
-  ],
-  "Arunachal Pradesh": [
-    "Anjaw", "Changlang", "Dibang Valley", "East Kameng", "East Siang", "Itanagar", "Kamle",
-    "Kra Daadi", "Kurung Kumey", "Lepa Rada", "Lohit", "Longding", "Lower Dibang Valley",
-    "Lower Siang", "Lower Subansiri", "Namsai", "Pakke Kessang", "Papum Pare", "Shi Yomi",
-    "Siang", "Tawang", "Tirap", "Upper Siang", "Upper Subansiri", "West Kameng", "West Siang",
-  ],
-  "Assam": [
-    "Baksa", "Barpeta", "Biswanath", "Bongaigaon", "Cachar", "Charaideo", "Chirang", "Darrang",
-    "Dhemaji", "Dhubri", "Dibrugarh", "Dima Hasao", "Goalpara", "Golaghat", "Hailakandi", "Hojai",
-    "Jorhat", "Kamrup", "Kamrup Metropolitan", "Karbi Anglong", "Karimganj", "Kokrajhar", "Lakhimpur",
-    "Majuli", "Morigaon", "Nagaon", "Nalbari", "Sivasagar", "Sonitpur", "South Salmara-Mankachar",
-    "Tinsukia", "Udalguri", "West Karbi Anglong",
-  ],
   "Bihar": [
     "Araria", "Arwal", "Aurangabad", "Banka", "Begusarai", "Bhagalpur", "Bhojpur", "Buxar",
     "Darbhanga", "East Champaran", "Gaya", "Gopalganj", "Jamui", "Jehanabad", "Kaimur", "Katihar",
@@ -78,170 +46,22 @@ const STATE_DISTRICTS: Record<string, string[]> = {
     "Nalanda", "Nawada", "Patna", "Purnia", "Rohtas", "Saharsa", "Samastipur", "Saran",
     "Sheikhpura", "Sheohar", "Sitamarhi", "Siwan", "Supaul", "Vaishali", "West Champaran",
   ],
-  "Chhattisgarh": [
-    "Balod", "Baloda Bazar", "Balrampur", "Bastar", "Bemetara", "Bijapur", "Bilaspur", "Dantewada",
-    "Dhamtari", "Durg", "Gariaband", "Gaurela-Pendra-Marwahi", "Janjgir-Champa", "Jashpur", "Kabirdham",
-    "Kanker", "Kondagaon", "Korba", "Koriya", "Mahasamund", "Manendragarh", "Mohla-Manpur",
-    "Mungeli", "Narayanpur", "Raigarh", "Raipur", "Rajnandgaon", "Sarangarh-Bilaigarh", "Sakti",
-    "Sukma", "Surajpur", "Surguja",
-  ],
-  "Goa": ["North Goa", "South Goa"],
-  "Gujarat": [
-    "Ahmedabad", "Amreli", "Anand", "Aravalli", "Banaskantha", "Bharuch", "Bhavnagar", "Botad",
-    "Chhota Udaipur", "Dahod", "Dang", "Devbhumi Dwarka", "Gandhinagar", "Gir Somnath", "Jamnagar",
-    "Junagadh", "Kheda", "Kutch", "Mahisagar", "Mehsana", "Morbi", "Narmada", "Navsari",
-    "Panchmahal", "Patan", "Porbandar", "Rajkot", "Sabarkantha", "Surat", "Surendranagar",
-    "Tapi", "Vadodara", "Valsad",
-  ],
-  "Haryana": [
-    "Ambala", "Bhiwani", "Charkhi Dadri", "Faridabad", "Fatehabad", "Gurugram", "Hisar",
-    "Jhajjar", "Jind", "Kaithal", "Karnal", "Kurukshetra", "Mahendragarh", "Nuh", "Palwal",
-    "Panchkula", "Panipat", "Rewari", "Rohtak", "Sirsa", "Sonipat", "Yamunanagar",
-  ],
-  "Himachal Pradesh": [
-    "Bilaspur", "Chamba", "Hamirpur", "Kangra", "Kinnaur", "Kullu", "Lahaul and Spiti",
-    "Mandi", "Shimla", "Sirmaur", "Solan", "Una",
-  ],
-  "Jharkhand": [
-    "Bokaro", "Chatra", "Deoghar", "Dhanbad", "Dumka", "East Singhbhum", "Garhwa", "Giridih",
-    "Godda", "Gumla", "Hazaribagh", "Jamtara", "Khunti", "Koderma", "Latehar", "Lohardaga",
-    "Pakur", "Palamu", "Ramgarh", "Ranchi", "Sahebganj", "Seraikela Kharsawan", "Simdega", "West Singhbhum",
-  ],
-  "Karnataka": [
-    "Bagalkote", "Ballari", "Belagavi", "Bengaluru Rural", "Bengaluru Urban", "Bidar", "Chamarajanagara",
-    "Chikkaballapura", "Chikkamagaluru", "Chitradurga", "Dakshina Kannada", "Davanagere", "Dharwad",
-    "Gadag", "Hassan", "Haveri", "Kalaburagi", "Kodagu", "Kolar", "Koppal", "Mandya", "Mysuru",
-    "Raichur", "Ramanagara", "Shivamogga", "Tumakuru", "Udupi", "Uttara Kannada", "Vijayanagara", "Vijayapura", "Yadgir",
-  ],
-  "Kerala": [
-    "Alappuzha", "Ernakulam", "Idukki", "Kannur", "Kasaragod", "Kollam", "Kottayam",
-    "Kozhikode", "Malappuram", "Palakkad", "Pathanamthitta", "Thiruvananthapuram", "Thrissur", "Wayanad",
-  ],
-  "Madhya Pradesh": [
-    "Agar Malwa", "Alirajpur", "Anuppur", "Ashoknagar", "Balaghat", "Barwani", "Betul", "Bhind",
-    "Bhopal", "Burhanpur", "Chhatarpur", "Chhindwara", "Damoh", "Datia", "Dewas", "Dhar", "Dindori",
-    "Guna", "Gwalior", "Harda", "Hoshangabad", "Indore", "Jabalpur", "Jhabua", "Katni", "Khandwa",
-    "Khargone", "Mandla", "Mandsaur", "Morena", "Narsinghpur", "Neemuch", "Panna", "Raisen",
-    "Rajgarh", "Ratlam", "Rewa", "Sagar", "Satna", "Sehore", "Seoni", "Shahdol", "Shajapur",
-    "Sheopur", "Shivpuri", "Sidhi", "Singrauli", "Tikamgarh", "Ujjain", "Umaria", "Vidisha",
-  ],
-  "Maharashtra": [
-    "Ahmednagar", "Akola", "Amravati", "Chhatrapati Sambhaji Nagar", "Bhandara", "Beed", "Buldhana",
-    "Chandrapur", "Dhule", "Gadchiroli", "Gondia", "Hingoli", "Jalgaon", "Jalna", "Kolhapur",
-    "Latur", "Mumbai City", "Mumbai Suburban", "Nagpur", "Nanded", "Nandurbar", "Nashik",
-    "Dharashiv", "Palghar", "Parbhani", "Pune", "Raigad", "Ratnagiri", "Sangli", "Satara",
-    "Sindhudurg", "Solapur", "Thane", "Wardha", "Washim", "Yavatmal",
-  ],
-  "Manipur": [
-    "Bishnupur", "Chandel", "Churachandpur", "Imphal East", "Imphal West", "Jiribam", "Kakching",
-    "Kamjong", "Kangpokpi", "Noney", "Pherzawl", "Senapati", "Tamenglong", "Tengnoupal", "Thoubal", "Ukhrul",
-  ],
-  "Meghalaya": [
-    "East Garo Hills", "East Jaintia Hills", "East Khasi Hills", "Eastern West Khasi Hills",
-    "North Garo Hills", "Ri Bhoi", "South Garo Hills", "South West Garo Hills", "South West Khasi Hills",
-    "West Garo Hills", "West Jaintia Hills", "West Khasi Hills",
-  ],
-  "Mizoram": [
-    "Aizawl", "Champhai", "Hnahthial", "Khawzawl", "Kolasib", "Lawngtlai", "Lunglei",
-    "Mamit", "Saitual", "Serchhip", "Siaha",
-  ],
-  "Nagaland": [
-    "Chumoukedima", "Dimapur", "Kiphire", "Kohima", "Longleng", "Mokokchung", "Mon",
-    "Niuland", "Noklak", "Peren", "Phek", "Shamator", "Tseminyu", "Tuensang", "Wokha", "Zunheboto",
-  ],
-  "Odisha": [
-    "Angul", "Balangir", "Balasore", "Bargarh", "Bhadrak", "Boudh", "Cuttack", "Deogarh",
-    "Dhenkanal", "Gajapati", "Ganjam", "Jagatsinghpur", "Jajpur", "Jharsuguda", "Kalahandi",
-    "Kandhamal", "Kendrapara", "Kendujhar", "Khurda", "Koraput", "Malkangiri", "Mayurbhanj",
-    "Nabarangpur", "Nayagarh", "Nuapada", "Puri", "Rayagada", "Sambalpur", "Subarnapur", "Sundargarh",
-  ],
-  "Punjab": [
-    "Amritsar", "Barnala", "Bathinda", "Faridkot", "Fatehgarh Sahib", "Fazilka", "Ferozepur",
-    "Gurdaspur", "Hoshiarpur", "Jalandhar", "Kapurthala", "Ludhiana", "Malerkotla", "Mansa",
-    "Moga", "Muktsar", "Pathankot", "Patiala", "Rupnagar", "Sahibzada Ajit Singh Nagar", "Sangrur",
-    "Shahid Bhagat Singh Nagar", "Sri Muktsar Sahib", "Tarn Taran",
-  ],
-  "Rajasthan": [
-    "Ajmer", "Alwar", "Anupgarh", "Balotra", "Banswara", "Baran", "Barmer", "Beawar", "Bharatpur",
-    "Bhilwara", "Bikaner", "Bundi", "Chittorgarh", "Churu", "Dausa", "Deeg", "Dholpur", "Didwana-Kuchaman",
-    "Dudu", "Dungarpur", "Gangapur City", "Hanumangarh", "Jaipur", "Jaipur Rural", "Jaisalmer", "Jalore",
-    "Jhalawar", "Jhunjhunu", "Jodhpur", "Jodhpur Rural", "Karauli", "Kekri", "Khairthal-Tijara",
-    "Kota", "Kotputli-Behror", "Nagaur", "Neem Ka Thana", "Pali", "Phalodi", "Pratapgarh", "Rajsamand",
-    "Salumbar", "Sanchore", "Sawai Madhopur", "Shahpura", "Sikar", "Sirohi", "Sri Ganganagar", "Tonk", "Udaipur",
-  ],
-  "Sikkim": ["Gangtok", "Gyalshing", "Mangan", "Namchi", "Pakyong", "Soreng"],
-  "Tamil Nadu": [
-    "Ariyalur", "Chengalpattu", "Chennai", "Coimbatore", "Cuddalore", "Dharmapuri", "Dindigul",
-    "Erode", "Kallakurichi", "Kanchipuram", "Kanyakumari", "Karur", "Krishnagiri", "Madurai",
-    "Mayiladuthurai", "Nagapattinam", "Namakkal", "Nilgiris", "Perambalur", "Pudukkottai",
-    "Ramanathapuram", "Ranipet", "Salem", "Sivaganga", "Tenkasi", "Thanjavur", "Theni",
-    "Thoothukudi", "Tiruchirappalli", "Tirunelveli", "Tirupathur", "Tiruppur", "Tiruvallur",
-    "Tiruvannamalai", "Tiruvarur", "Vellore", "Viluppuram", "Virudhunagar",
-  ],
-  "Telangana": [
-    "Adilabad", "Bhadradri Kothagudem", "Hanamkonda", "Hyderabad", "Jagtial", "Jangaon",
-    "Jayashankar Bhupalpally", "Jogulamba Gadwal", "Kamareddy", "Karimnagar", "Khammam",
-    "Kumuram Bheem Asifabad", "Mahabubabad", "Mahbubnagar", "Mancherial", "Medak",
-    "Medchal-Malkajgiri", "Mulugu", "Nagarkurnool", "Nalgonda", "Narayanpet", "Nirmal",
-    "Nizamabad", "Peddapalli", "Rajanna Sircilla", "Rangareddy", "Sangareddy", "Siddipet",
-    "Suryapet", "Vikarabad", "Wanaparthy", "Warangal", "Yadadri Bhuvanagiri",
-  ],
-  "Tripura": [
-    "Dhalai", "Gomati", "Khowai", "North Tripura", "Sepahijala", "South Tripura", "Unakoti", "West Tripura",
-  ],
-  "Uttar Pradesh": [
-    "Agra", "Aligarh", "Ambedkar Nagar", "Amethi", "Amroha", "Auraiya", "Ayodhya", "Azamgarh",
-    "Baghpat", "Bahraich", "Ballia", "Balrampur", "Banda", "Barabanki", "Bareilly", "Basti",
-    "Bhadohi", "Bijnor", "Budaun", "Bulandshahr", "Chandauli", "Chitrakoot", "Deoria", "Etah",
-    "Etawah", "Farrukhabad", "Fatehpur", "Firozabad", "Gautam Buddha Nagar", "Ghaziabad", "Ghazipur",
-    "Gonda", "Gorakhpur", "Hamirpur", "Hapur", "Hardoi", "Hathras", "Jalaun", "Jaunpur", "Jhansi",
-    "Kannauj", "Kanpur Dehat", "Kanpur Nagar", "Kasganj", "Kaushambi", "Kheri", "Kushinagar",
-    "Lalitpur", "Lucknow", "Maharajganj", "Mahoba", "Mainpuri", "Mathura", "Mau", "Meerut",
-    "Mirzapur", "Moradabad", "Muzaffarnagar", "Pilibhit", "Pratapgarh", "Prayagraj", "Raebareli",
-    "Rampur", "Saharanpur", "Sambhal", "Sant Kabir Nagar", "Shahjahanpur", "Shamli", "Shravasti",
-    "Siddharthnagar", "Sitapur", "Sonbhadra", "Sultanpur", "Unnao", "Varanasi",
-  ],
-  "Uttarakhand": [
-    "Almora", "Bageshwar", "Chamoli", "Champawat", "Dehradun", "Haridwar", "Nainital",
-    "Pauri Garhwal", "Pithoragarh", "Rudraprayag", "Tehri Garhwal", "Udham Singh Nagar", "Uttarkashi",
-  ],
-  "West Bengal": [
-    "Alipurduar", "Bankura", "Birbhum", "Cooch Behar", "Dakshin Dinajpur", "Darjeeling",
-    "Hooghly", "Howrah", "Jalpaiguri", "Jhargram", "Kalimpong", "Kolkata", "Malda",
-    "Murshidabad", "Nadia", "North 24 Parganas", "Paschim Bardhaman", "Paschim Medinipur",
-    "Purba Bardhaman", "Purba Medinipur", "Purulia", "South 24 Parganas", "Uttar Dinajpur",
-  ],
-  "Andaman and Nicobar Islands": ["Nicobar", "North and Middle Andaman", "South Andaman"],
-  "Chandigarh": ["Chandigarh"],
-  "Dadra and Nagar Haveli and Daman and Diu": ["Dadra and Nagar Haveli", "Daman", "Diu"],
-  "Delhi": [
-    "Central Delhi", "East Delhi", "New Delhi", "North Delhi", "North East Delhi",
-    "North West Delhi", "Shahdara", "South Delhi", "South East Delhi", "South West Delhi", "West Delhi",
-  ],
-  "Jammu and Kashmir": [
-    "Anantnag", "Bandipora", "Baramulla", "Budgam", "Doda", "Ganderbal", "Jammu", "Kathua",
-    "Kishtwar", "Kulgam", "Kupwara", "Poonch", "Pulwama", "Rajouri", "Ramban", "Reasi",
-    "Samba", "Shopian", "Srinagar", "Udhampur",
-  ],
-  "Ladakh": ["Kargil", "Leh"],
-  "Lakshadweep": ["Lakshadweep"],
-  "Puducherry": ["Karaikal", "Mahe", "Puducherry", "Yanam"],
 };
 
 const GENDER_OPTIONS = ["Male", "Female", "Transgender", "Prefer not to say"];
 const OCCUPATION_OPTIONS = [
-  "Student", "Employed (Salaried)", "Self-Employed / Business",
-  "Farmer", "Daily Wage Worker", "Unemployed", "Homemaker",
-  "Retired", "Other",
+  "Student", "Job Seeker", "Unemployed", "Farmer",
+  "Self Employed", "Street Vendor", "Daily Wage Earner", "Driver",
+  "Employed (Salaried)", "Homemaker", "Retired", "Other",
 ];
 const EDUCATION_OPTIONS = [
   "No formal education", "Primary (up to Class 5)",
-  "Secondary (up to Class 10)", "Senior Secondary (Class 12)",
-  "Diploma / ITI", "Undergraduate (Bachelor)", "Postgraduate (Master)",
+  "10th Pass", "12th Pass", "ITI", "Polytechnic",
+  "Undergraduate", "Graduate", "Post Graduate",
   "Doctorate (PhD)", "Other",
 ];
 const CATEGORY_OPTIONS = [
-  "General", "OBC", "SC", "ST", "EWS", "Minority", "Other",
+  "General", "OBC", "BC", "EBC", "SC", "ST", "EWS", "Minority", "Other",
 ];
 
 function getInitials(name: string): string {
@@ -264,12 +84,16 @@ function formatIndianCurrency(amountStr: string): string | null {
 }
 
 function profileToForm(p: UserProfile): FormFields {
+  const isBihar = (p.state || "").trim().toLowerCase() === "bihar";
+  const biharDistricts = STATE_DISTRICTS["Bihar"] || [];
+  const validDistrict =
+    p.district && (isBihar || biharDistricts.includes(p.district)) ? p.district : "";
   return {
-    age: p.age !== undefined ? String(p.age) : "",
+    age: p.age !== undefined && p.age !== null ? String(p.age) : "",
     gender: p.gender ?? "",
-    state: p.state || "Bihar",
-    district: p.district ?? "",
-    annualIncome: p.annualIncome !== undefined ? String(p.annualIncome) : "",
+    state: "Bihar",
+    district: validDistrict,
+    annualIncome: p.annualIncome !== undefined && p.annualIncome !== null ? String(p.annualIncome) : "",
     occupation: p.occupation ?? "",
     education: p.education ?? "",
     category: p.category ?? "",
@@ -277,7 +101,7 @@ function profileToForm(p: UserProfile): FormFields {
 }
 
 const EMPTY_FORM: FormFields = {
-  age: "", gender: "", state: "", district: "",
+  age: "", gender: "", state: "Bihar", district: "",
   annualIncome: "", occupation: "", education: "", category: "",
 };
 
@@ -294,6 +118,10 @@ export function ProfilePage() {
   const [form, setForm] = useState<FormFields>(EMPTY_FORM);
   const [initialForm, setInitialForm] = useState<FormFields>(EMPTY_FORM);
   const [errors, setErrors] = useState<FormErrors>({});
+  const [aiHighlightedFields, setAiHighlightedFields] = useState<
+    Partial<Record<keyof FormFields, boolean>>
+  >({});
+  const [aiAppliedCount, setAiAppliedCount] = useState<number | null>(null);
 
   useEffect(() => {
     loadProfile();
@@ -321,11 +149,22 @@ export function ProfilePage() {
     }
   }
 
+  function clearFieldHighlight(field: keyof FormFields) {
+    setAiHighlightedFields((prev) => {
+      if (!prev[field]) return prev;
+      const next = { ...prev };
+      delete next[field];
+      return next;
+    });
+  }
+
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) {
     const { name, value } = e.target;
+    const fieldKey = name as keyof FormFields;
     setForm((prev) => ({ ...prev, [name]: value }));
+    clearFieldHighlight(fieldKey);
     if (errors[name as keyof FormErrors]) {
       setErrors((prev) => ({ ...prev, [name]: undefined }));
     }
@@ -344,15 +183,46 @@ export function ProfilePage() {
         district: districtStillValid ? prev.district : "",
       };
     });
+    clearFieldHighlight("state");
     if (errors.state) {
       setErrors((prev) => ({ ...prev, state: undefined }));
     }
     if (saveState === "saved") setSaveState("idle");
   }
 
+  function handleAiApply(fields: Partial<FormFields>) {
+    const appliedKeys = Object.keys(fields) as Array<keyof FormFields>;
+    if (appliedKeys.length === 0) return;
+
+    const mergedFields: Partial<FormFields> = { ...fields };
+    if (mergedFields.district && !form.state && !mergedFields.state) {
+      mergedFields.state = "Bihar";
+    }
+
+    setForm((prev) => ({ ...prev, ...mergedFields }));
+    setErrors((prev) => {
+      const next = { ...prev };
+      for (const key of Object.keys(mergedFields) as Array<keyof FormErrors>) {
+        delete next[key];
+      }
+      return next;
+    });
+    setAiHighlightedFields((prev) => {
+      const next = { ...prev };
+      for (const key of Object.keys(mergedFields) as Array<keyof FormFields>) {
+        next[key] = true;
+      }
+      return next;
+    });
+    setAiAppliedCount(Object.keys(mergedFields).length);
+    if (saveState === "saved") setSaveState("idle");
+  }
+
   function handleReset() {
     setForm(initialForm);
     setErrors({});
+    setAiHighlightedFields({});
+    setAiAppliedCount(null);
     if (saveState === "saved") setSaveState("idle");
   }
 
@@ -371,16 +241,38 @@ export function ProfilePage() {
     return Math.round((completedCount / fields.length) * 100);
   }, [form]);
 
-  // District options for the currently selected State
+  // Retain existing custom or legacy select values if already saved in user profile
   const districtOptions = useMemo(() => {
-    if (!form.state || !STATE_DISTRICTS[form.state]) return [];
-    const list = [...STATE_DISTRICTS[form.state]];
-    // Retain existing custom or legacy district if already present in user profile
+    const list = [...(STATE_DISTRICTS["Bihar"] || [])];
     if (form.district && !list.includes(form.district)) {
       list.unshift(form.district);
     }
     return list;
-  }, [form.state, form.district]);
+  }, [form.district]);
+
+  const categoryOptions = useMemo(() => {
+    const list = [...CATEGORY_OPTIONS];
+    if (form.category && !list.includes(form.category)) {
+      list.unshift(form.category);
+    }
+    return list;
+  }, [form.category]);
+
+  const educationOptions = useMemo(() => {
+    const list = [...EDUCATION_OPTIONS];
+    if (form.education && !list.includes(form.education)) {
+      list.unshift(form.education);
+    }
+    return list;
+  }, [form.education]);
+
+  const occupationOptions = useMemo(() => {
+    const list = [...OCCUPATION_OPTIONS];
+    if (form.occupation && !list.includes(form.occupation)) {
+      list.unshift(form.occupation);
+    }
+    return list;
+  }, [form.occupation]);
 
   const formattedIncomeText = useMemo(() => {
     return formatIndianCurrency(form.annualIncome);
@@ -434,6 +326,8 @@ export function ProfilePage() {
       const updatedForm = profileToForm(updated.profile ?? {});
       setForm(updatedForm);
       setInitialForm(updatedForm);
+      setAiHighlightedFields({});
+      setAiAppliedCount(null);
       setSaveState("saved");
       setTimeout(() => setSaveState("idle"), 4000);
     } catch (err) {
@@ -574,6 +468,26 @@ export function ProfilePage() {
           </div>
         )}
 
+        {/* AI Profile Auto-Fill */}
+        <AiProfileAutoFillPanel
+          currentForm={form}
+          completionPercentage={completionPercentage}
+          onApplyFields={handleAiApply}
+        />
+
+        {aiAppliedCount !== null && aiAppliedCount > 0 && (
+          <div className="p-3.5 rounded-md bg-emerald-50 border border-emerald-200 text-emerald-800 dark:bg-emerald-950/30 dark:border-emerald-900/50 dark:text-emerald-300 flex items-center gap-2 text-sm font-medium shadow-none">
+            <Sparkles className="w-4 h-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
+            <span>
+              {t(
+                'profile.aiAutoFill.appliedReminder',
+                'Applied {{count}} AI-extracted field(s) to the form. Review the highlighted fields below and click Save Profile to confirm.',
+                { count: aiAppliedCount }
+              )}
+            </span>
+          </div>
+        )}
+
         {/* The form */}
         <form onSubmit={handleSubmit} noValidate className="space-y-6">
 
@@ -584,6 +498,7 @@ export function ProfilePage() {
                 id="profile-age"
                 label={t('profile.age', 'Age (years)')}
                 error={errors.age}
+                aiHighlighted={aiHighlightedFields.age}
               >
                 <Input
                   id="profile-age"
@@ -595,7 +510,7 @@ export function ProfilePage() {
                   value={form.age}
                   onChange={handleChange}
                   aria-invalid={!!errors.age}
-                  className={`h-10 bg-background ${errors.age ? "border-red-500" : ""}`}
+                  className={`h-10 bg-background ${getFieldBorderClass(Boolean(errors.age), aiHighlightedFields.age)}`}
                 />
               </FieldGroup>
 
@@ -603,6 +518,7 @@ export function ProfilePage() {
                 id="profile-gender"
                 label={t('profile.gender', 'Gender')}
                 error={errors.gender}
+                aiHighlighted={aiHighlightedFields.gender}
               >
                 <SelectInput
                   id="profile-gender"
@@ -612,6 +528,7 @@ export function ProfilePage() {
                   options={GENDER_OPTIONS}
                   placeholder={t('profile.selectGender', 'Select gender')}
                   error={errors.gender}
+                  aiHighlighted={aiHighlightedFields.gender}
                 />
               </FieldGroup>
             </div>
@@ -620,15 +537,17 @@ export function ProfilePage() {
               id="profile-category"
               label={t('profile.casteCategory', 'Social Category')}
               error={errors.category}
+              aiHighlighted={aiHighlightedFields.category}
             >
               <SelectInput
                 id="profile-category"
                 name="category"
                 value={form.category}
                 onChange={handleChange}
-                options={CATEGORY_OPTIONS}
+                options={categoryOptions}
                 placeholder={t('profile.selectCategory', 'Select social category')}
                 error={errors.category}
+                aiHighlighted={aiHighlightedFields.category}
               />
             </FieldGroup>
           </FormSection>
@@ -638,39 +557,38 @@ export function ProfilePage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FieldGroup
                 id="profile-state"
-                label={t('profile.state', 'State / UT')}
+                label={t('profile.state', 'State')}
+                hint={t('profile.biharOnlyHint', 'Dedicated portal for Bihar residents & Bihar-applicable Central schemes.')}
                 error={errors.state}
+                aiHighlighted={aiHighlightedFields.state}
               >
                 <SelectInput
                   id="profile-state"
                   name="state"
-                  value={form.state}
+                  value={form.state || "Bihar"}
                   onChange={handleStateChange}
-                  options={INDIAN_STATES}
-                  placeholder={t('profile.selectStateOrUt', 'Select state or UT')}
+                  options={BIHAR_STATES}
+                  placeholder={t('profile.selectState', 'Select state')}
                   error={errors.state}
+                  aiHighlighted={aiHighlightedFields.state}
                 />
               </FieldGroup>
 
               <FieldGroup
                 id="profile-district"
                 label={t('profile.district', 'District')}
-                hint={!form.state ? "Please select a state / UT first to choose your district." : undefined}
                 error={errors.district}
+                aiHighlighted={aiHighlightedFields.district}
               >
                 <SelectInput
                   id="profile-district"
                   name="district"
                   value={form.district}
                   onChange={handleChange}
-                  disabled={!form.state}
                   options={districtOptions}
-                  placeholder={
-                    !form.state
-                      ? t('profile.selectStateFirst', 'Select state first')
-                      : t('profile.selectDistrict', 'Select district')
-                  }
+                  placeholder={t('profile.selectDistrict', 'Select district')}
                   error={errors.district}
+                  aiHighlighted={aiHighlightedFields.district}
                 />
               </FieldGroup>
             </div>
@@ -683,15 +601,17 @@ export function ProfilePage() {
                 id="profile-education"
                 label={t('profile.highestEducation', 'Highest Education')}
                 error={errors.education}
+                aiHighlighted={aiHighlightedFields.education}
               >
                 <SelectInput
                   id="profile-education"
                   name="education"
                   value={form.education}
                   onChange={handleChange}
-                  options={EDUCATION_OPTIONS}
+                  options={educationOptions}
                   placeholder={t('profile.selectEducation', 'Select education level')}
                   error={errors.education}
+                  aiHighlighted={aiHighlightedFields.education}
                 />
               </FieldGroup>
 
@@ -699,15 +619,17 @@ export function ProfilePage() {
                 id="profile-occupation"
                 label={t('profile.employmentStatus', 'Employment Status')}
                 error={errors.occupation}
+                aiHighlighted={aiHighlightedFields.occupation}
               >
                 <SelectInput
                   id="profile-occupation"
                   name="occupation"
                   value={form.occupation}
                   onChange={handleChange}
-                  options={OCCUPATION_OPTIONS}
+                  options={occupationOptions}
                   placeholder={t('profile.selectEmployment', 'Select employment status')}
                   error={errors.occupation}
+                  aiHighlighted={aiHighlightedFields.occupation}
                 />
               </FieldGroup>
             </div>
@@ -720,6 +642,7 @@ export function ProfilePage() {
               label={t('profile.annualIncome', 'Annual Household Income (₹)')}
               hint={t('profile.incomeHint', 'Your total household income per year in Indian Rupees.')}
               error={errors.annualIncome}
+              aiHighlighted={aiHighlightedFields.annualIncome}
             >
               <div className="relative rounded-md shadow-xs">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-muted-foreground font-semibold text-sm">
@@ -734,7 +657,7 @@ export function ProfilePage() {
                   value={form.annualIncome}
                   onChange={handleChange}
                   aria-invalid={!!errors.annualIncome}
-                  className={`pl-8 h-10 bg-background ${errors.annualIncome ? "border-red-500" : ""}`}
+                  className={`pl-8 h-10 bg-background ${getFieldBorderClass(Boolean(errors.annualIncome), aiHighlightedFields.annualIncome)}`}
                 />
               </div>
               {formattedIncomeText && (
@@ -837,24 +760,48 @@ function FormSection({
   );
 }
 
+function getFieldBorderClass(
+  hasError: boolean,
+  aiHighlighted?: boolean,
+  defaultBorderClass = ""
+): string {
+  if (hasError) return "border-red-500";
+  if (aiHighlighted) {
+    return "border-emerald-500 ring-1 ring-emerald-500/25 dark:border-emerald-500/80";
+  }
+  return defaultBorderClass;
+}
+
 function FieldGroup({
   id,
   label,
   hint,
   error,
+  aiHighlighted = false,
   children,
 }: {
   id: string;
   label: string;
   hint?: string;
   error?: string;
+  aiHighlighted?: boolean;
   children: React.ReactNode;
 }) {
+  const { t } = useTranslation();
+
   return (
     <div className="space-y-1.5">
-      <label htmlFor={id} className="block text-sm font-semibold text-navy dark:text-white">
-        {label}
-      </label>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <label htmlFor={id} className="block text-sm font-semibold text-navy dark:text-white">
+          {label}
+        </label>
+        {aiHighlighted && (
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/50 dark:text-emerald-300 dark:border-emerald-900">
+            <Sparkles className="w-3 h-3" />
+            {t("profile.aiAutoFill.fieldBadge", "AI Filled")}
+          </span>
+        )}
+      </div>
       {hint && <p className="text-xs text-muted-foreground">{hint}</p>}
       {children}
       {error && (
@@ -876,6 +823,7 @@ function SelectInput({
   placeholder,
   disabled = false,
   error,
+  aiHighlighted = false,
 }: {
   id: string;
   name: string;
@@ -885,6 +833,7 @@ function SelectInput({
   placeholder: string;
   disabled?: boolean;
   error?: string;
+  aiHighlighted?: boolean;
 }) {
   return (
     <select
@@ -894,9 +843,11 @@ function SelectInput({
       onChange={onChange}
       disabled={disabled}
       aria-invalid={!!error}
-      className={`flex h-10 w-full rounded-md border bg-background px-3 py-1 text-sm text-foreground shadow-xs outline-none transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-muted/40 ${
-        error ? "border-red-500" : "border-input"
-      }`}
+      className={`flex h-10 w-full rounded-md border bg-background px-3 py-1 text-sm text-foreground shadow-xs outline-none transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-muted/40 ${getFieldBorderClass(
+        Boolean(error),
+        aiHighlighted,
+        "border-input"
+      )}`}
     >
       <option value="">{placeholder}</option>
       {options.map((opt) => (

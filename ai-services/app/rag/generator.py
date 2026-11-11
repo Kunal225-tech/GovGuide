@@ -16,7 +16,7 @@ from app.schemas.chat import (
 logger = logging.getLogger(__name__)
 
 
-# Alias / bilingual mappings for accurate scheme citation grounding
+# Alias / bilingual mappings for accurate Bihar & Central scheme citation grounding
 SCHEME_ALIASES_MAP = {
     "kisan": ["pm-kisan", "pm kisan", "kisan samman", "किसान", "पीएम-किसान", "पीएम किसान"],
     "mudra": ["mudra", "pmmy", "मुद्रा", "पीएमएमवाई"],
@@ -24,13 +24,31 @@ SCHEME_ALIASES_MAP = {
     "ayushman": ["ayushman", "pm-jay", "pmjay", "jan arogya", "आयुष्मान", "पीएम-जय", "जन आरोग्य"],
     "sukanya": ["sukanya", "samriddhi", "ssy", "सुकन्या", "समृद्धि"],
     "svanidhi": ["svanidhi", "street vendor", "स्वनिधि", "वेंडर"],
-    "lakshmi": ["gruha lakshmi", "gruhalakshmi", "गृह लक्ष्मी", "गृहलक्ष्मी"],
-    "yuva": ["yuva nidhi", "yuvanidhi", "युवा निधि", "युवानिधि"],
-    "ladki": ["majhi ladki", "ladki bahin", "माझी लाड़की", "लाड़की बहिन", "माझी लड़की", "लड़की बहिन"],
-    "sumangala": ["kanya sumangala", "sumangala", "mksy", "कन्या सुमंगला", "सुमंगला"],
-    "startup": ["startup india", "sisfs", "seed fund", "स्टार्टअप इंडिया"],
-    "scholarship": ["pm scholarship", "scholarship scheme", "छात्रवृत्ति"],
-    "pension": ["old age pension", "ignoaps", "पेंशन योजना", "वृद्धावस्था पेंशन"],
+    "bsccs": ["bsccs", "student credit card", "बिहार स्टूडेंट क्रेडिट कार्ड", "स्टूडेंट क्रेडिट कार्ड"],
+    "balak": ["balak", "balika protsahan", "matric", "बालक बालिका प्रोत्साहन"],
+    "utthan": ["kanya utthan", "कन्या उत्थान"],
+    "mnssby": ["mnssby", "swayam sahayata bhatta", "स्वयं सहायता भत्ता"],
+    "kyp": ["kyp", "kushal yuva", "कुशल युवा"],
+    "bpsc": ["bpsc civil seva", "बीपीएससी", "सिविल सेवा प्रोत्साहन"],
+    "upsc": ["upsc civil seva", "यूपीएससी"],
+    "pms bihar": ["post-matric scholarship", "pms bihar", "पोस्ट मैट्रिक छात्रवृत्ति"],
+    "cycle": ["cycle yojana", "साइकिल योजना"],
+    "sc st udyami": ["sc st udyami", "sc/st udyami", "अनुसूचित जाति जनजाति उद्यमी"],
+    "ebc udyami": ["ebc udyami", "अति पिछड़ा उद्यमी"],
+    "mahila udyami": ["mahila udyami", "महिला उद्यमी"],
+    "yuva udyami": ["yuva udyami", "युवा उद्यमी"],
+    "vridhajan": ["mvpy", "vridhajan", "वृद्धजन पेंशन"],
+    "laxmi bai": ["laxmi bai", "लक्ष्मी बाई"],
+    "divyangjan": ["divyangjan", "दिव्यांगजन पेंशन"],
+    "vivah": ["kanya vivah", "कन्या विवाह"],
+    "krishi input": ["krishi input", "कृषि इनपुट"],
+    "diesel": ["diesel anudan", "डीजल अनुदान"],
+    "yantrikikaran": ["yantrikikaran", "कृषि यांत्रिकीकरण"],
+    "bal hriday": ["bal hriday", "बाल हृदय"],
+    "chikitsa": ["chikitsa sahayata", "चिकित्सा सहायता"],
+    "pravasi": ["pravasi mazdoor", "प्रवासी मजदूर"],
+    "jeevika": ["jeevika", "जीविका"],
+    "parivahan": ["mgpy", "gram parivahan", "ग्राम परिवहन"],
 }
 
 REFUSAL_MARKERS = [
@@ -202,13 +220,16 @@ class RAGGenerator:
                 # C. Match significant keywords (require distinctive multi-word match, excluding broad stopwords)
                 generic_stopwords = {
                     "yojana", "scheme", "pradhan", "mantri", "national",
-                    "state", "karnataka", "mukhyamantri", "central", "mission",
+                    "state", "bihar", "mukhyamantri", "central", "mission",
                     "india", "indian", "bharat", "gramin", "awas", "fund", "seed",
                     "general", "service", "development", "assistance"
                 }
                 key_words = [w for w in name_lower.split() if len(w) > 3 and w not in generic_stopwords]
                 matched_kw_count = sum(1 for kw in key_words if kw in answer_lower)
-                acronyms = {"sisfs", "pmmy", "pmjay", "pmkisan", "pmayg", "ssy", "mksy"}
+                acronyms = {
+                    "bsccs", "mnssby", "kyp", "mvpy", "mgpy", "bpsc", "upsc", "pms",
+                    "pmmy", "pmjay", "pmkisan", "pmayg", "ssy", "svanidhi"
+                }
                 has_acronym_match = any(ac in answer_lower for ac in acronyms if ac in name_lower)
                 if has_acronym_match or matched_kw_count >= 2:
                     matched_citations.append(cit)

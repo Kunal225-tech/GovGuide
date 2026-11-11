@@ -13,6 +13,8 @@
     "tagline": "Schemes for a Brighter Tomorrow",
     "toggleMenu": "Toggle menu",
     "applicationTracker": "Application Tracker",
+    "trackApplication": "Track Applications",
+    "eligibilityChecker": "Check Eligibility",
     "savedSchemes": "Saved Schemes"
   },
   "language": {
@@ -39,6 +41,7 @@
     "reset": "Reset",
     "back": "Back",
     "submit": "Submit",
+    "send": "Send",
     "cancel": "Cancel",
     "saveChanges": "Save Changes",
     "close": "Close",
@@ -106,9 +109,9 @@
     "govLevel": {
       "badge": "Jurisdiction Coverage",
       "title": "Bihar State & Central Welfare Programs",
-      "subtitle": "Discover Bihar Government's 7-Nischay flagship schemes alongside Pan-India Central Government welfare initiatives.",
+      "subtitle": "Discover Bihar Government's 7-Nischay flagship schemes alongside Central Government welfare initiatives applicable in Bihar.",
       "central": {
-        "title": "Central Schemes (Pan-India)",
+        "title": "Central Schemes (Applicable in Bihar)",
         "desc": "Nationwide welfare initiatives by Government of India applicable in Bihar (PM-KISAN, PMAY-G, Ayushman Bharat, PM Mudra, Sukanya Samriddhi)."
       },
       "state": {
@@ -220,6 +223,7 @@
     "needsVerificationTitle": "Needs Verification / Insufficient Data",
     "needsVerificationDesc": "The system lacks sufficient verified data or profile details to make a definitive automated decision. This is not an official rejection.",
     "eligibleDisclaimer": "Automated matching indicates preliminary qualification based on your profile. Final approval is subject to official document verification by the issuing government department.",
+    "ineligibleDesc": "Your current citizen profile does not satisfy one or more mandatory criteria for these schemes. Exact disqualifying reasons are listed on each card.",
     "unverifiedDisclaimer": "This is not an official rejection. You may still be eligible by fulfilling scheme-specific requirements on the official portal.",
     "noEligibleTitle": "No Matching Schemes Found",
     "noEligibleDesc": "Based on your current profile parameters, no matching schemes were found. Try reviewing your profile details or exploring the full catalog.",
@@ -235,6 +239,7 @@
     "status": {
       "saved": "Saved",
       "in-progress": "In Progress",
+      "inProgress": "In Progress",
       "submitted": "Submitted",
       "approved": "Approved",
       "rejected": "Rejected"
@@ -276,14 +281,15 @@
       "other": "Other",
       "all": "Any / All"
     },
-    "state": "State / UT",
+    "state": "State",
     "selectState": "Select State",
+    "biharOnlyHint": "Dedicated portal for Bihar residents & Bihar-applicable Central schemes.",
     "district": "District",
     "selectDistrict": "Select district",
-    "selectStateFirst": "Select state first",
+    "selectStateFirst": "Select Bihar first",
     "selectGender": "Select gender",
     "selectCategory": "Select social category",
-    "selectStateOrUt": "Select state or UT",
+    "selectStateOrUt": "Select state",
     "selectEducation": "Select education level",
     "selectEmployment": "Select employment status",
     "annualIncome": "Annual Household Income (₹)",
@@ -291,6 +297,8 @@
     "casteOptions": {
       "general": "General",
       "obc": "OBC (Other Backward Classes)",
+      "bc": "BC (Backward Class)",
+      "ebc": "EBC (Extremely Backward Class)",
       "sc": "SC (Scheduled Caste)",
       "st": "ST (Scheduled Tribe)",
       "ews": "EWS (Economically Weaker Section)"
@@ -317,7 +325,47 @@
     "incomeFormatted": "Formatted:",
     "profileCompletion": "Profile Completion",
     "complete": "Complete",
-    "reset": "Reset"
+    "reset": "Reset",
+    "aiAutoFill": {
+      "title": "AI Quick Profile Fill",
+      "subtitle": "Describe yourself once in plain words — review extracted fields before updating your form.",
+      "tryExample": "Try an example:",
+      "examples": {
+        "student": {
+          "label": "College Student (Patna)",
+          "text": "I am a 20 year old B.Tech EBC male student from Patna with annual family income 1.8 lakh"
+        },
+        "farmer": {
+          "label": "Farmer (Gaya)",
+          "text": "38 year old farmer from Gaya, SC category, 10th pass, annual income 95000"
+        },
+        "entrepreneur": {
+          "label": "Women Entrepreneur (Muzaffarpur)",
+          "text": "26 year old female graduate from Muzaffarpur, OBC, self-employed with annual income 3 lakh"
+        }
+      },
+      "placeholder": "e.g. I am a 20 year old B.Tech student from Patna, EBC category, family income 1.8 lakh...",
+      "privacyNotice": "Please avoid typing Aadhaar, PAN, or bank numbers.",
+      "clearInput": "Clear",
+      "extracting": "Extracting Details...",
+      "extractButton": "Extract Profile Fields",
+      "tooShortError": "Please write at least a short sentence describing yourself.",
+      "extractError": "Could not extract details right now. Please try again or fill the form below.",
+      "reviewTitle": "Review Extracted Fields",
+      "reviewSubtitle": "Select the fields you want to apply to your profile form.",
+      "sourceAi": "AI Extracted",
+      "sourceFallback": "Smart Parser",
+      "nonBiharNotice": "Detected state '{{state}}'. GovGuide currently supports Bihar residents only, so State was not changed.",
+      "badgeNew": "New",
+      "badgeReplaces": "Replaces",
+      "badgeMatches": "Matches",
+      "noFieldsExtracted": "No profile fields could be matched cleanly. Try adding details like age, Bihar district, occupation, category, or annual income.",
+      "stillMissing": "Not mentioned yet:",
+      "discardButton": "Discard",
+      "applyButton": "Apply Selected to Form",
+      "fieldBadge": "AI Filled",
+      "appliedReminder": "Applied {{count}} AI-extracted field(s) to the form. Review the highlighted fields below and click Save Profile to confirm."
+    }
   },
   "auth": {
     "tabEmail": "Email Address",
@@ -374,28 +422,28 @@
   },
   "howItWorksPage": {
     "title": "How GovGuide Works",
-    "subtitle": "A transparent, deterministic guide to discovering and tracking Indian government welfare initiatives.",
+    "subtitle": "A transparent, deterministic guide to discovering and tracking Bihar State and Central government welfare initiatives.",
     "stepsTitle": "Our 3-Step Process",
     "faqTitle": "Frequently Asked Questions",
     "step1Title": "1. Complete Your Citizen Profile",
-    "step1Desc": "Provide your age, income, state, category, and occupation to configure your eligibility parameters.",
+    "step1Desc": "Provide your age, Bihar district, income, social category, education, and occupation to configure your eligibility parameters.",
     "step2Title": "2. Deterministic Matching Engine",
-    "step2Desc": "GovGuide strictly evaluates rule-based criteria against official government scheme specifications.",
+    "step2Desc": "GovGuide strictly evaluates rule-based criteria against official Bihar State and Central government scheme specifications.",
     "step3Title": "3. Official Application & Tracking",
     "step3Desc": "Direct links to verified government portals ensure zero commission, zero middlemen, and total transparency."
   },
   "aboutPage": {
-    "title": "About GovGuide",
-    "subtitle": "Empowering every Indian citizen with clear, accessible, and verified welfare scheme discovery.",
+    "title": "About GovGuide Bihar",
+    "subtitle": "Empowering every citizen of Bihar with clear, accessible, and verified welfare scheme discovery.",
     "missionTitle": "Our Mission",
-    "missionDesc": "Government of India and state governments administer hundreds of welfare schemes, but millions of eligible citizens miss out due to information fragmentation. GovGuide solves this by providing a unified, transparent, and deterministic discovery platform.",
+    "missionDesc": "Both the Government of Bihar and the Government of India administer vital welfare schemes, yet millions of eligible citizens miss out due to information fragmentation. GovGuide Bihar solves this by providing a unified, transparent, and deterministic discovery platform.",
     "valuesTitle": "Core Principles",
     "value1Title": "Verified Official Sources",
-    "value1Desc": "Every scheme indexes verified .gov.in portals. We never collect application fees or claim false authority.",
+    "value1Desc": "Every scheme indexes verified .gov.in and Bihar state portals like 7-Nischay, Medhasoft, and RTPS. We never collect application fees or claim false authority.",
     "value2Title": "Deterministic Matching",
     "value2Desc": "Eligibility calculations are mathematical and rule-based, preventing hallucinations and misinformation.",
     "value3Title": "Citizen-Centric Design",
-    "value3Desc": "Designed for accessibility, ease of use, and multi-language support across India."
+    "value3Desc": "Designed for accessibility, ease of use, and bilingual support (English & Hindi) across all 38 districts of Bihar."
   },
   "notFound": {
     "title": "404 - Page Not Found",

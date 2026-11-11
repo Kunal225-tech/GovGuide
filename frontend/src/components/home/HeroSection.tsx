@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { 
@@ -17,22 +17,47 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { TrustSection } from './TrustSection';
 import { useAuth } from '@/context/AuthContext';
+import { getSchemes } from '@/services/schemeApi';
 
 const DIRECTORY_CATEGORIES = [
-  { name: 'Agriculture & Rural', labelHi: 'कृषि और ग्रामीण', icon: Wheat, count: '82 Schemes', to: '/schemes?category=Agriculture' },
-  { name: 'Education & Scholarships', labelHi: 'शिक्षा और छात्रवृत्ति', icon: GraduationCap, count: '64 Schemes', to: '/schemes?category=Education' },
-  { name: 'Health & Insurance', labelHi: 'स्वास्थ्य और बीमा', icon: HeartPulse, count: '45 Schemes', to: '/schemes?category=Healthcare' },
-  { name: 'Women & Child', labelHi: 'महिला एवं बाल कल्याण', icon: Users, count: '53 Schemes', to: '/schemes?category=Women%20%26%20Child' },
-  { name: 'Business & MSME', labelHi: 'व्यवसाय और एमएसएमई', icon: Lightbulb, count: '38 Schemes', to: '/schemes?category=Entrepreneurship' },
-  { name: 'Housing & Pension', labelHi: 'आवास और पेंशन', icon: House, count: '41 Schemes', to: '/schemes?category=Housing' },
+  { name: 'Agriculture & Rural', labelHi: 'कृषि और ग्रामीण', categoryKey: 'agriculture', icon: Wheat, to: '/schemes?category=Agriculture' },
+  { name: 'Education & Scholarships', labelHi: 'शिक्षा और छात्रवृत्ति', categoryKey: 'education', icon: GraduationCap, to: '/schemes?category=Education' },
+  { name: 'Health & Insurance', labelHi: 'स्वास्थ्य और बीमा', categoryKey: 'healthcare', icon: HeartPulse, to: '/schemes?category=Healthcare' },
+  { name: 'Women & Child', labelHi: 'महिला एवं बाल कल्याण', categoryKey: 'women & child', icon: Users, to: '/schemes?category=Women%20%26%20Child' },
+  { name: 'Business & MSME', labelHi: 'व्यवसाय और एमएसएमई', categoryKey: 'entrepreneurship', icon: Lightbulb, to: '/schemes?category=Entrepreneurship' },
+  { name: 'Housing & Shelter', labelHi: 'आवास एवं घर', categoryKey: 'housing', icon: House, to: '/schemes?category=Housing' },
 ];
 
 export function HeroSection() {
   const { t, i18n } = useTranslation();
   const [searchTerm, setSearchTerm] = useState('');
+  const [categoryCounts, setCategoryCounts] = useState<Record<string, number> | null>(null);
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   const isHi = i18n.language === 'hi';
+
+  useEffect(() => {
+    let active = true;
+    getSchemes()
+      .then((list) => {
+        if (!active) return;
+        const counts: Record<string, number> = {};
+        for (const s of list) {
+          if (s.level === 'state' && s.state && s.state.trim().toLowerCase() !== 'bihar') {
+            continue;
+          }
+          const key = (s.category || '').trim().toLowerCase();
+          counts[key] = (counts[key] || 0) + 1;
+        }
+        setCategoryCounts(counts);
+      })
+      .catch(() => {
+        // Silent fallback when backend is warming up
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   function executeSearch(queryText: string) {
     const query = queryText.trim();
@@ -186,33 +211,43 @@ export function HeroSection() {
           <div className="pt-8 w-full text-left">
             <div className="flex items-center justify-between mb-3 px-1">
               <span className="text-xs font-bold uppercase tracking-wider text-stone-500 dark:text-[#A8A29E]">
-                Browse Directory by Category
+                {isHi ? 'श्रेणी के अनुसार योजनाएं देखें' : 'Browse Directory by Category'}
               </span>
               <Link to="/categories" className="text-xs font-semibold text-[#1E3A8A] dark:text-[#D95D39] hover:underline flex items-center gap-1">
-                <span>View All 9 Sectors</span>
+                <span>{isHi ? 'सभी 9 क्षेत्र देखें' : 'View All 9 Sectors'}</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-              {DIRECTORY_CATEGORIES.map((cat, idx) => (
-                <Link
-                  key={idx}
-                  to={cat.to}
-                  className="p-3.5 rounded-md border border-stone-200 dark:border-[#2E2D2A] bg-white dark:bg-[#1C1B19] hover:border-[#1E3A8A] dark:hover:border-[#D95D39] transition-all flex flex-col justify-between group"
-                >
-                  <div className="w-8 h-8 rounded-md bg-stone-100 dark:bg-[#292826] flex items-center justify-center text-stone-700 dark:text-[#F4F4F0] group-hover:text-[#1E3A8A] dark:group-hover:text-[#D95D39] mb-2.5 transition-colors">
-                    <cat.icon className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <h2 className="text-xs font-semibold text-stone-900 dark:text-[#F4F4F0] group-hover:text-[#1E3A8A] dark:group-hover:text-[#D95D39] leading-tight line-clamp-1 transition-colors">
-                      {isHi ? cat.labelHi : cat.name}
-                    </h2>
-                    <span className="text-[11px] text-stone-500 dark:text-[#A8A29E] font-normal mt-0.5 block">
-                      {cat.count}
-                    </span>
-                  </div>
-                </Link>
-              ))}
+              {DIRECTORY_CATEGORIES.map((cat, idx) => {
+                const count = categoryCounts ? (categoryCounts[cat.categoryKey] ?? 0) : null;
+                const countLabel =
+                  count === null
+                    ? isHi ? 'बिहार व केंद्र' : 'Bihar & Central'
+                    : isHi
+                      ? `${count} योजनाएं`
+                      : `${count} ${count === 1 ? 'Scheme' : 'Schemes'}`;
+
+                return (
+                  <Link
+                    key={idx}
+                    to={cat.to}
+                    className="p-3.5 rounded-md border border-stone-200 dark:border-[#2E2D2A] bg-white dark:bg-[#1C1B19] hover:border-[#1E3A8A] dark:hover:border-[#D95D39] transition-all flex flex-col justify-between group"
+                  >
+                    <div className="w-8 h-8 rounded-md bg-stone-100 dark:bg-[#292826] flex items-center justify-center text-stone-700 dark:text-[#F4F4F0] group-hover:text-[#1E3A8A] dark:group-hover:text-[#D95D39] mb-2.5 transition-colors">
+                      <cat.icon className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <h2 className="text-xs font-semibold text-stone-900 dark:text-[#F4F4F0] group-hover:text-[#1E3A8A] dark:group-hover:text-[#D95D39] leading-tight line-clamp-1 transition-colors">
+                        {isHi ? cat.labelHi : cat.name}
+                      </h2>
+                      <span className="text-[11px] text-stone-500 dark:text-[#A8A29E] font-normal mt-0.5 block">
+                        {countLabel}
+                      </span>
+                    </div>
+                  </Link>
+                );
+              })}
             </div>
           </div>
 

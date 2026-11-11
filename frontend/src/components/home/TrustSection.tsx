@@ -12,8 +12,8 @@ export function TrustSection() {
     },
     {
       icon: Globe,
-      title: t('home.hero.features.coverageTitle', 'Pan-India Coverage'),
-      subtitle: t('home.hero.features.coverageDesc', 'All 28 States & 8 UTs'),
+      title: t('home.hero.features.coverageTitle', 'Bihar & Central Coverage'),
+      subtitle: t('home.hero.features.coverageDesc', 'All 38 Districts of Bihar'),
     },
     {
       icon: Zap,

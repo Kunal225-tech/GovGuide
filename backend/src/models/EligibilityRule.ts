@@ -3,6 +3,15 @@ import mongoose, { Schema, Document } from "mongoose";
 export const VALID_GENDERS = ["Male", "Female", "Transgender", "Other", "All"] as const;
 export type GenderType = (typeof VALID_GENDERS)[number];
 
+const ALLOWED_GENDER_VALUES = ["male", "female", "transgender", "other", "all"];
+
+function isValidGenderList(val: string[]): boolean {
+  if (!val || val.length === 0) return true;
+  return val.every(
+    (g) => typeof g === "string" && ALLOWED_GENDER_VALUES.includes(g.trim().toLowerCase())
+  );
+}
+
 export interface IEligibilityRule extends Document {
   schemeId: mongoose.Types.ObjectId;
   minAge?: number;
@@ -12,6 +21,7 @@ export interface IEligibilityRule extends Document {
   occupations?: string[];
   educationLevels?: string[];
   categories?: string[];
+  categoryExemptGenders?: string[];
   genders?: string[];
   isVerified?: boolean;
   isComplete?: boolean;
@@ -65,17 +75,21 @@ const eligibilityRuleSchema = new Schema<IEligibilityRule>(
       default: [],
     },
 
+    categoryExemptGenders: {
+      type: [String],
+      default: [],
+      validate: {
+        validator: isValidGenderList,
+        message:
+          "categoryExemptGenders contains unsupported values. Supported: Male, Female, Transgender, Other, All",
+      },
+    },
+
     genders: {
       type: [String],
       default: [],
       validate: {
-        validator: function (val: string[]) {
-          if (!val || val.length === 0) return true;
-          const allowed = ["male", "female", "transgender", "other", "all"];
-          return val.every(
-            (g) => typeof g === "string" && allowed.includes(g.trim().toLowerCase())
-          );
-        },
+        validator: isValidGenderList,
         message:
           "genders contains unsupported values. Supported: Male, Female, Transgender, Other, All",
       },

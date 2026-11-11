@@ -241,7 +241,7 @@ function ResultsView({
             </h2>
           </div>
           <p className="text-xs text-muted-foreground mb-5">
-            {t('eligible.criteriaNotMet')}
+            {t('eligible.ineligibleDesc')}
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {notMatching.map((result) => (

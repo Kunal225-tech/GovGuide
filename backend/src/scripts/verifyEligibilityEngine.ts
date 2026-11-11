@@ -523,6 +523,132 @@ async function runVerification() {
   }
 
   // -------------------------------------------------------------------------
+  // SUITE 9: Bihar Production Rules & Exact Disqualification Reason Verification
+  // -------------------------------------------------------------------------
+  console.log("\n🔷 Suite 9: Bihar Dataset Rules & Exact Disqualification Reasons");
+  {
+    const fs = require("fs");
+    const path = require("path");
+    const biharDataPath = path.resolve(__dirname, "../../../data/bihar/all_bihar_schemes.json");
+    const biharSchemesRaw = JSON.parse(fs.readFileSync(biharDataPath, "utf8"));
+
+    const biharSchemes = biharSchemesRaw.map((s: any) => ({
+      ...s,
+      _id: new mongoose.Types.ObjectId(),
+    }));
+
+    const biharRules = biharSchemes.map((s: any) => ({
+      _id: new mongoose.Types.ObjectId(),
+      schemeId: s._id,
+      ...s.rule,
+    }));
+
+    // 9.1 Bihar General Female Graduate -> BPSC Female exemption passes category & awaits Prelims verification
+    setupMockData(
+      { age: 24, gender: "Female", state: "Bihar", annualIncome: 150000, occupation: "Job Seeker", education: "Graduate", category: "General" },
+      biharSchemes,
+      biharRules
+    );
+    let results = await checkEligibility(dummyUserId);
+
+    const bpscWoman = results.find(r => r.schemeName === "BPSC Civil Seva Protsahan Yojana");
+    assert(
+      bpscWoman?.status === "unverified" && Boolean(bpscWoman.reasons.some(r => r.includes("Preliminary Examination"))),
+      "Bihar General Female Graduate passes BPSC category exemption and awaits Prelims verification"
+    );
+
+    const kanyaGrad = results.find(r => r.schemeName === "Mukhyamantri Kanya Utthan Yojana - Graduation");
+    assert(kanyaGrad?.status === "eligible" && kanyaGrad.eligible === true, "Bihar Female Graduate qualifies for Kanya Utthan Graduation");
+
+    const mahilaUdyami = results.find(r => r.schemeName === "Mukhyamantri Mahila Udyami Yojana");
+    assert(mahilaUdyami?.status === "eligible" && mahilaUdyami.eligible === true, "Bihar Female Graduate qualifies for Mahila Udyami Yojana");
+
+    const yuvaUdyamiWoman = results.find(r => r.schemeName === "Mukhyamantri Yuva Udyami Yojana");
+    assert(
+      yuvaUdyamiWoman?.status === "ineligible" &&
+        Boolean(yuvaUdyamiWoman.reasons.some(r => r.includes("Gender criteria not met") && r.includes("(your profile: Female)"))),
+      "Female applicant is ineligible for Yuva Udyami with exact gender mismatch reason"
+    );
+
+    // 9.2 Bihar General Male Graduate -> BPSC strictly ineligible with exact gender & category reason
+    setupMockData(
+      { age: 24, gender: "Male", state: "Bihar", annualIncome: 150000, occupation: "Unemployed", education: "Graduate", category: "General" },
+      biharSchemes,
+      biharRules
+    );
+    results = await checkEligibility(dummyUserId);
+
+    const bpscMan = results.find(r => r.schemeName === "BPSC Civil Seva Protsahan Yojana");
+    assert(
+      bpscMan?.status === "ineligible" &&
+        Boolean(bpscMan.reasons.some(r => r.includes("Social category criteria not met") && r.includes("(your profile: Male, General)"))),
+      "Bihar General Male Graduate is ineligible for BPSC Protsahan citing Male, General"
+    );
+
+    const mnssbyMan = results.find(r => r.schemeName === "Mukhyamantri Nischay Swayam Sahayata Bhatta Yojana (MNSSBY)");
+    assert(mnssbyMan?.status === "eligible" && mnssbyMan.eligible === true, "Bihar Unemployed Graduate aged 24 qualifies for MNSSBY");
+
+    const pmsUnemployed = results.find(r => r.schemeName === "Bihar Post-Matric Scholarship Scheme (PMS Bihar)");
+    assert(
+      pmsUnemployed?.status === "ineligible" &&
+        Boolean(pmsUnemployed.reasons.some(r => r.includes("Occupation criteria not met") && r.includes("(your profile: Unemployed)"))) &&
+        Boolean(pmsUnemployed.reasons.some(r => r.includes("Social category criteria not met") && r.includes("(your profile: General)"))),
+      "Unemployed General applicant gets ALL exact disqualification reasons (occupation + category) for PMS Bihar"
+    );
+
+    const divyang = results.find(r => r.schemeName === "Bihar Divyangjan Pension Yojana");
+    assert(
+      divyang?.status === "ineligible" &&
+        Boolean(divyang.reasons.some(r => r.includes("exceeds the upper ceiling of ₹60,000"))),
+      "Applicant over ₹60,000 income is strictly ineligible for Divyangjan Pension with income ceiling reason"
+    );
+
+    const kypGrad = results.find(r => r.schemeName === "Kushal Yuva Program (KYP)");
+    assert(kypGrad?.status === "eligible" && kypGrad.eligible === true, "Bihar Graduate aged 24 qualifies for KYP (minimum 10th Pass satisfied)");
+
+    // 9.3 Bihar 14yo School Student (Class 9) & Legacy B.Tech equivalence check
+    setupMockData(
+      { age: 14, gender: "Female", state: "Bihar", annualIncome: 100000, occupation: "Student", education: "Primary (up to Class 5)", category: "EBC" },
+      biharSchemes,
+      biharRules
+    );
+    results = await checkEligibility(dummyUserId);
+    const cycleStudent = results.find(r => r.schemeName === "Mukhyamantri Cycle Yojana");
+    assert(cycleStudent?.status === "eligible" && cycleStudent.eligible === true, "14yo Bihar school student qualifies for Mukhyamantri Cycle Yojana");
+
+    const pravasiStudent = results.find(r => r.schemeName === "Bihar Pravasi Mazdoor Durghatna Anudan Yojana");
+    assert(
+      pravasiStudent?.status === "ineligible" &&
+        Boolean(pravasiStudent.reasons.some(r => r.includes("below the minimum required age of 18"))) &&
+        Boolean(pravasiStudent.reasons.some(r => r.includes("(your profile: Student)"))),
+      "14yo Student is ineligible for Pravasi Mazdoor citing both age and Student occupation"
+    );
+
+    // 9.4 Incomplete profile gender exemption check (General category + missing gender on BPSC)
+    setupMockData(
+      { age: 24, state: "Bihar", annualIncome: 150000, occupation: "Job Seeker", education: "Graduate", category: "General" },
+      biharSchemes,
+      biharRules
+    );
+    results = await checkEligibility(dummyUserId);
+    const bpscMissingGender = results.find(r => r.schemeName === "BPSC Civil Seva Protsahan Yojana");
+    assert(
+      bpscMissingGender?.status === "unverified" && Boolean(bpscMissingGender.missingProfileFields?.includes("gender")),
+      "BPSC marks General user with missing gender as unverified (since Female candidates of any category qualify)"
+    );
+
+    // 9.5 Legacy B.Tech profile check for BSCCS & Yuva Udyami
+    setupMockData(
+      { age: 21, gender: "Male", state: "Bihar", annualIncome: 250000, occupation: "Student", education: "B.Tech", category: "General" },
+      biharSchemes,
+      biharRules
+    );
+    results = await checkEligibility(dummyUserId);
+    const bsccsBtech = results.find(r => r.schemeName === "Bihar Student Credit Card Scheme (BSCCS)");
+    assert(bsccsBtech?.status === "eligible" && bsccsBtech.eligible === true, "B.Tech student aged 21 in Bihar qualifies for BSCCS via equivalence mapping");
+  }
+
+  // -------------------------------------------------------------------------
   // SUMMARY
   // -------------------------------------------------------------------------
   console.log("\n======================================================================");

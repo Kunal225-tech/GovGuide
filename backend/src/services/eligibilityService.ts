@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import User from "../models/User";
 import Scheme from "../models/Scheme";
 import EligibilityRule, { IEligibilityRule } from "../models/EligibilityRule";
+import { BIHAR_ONLY_SCHEME_FILTER } from "./schemeService";
 
 export type EligibilityStatus = "eligible" | "ineligible" | "unverified";
 
@@ -18,6 +19,51 @@ export interface EligibilityResult {
   missingProfileFields?: string[];
 }
 
+const PROFILE_VALUE_EQUIVALENTS: Record<string, string[]> = {
+  "no formal education": ["illiterate", "none"],
+  "primary (up to class 5)": ["primary", "below 10th", "class 5", "class 8"],
+  "secondary (up to class 10)": ["10th pass"],
+  "10th pass": ["matric", "matriculation", "secondary"],
+  "senior secondary (class 12)": ["12th pass", "intermediate", "10+2"],
+  "12th pass": ["intermediate", "10+2", "senior secondary"],
+  "diploma / iti": ["iti", "polytechnic", "diploma"],
+  "undergraduate (bachelor)": ["undergraduate", "graduate", "12th pass"],
+  "b.tech": ["undergraduate", "graduate", "12th pass"],
+  btech: ["undergraduate", "graduate", "12th pass"],
+  "b.e": ["undergraduate", "graduate", "12th pass"],
+  "b.e.": ["undergraduate", "graduate", "12th pass"],
+  "b.sc": ["undergraduate", "graduate", "12th pass"],
+  bsc: ["undergraduate", "graduate", "12th pass"],
+  "b.a": ["undergraduate", "graduate", "12th pass"],
+  ba: ["undergraduate", "graduate", "12th pass"],
+  "b.com": ["undergraduate", "graduate", "12th pass"],
+  bcom: ["undergraduate", "graduate", "12th pass"],
+  bca: ["undergraduate", "graduate", "12th pass"],
+  bba: ["undergraduate", "graduate", "12th pass"],
+  "postgraduate (master)": ["post graduate", "postgraduate", "graduate"],
+  "post graduate": ["postgraduate"],
+  "m.tech": ["post graduate", "postgraduate", "graduate"],
+  mtech: ["post graduate", "postgraduate", "graduate"],
+  "m.sc": ["post graduate", "postgraduate", "graduate"],
+  msc: ["post graduate", "postgraduate", "graduate"],
+  "m.a": ["post graduate", "postgraduate", "graduate"],
+  ma: ["post graduate", "postgraduate", "graduate"],
+  mca: ["post graduate", "postgraduate", "graduate"],
+  mba: ["post graduate", "postgraduate", "graduate"],
+  "doctorate (phd)": ["phd", "doctorate", "post graduate", "graduate"],
+  "self-employed / business": ["self employed", "business owner", "entrepreneur"],
+  "self-employed": ["self employed", "business owner", "entrepreneur"],
+  "self employed": ["self-employed", "business owner", "entrepreneur"],
+  "daily wage worker": ["daily wage earner", "worker", "labourer"],
+  "daily wage earner": ["daily wage worker", "worker", "labourer"],
+  "street vendor / hawker": ["street vendor", "vendor", "hawker"],
+  "street vendor": ["vendor", "hawker"],
+  "employed (salaried)": ["employed", "salaried"],
+  employed: ["employed (salaried)", "salaried"],
+  farmer: ["agriculture", "cultivator"],
+  agriculture: ["farmer", "cultivator"],
+};
+
 function matchesCaseInsensitive(
   ruleList: string[] | undefined,
   profileValue: string | undefined
@@ -29,7 +75,8 @@ function matchesCaseInsensitive(
     return false; // Restriction exists but user has not provided the profile field
   }
   const normalizedVal = profileValue.trim().toLowerCase();
-  return ruleList.some((item) => item.trim().toLowerCase() === normalizedVal);
+  const candidates = [normalizedVal, ...(PROFILE_VALUE_EQUIVALENTS[normalizedVal] || [])];
+  return ruleList.some((item) => candidates.includes(item.trim().toLowerCase()));
 }
 
 export const checkEligibility = async (
@@ -45,9 +92,9 @@ export const checkEligibility = async (
     throw new Error("User not found");
   }
 
-  // 2. Fetch all schemes and all eligibility rules in parallel
+  // 2. Fetch Bihar-applicable schemes and eligibility rules in parallel
   const [schemes, allRules] = await Promise.all([
-    Scheme.find().sort({ name: 1 }),
+    Scheme.find(BIHAR_ONLY_SCHEME_FILTER).sort({ name: 1 }),
     EligibilityRule.find(),
   ]);
 
@@ -106,9 +153,9 @@ export const checkEligibility = async (
 
     // 3d. Check if rule has at least one configured demographic criterion
     const hasAnyCriteria =
-      rule.minAge !== undefined ||
-      rule.maxAge !== undefined ||
-      rule.maxAnnualIncome !== undefined ||
+      (rule.minAge !== undefined && rule.minAge !== null) ||
+      (rule.maxAge !== undefined && rule.maxAge !== null) ||
+      (rule.maxAnnualIncome !== undefined && rule.maxAnnualIncome !== null) ||
       (rule.states && rule.states.length > 0) ||
       (rule.occupations && rule.occupations.length > 0) ||
       (rule.educationLevels && rule.educationLevels.length > 0) ||
@@ -153,35 +200,42 @@ export const checkEligibility = async (
       }
     }
 
-    // Minimum Age check
-    if (rule.minAge !== undefined && rule.minAge !== null) {
-      if (profile.age === undefined || profile.age === null) {
+    // Age check (minimum & maximum boundaries)
+    const hasMinAge = rule.minAge !== undefined && rule.minAge !== null;
+    const hasMaxAge = rule.maxAge !== undefined && rule.maxAge !== null;
+    if (hasMinAge || hasMaxAge) {
+      if (profile.age === undefined || profile.age === null || Number.isNaN(Number(profile.age))) {
         if (!missingProfileFields.includes("age")) {
           missingProfileFields.push("age");
-          missingProfileReasons.push(
-            `Scheme requires a minimum age of ${rule.minAge} (not provided in profile)`
+          if (hasMinAge && hasMaxAge && rule.minAge! > 0 && rule.maxAge! < 120) {
+            missingProfileReasons.push(
+              `Scheme requires age between ${rule.minAge} and ${rule.maxAge} years (not provided in profile)`
+            );
+          } else if (hasMaxAge && rule.maxAge! < 120) {
+            missingProfileReasons.push(
+              `Scheme specifies a maximum age of ${rule.maxAge} years (not provided in profile)`
+            );
+          } else if (hasMinAge && rule.minAge! > 0) {
+            missingProfileReasons.push(
+              `Scheme requires a minimum age of ${rule.minAge} (not provided in profile)`
+            );
+          } else {
+            missingProfileReasons.push(
+              `Age verification required for eligibility evaluation (not provided in profile)`
+            );
+          }
+        }
+      } else {
+        if (hasMinAge && profile.age < rule.minAge!) {
+          disqualificationReasons.push(
+            `Your age (${profile.age}) is below the minimum required age of ${rule.minAge}`
           );
         }
-      } else if (profile.age < rule.minAge) {
-        disqualificationReasons.push(
-          `Your age (${profile.age}) is below the minimum required age of ${rule.minAge}`
-        );
-      }
-    }
-
-    // Maximum Age check
-    if (rule.maxAge !== undefined && rule.maxAge !== null) {
-      if (profile.age === undefined || profile.age === null) {
-        if (!missingProfileFields.includes("age")) {
-          missingProfileFields.push("age");
-          missingProfileReasons.push(
-            `Scheme specifies a maximum age of ${rule.maxAge} (not provided in profile)`
+        if (hasMaxAge && profile.age > rule.maxAge!) {
+          disqualificationReasons.push(
+            `Your age (${profile.age}) exceeds the maximum eligible age of ${rule.maxAge}`
           );
         }
-      } else if (profile.age > rule.maxAge) {
-        disqualificationReasons.push(
-          `Your age (${profile.age}) exceeds the maximum eligible age of ${rule.maxAge}`
-        );
       }
     }
 
@@ -231,7 +285,7 @@ export const checkEligibility = async (
         );
       } else if (!matchesCaseInsensitive(rule.occupations, profile.occupation)) {
         disqualificationReasons.push(
-          `Occupation criteria not met. Scheme covers: ${rule.occupations.join(", ")}`
+          `Occupation criteria not met. Scheme covers: ${rule.occupations.join(", ")} (your profile: ${profile.occupation})`
         );
       }
     }
@@ -245,22 +299,56 @@ export const checkEligibility = async (
         );
       } else if (!matchesCaseInsensitive(rule.educationLevels, profile.education)) {
         disqualificationReasons.push(
-          `Education criteria not met. Scheme requires: ${rule.educationLevels.join(", ")}`
+          `Education criteria not met. Scheme requires: ${rule.educationLevels.join(", ")} (your profile: ${profile.education})`
         );
       }
     }
 
-    // Social Category check
+    // Social Category check (with optional gender exemption, e.g. women of all categories)
     if (rule.categories && rule.categories.length > 0) {
-      if (!profile.category || typeof profile.category !== "string" || !profile.category.trim()) {
-        missingProfileFields.push("category");
-        missingProfileReasons.push(
-          `Social category requirement not satisfied (not specified in profile)`
-        );
-      } else if (!matchesCaseInsensitive(rule.categories, profile.category)) {
-        disqualificationReasons.push(
-          `Social category criteria not met. Scheme is designated for: ${rule.categories.join(", ")}`
-        );
+      const exemptGenders = (rule.categoryExemptGenders || []).filter(
+        (g) => g.trim().toLowerCase() !== "all"
+      );
+      const hasGender =
+        typeof profile.gender === "string" && profile.gender.trim().length > 0;
+      const isExemptByGender =
+        exemptGenders.length > 0 &&
+        hasGender &&
+        matchesCaseInsensitive(exemptGenders, profile.gender);
+
+      if (!isExemptByGender) {
+        if (!profile.category || typeof profile.category !== "string" || !profile.category.trim()) {
+          missingProfileFields.push("category");
+          if (exemptGenders.length > 0 && !hasGender) {
+            if (!missingProfileFields.includes("gender")) {
+              missingProfileFields.push("gender");
+            }
+            missingProfileReasons.push(
+              `Social category (${rule.categories.join(", ")}) or ${exemptGenders.join("/")} gender requirement not satisfied (not specified in profile)`
+            );
+          } else {
+            missingProfileReasons.push(
+              `Social category requirement not satisfied (not specified in profile)`
+            );
+          }
+        } else if (!matchesCaseInsensitive(rule.categories, profile.category)) {
+          if (exemptGenders.length > 0 && !hasGender) {
+            if (!missingProfileFields.includes("gender")) {
+              missingProfileFields.push("gender");
+            }
+            missingProfileReasons.push(
+              `Scheme covers ${rule.categories.join(", ")} or ${exemptGenders.join("/")} candidates of any category; gender verification required (not specified in profile)`
+            );
+          } else if (exemptGenders.length > 0) {
+            disqualificationReasons.push(
+              `Social category criteria not met. Scheme is designated for: ${rule.categories.join(", ")} or ${exemptGenders.join("/")} candidates of any category (your profile: ${profile.gender}, ${profile.category})`
+            );
+          } else {
+            disqualificationReasons.push(
+              `Social category criteria not met. Scheme is designated for: ${rule.categories.join(", ")} (your profile: ${profile.category})`
+            );
+          }
+        }
       }
     }
 

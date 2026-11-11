@@ -1,0 +1,691 @@
+[
+  {
+    "name": "PM Kisan Samman Nidhi",
+    "aliases": ["PM-KISAN", "PM Kisan", "Pradhan Mantri Kisan Samman Nidhi"],
+    "category": "Agriculture",
+    "level": "central",
+    "schemeType": "central-sector",
+    "description": "Central Sector scheme providing income support of Rs. 6,000 per year in three equal 4-monthly installments of Rs. 2,000 directly to bank accounts of all landholding farmer families across India.",
+    "benefits": [
+      "Direct income support of Rs. 6,000 per year per eligible farmer family",
+      "Transferred in three equal installments of Rs. 2,000 every four months",
+      "100% centrally funded Direct Benefit Transfer (DBT) directly into Aadhaar-seeded bank accounts"
+    ],
+    "eligibility": [
+      "All landholding farmer families possessing cultivable agricultural land registered in official state land records",
+      "Valid Aadhaar card linked with bank account and active e-KYC status on PM-KISAN portal",
+      "Land record details (Khata/Khasra/Khatauni) registered and verified in the State Land Record Management System"
+    ],
+    "exclusions": [
+      "Institutional landholders (trusts, companies, societies)",
+      "Farmer families where any member is a current or former holder of constitutional posts",
+      "Former and present Ministers, MPs, MLAs, MLCs, Mayors of Municipal Corporations, Chairpersons of District Panchayats",
+      "All serving or retired officers and employees of Central/State Govt Ministries/Departments and public sector undertakings (excluding multi-tasking / Class IV / Group D employees)",
+      "All persons who paid Income Tax in the last assessment year",
+      "All superannuated/retired pensioners with monthly pension of Rs. 10,000 or more (excluding Group D)",
+      "Professionals like Doctors, Engineers, Lawyers, Chartered Accountants, and Architects registered with professional bodies and carrying out practice"
+    ],
+    "requiredDocuments": [
+      "Aadhaar Card",
+      "Land ownership documents / Khatauni copy",
+      "Aadhaar-seeded bank account passbook",
+      "Active mobile number linked to Aadhaar for OTP/e-KYC"
+    ],
+    "applicationProcess": [
+      "Visit the official PM-KISAN portal (pmkisan.gov.in) and click on 'New Farmer Registration'",
+      "Enter Aadhaar number and mobile number, select State, and verify via OTP",
+      "Fill in personal, landholding (Khata/Khasra/area), and bank details",
+      "Upload land ownership certificate (RoR/Khatauni) and submit for State Nodal Officer verification",
+      "Alternatively, visit nearest Common Service Centre (CSC) or local Patwari/Revenue officer"
+    ],
+    "officialUrl": "https://pmkisan.gov.in",
+    "applicationUrl": "https://pmkisan.gov.in/RegistrationFormNew.aspx",
+    "officialDocUrl": "https://pmkisan.gov.in/Documents/OperationalGuidelines.pdf",
+    "source": "Ministry of Agriculture and Farmers Welfare, Government of India",
+    "sourcePlatform": "official-portal",
+    "sourceDocumentTitle": "PM-KISAN Operational Guidelines (Revised)",
+    "verificationStatus": "verified",
+    "status": "active",
+    "hasDeterministicRule": true,
+    "verifiedBy": "GovGuide Data Audit Team",
+    "unresolvedQuestions": [
+      "Discrepancies in mutation dates between states for determining cutoff eligibility",
+      "Status of joint landholders where individual holding acreage is under dispute"
+    ],
+    "rule": {
+      "minAge": 18,
+      "occupations": ["Farmer", "Agriculture"],
+      "isVerified": true,
+      "isComplete": false,
+      "hasUnsupportedCriteria": true,
+      "unsupportedCriteria": [
+        "Must hold cultivable land ownership documented in state digital land records",
+        "Strict exclusion of income tax payers in the last assessment year",
+        "Strict exclusion of institutional landholders and constitutional post holders",
+        "Strict exclusion of government employees and pensioners earning >= Rs 10,000/month",
+        "Mandatory biometric/OTP e-KYC completion on official PM-KISAN portal"
+      ]
+    }
+  },
+  {
+    "name": "Pradhan Mantri MUDRA Yojana",
+    "aliases": ["PMMY", "MUDRA Yojana", "Mudra Loan"],
+    "category": "Entrepreneurship",
+    "level": "central",
+    "schemeType": "central-sector",
+    "description": "Flagship Central scheme providing collateral-free institutional loans up to Rs. 20 Lakh to non-corporate, non-farm micro and small enterprises for income-generating activities in manufacturing, trading, services, and agriculture-allied activities.",
+    "benefits": [
+      "Collateral-free institutional credit with no third-party guarantee required",
+      "Four loan tiers: Shishu (up to Rs. 50,000), Kishore (Rs. 50,000 to Rs. 5 Lakh), Tarun (Rs. 5 Lakh to Rs. 10 Lakh), and Tarun Plus (Rs. 10 Lakh to Rs. 20 Lakh for past Tarun borrowers)",
+      "Subsidized processing fees and affordable interest rates linked to RBI guidelines",
+      "MUDRA Card providing an overdraft facility for working capital requirements"
+    ],
+    "eligibility": [
+      "Any Indian citizen having a viable business idea or running an existing micro/small non-farm enterprise",
+      "Enterprises engaged in manufacturing, processing, trading, services, or agri-allied activities (dairy, poultry, beekeeping, agro-processing)",
+      "Applicant must not be a willful defaulter to any bank or financial institution and must have a clean credit track record"
+    ],
+    "exclusions": [
+      "Corporate entities, large-scale industrial companies, and non-individual corporate structures",
+      "Direct crop cultivation / direct agricultural crop loan activities (handled via KCC)",
+      "Applicants with adverse credit records or willful defaults with any Member Lending Institution",
+      "Speculative trading or activities prohibited by law"
+    ],
+    "requiredDocuments": [
+      "Identity Proof (Aadhaar / Voter ID / PAN Card / Passport)",
+      "Proof of Residence (Electricity bill / Aadhaar / Ration Card)",
+      "Business registration proof, license, or Udyam Registration Certificate (if existing business)",
+      "Project report / business plan specifying technical and financial viability",
+      "Bank account statement for the past 6 months",
+      "Quotation of machinery, equipment, or assets to be purchased"
+    ],
+    "applicationProcess": [
+      "Prepare a detailed business plan with cost estimation and required loan tier (Shishu, Kishore, Tarun, Tarun Plus)",
+      "Apply online via the centralized JanSamarth Portal (jansamarth.in) or UdyamiMitra portal",
+      "Alternatively, approach any Public Sector Bank, Private Bank, RRB, SFB, NBFC, or MFI branch with required documents",
+      "Lending institution assesses project viability, credit bureau report, and sanctions loan",
+      "Borrower receives loan disbursement and MUDRA debit card for working capital withdrawals"
+    ],
+    "officialUrl": "https://financialservices.gov.in",
+    "applicationUrl": "https://www.jansamarth.in",
+    "officialDocUrl": "https://financialservices.gov.in/beta/en/pmmy",
+    "source": "Department of Financial Services, Ministry of Finance, Government of India",
+    "sourcePlatform": "official-portal",
+    "sourceDocumentTitle": "PMMY Operational Guidelines & JanSamarth Credit Framework",
+    "verificationStatus": "verified",
+    "status": "active",
+    "hasDeterministicRule": true,
+    "verifiedBy": "GovGuide Data Audit Team",
+    "unresolvedQuestions": [
+      "Exact bank-specific interest rate variations across Member Lending Institutions (MLIs)",
+      "State-level stamp duty applicability on loan agreements"
+    ],
+    "rule": {
+      "minAge": 18,
+      "maxAge": 65,
+      "occupations": ["Self Employed", "Business Owner", "Artisan", "Micro-Entrepreneur", "Trader"],
+      "isVerified": true,
+      "isComplete": false,
+      "hasUnsupportedCriteria": true,
+      "unsupportedCriteria": [
+        "Enterprise must be non-corporate, non-farm small/micro enterprise",
+        "Applicant must not be a willful defaulter to any bank or financial institution",
+        "Must have a satisfactory credit track record and viable business project proposal",
+        "Tarun Plus tier (Rs 10L-20L) strictly requires past successful repayment of Tarun loan"
+      ]
+    }
+  },
+  {
+    "name": "Pradhan Mantri Awas Yojana - Gramin",
+    "aliases": ["PMAY-G", "PMAY Gramin", "Rural Housing Scheme", "Indira Awaas Yojana (superseded)"],
+    "category": "Housing",
+    "level": "central",
+    "schemeType": "centrally-sponsored",
+    "description": "Centrally sponsored rural housing scheme aiming to provide a pucca house with basic amenities to all houseless households and those living in kutcha and dilapidated houses in rural areas.",
+    "benefits": [
+      "Financial grant of Rs. 1,20,000 in plain areas and Rs. 1,30,000 in hilly/difficult/northeastern states",
+      "Additional Rs. 12,000 assistance for toilet construction under Swachh Bharat Mission - Gramin (SBM-G)",
+      "90 to 95 person-days of unskilled labor support under MGNREGS (approx. Rs. 20,000 - 25,000)",
+      "Minimum house size of 25 sq. meters including a dedicated cooking space and toilet",
+      "Direct transfer to beneficiary bank account in three or four progress-linked geotagged installments"
+    ],
+    "eligibility": [
+      "Houseless households or households living in zero, one, or two-room houses with kutcha walls and kutcha roof",
+      "Deprived households identified and ranked via the Socio-Economic and Caste Census (SECC) 2011 and validated through the Awaas+ survey and Gram Sabha",
+      "Households with no adult member between age 16-59, female-headed households with no adult male member, households with disabled members, or SC/ST/minority rural households"
+    ],
+    "exclusions": [
+      "Households owning a pucca house anywhere in India",
+      "Households owning motorized three-wheeler or four-wheeler vehicles or motorized agricultural equipment",
+      "Households holding a Kisan Credit Card (KCC) with credit limit of Rs. 50,000 or above",
+      "Households with any family member who is a government employee (central, state, PSU, or local body)",
+      "Households with any family member earning more than Rs. 15,000 per month",
+      "Households with any family member paying Income Tax or Professional Tax",
+      "Households owning 2.5 acres or more of irrigated land or 5 acres or more of unirrigated land",
+      "Households owning registered non-agricultural enterprises"
+    ],
+    "requiredDocuments": [
+      "Aadhaar card of all adult family members",
+      "Aadhaar-linked bank account passbook",
+      "MGNREGA Job Card number",
+      "Consent letter for geotagging and Aadhaar usage",
+      "Gram Sabha resolution / Awaas+ registration ID"
+    ],
+    "applicationProcess": [
+      "Beneficiary names are prioritized from the SECC 2011 / Awaas+ list verified by Gram Sabha",
+      "Field verification and geotagging of existing kutcha house done by Gram Panchayat official using AwaasApp",
+      "Sanction order generated by Block Development Office / District Rural Development Agency (DRDA)",
+      "First installment credited to account for foundation construction; subsequent installments released after geotagged inspection at plinth, window, and roof levels"
+    ],
+    "officialUrl": "https://pmayg.nic.in",
+    "applicationUrl": "https://pmayg.nic.in/netiay/AwaasPlus/default.aspx",
+    "officialDocUrl": "https://rural.gov.in/en/scheme-programmes/pradhan-mantri-awaas-yojana-gramin",
+    "source": "Ministry of Rural Development, Government of India",
+    "sourcePlatform": "official-portal",
+    "sourceDocumentTitle": "PMAY-G Framework for Implementation & 10-Parameter Automatic Exclusion Criteria",
+    "verificationStatus": "verified",
+    "status": "active",
+    "hasDeterministicRule": true,
+    "verifiedBy": "GovGuide Data Audit Team",
+    "unresolvedQuestions": [
+      "Variation in top-up subsidy grants across individual State Governments",
+      "Current rollout status of newly revised Awaas+ survey lists for 2024-2029"
+    ],
+    "rule": {
+      "minAge": 18,
+      "maxAnnualIncome": 180000,
+      "isVerified": true,
+      "isComplete": false,
+      "hasUnsupportedCriteria": true,
+      "unsupportedCriteria": [
+        "Must be listed on SECC 2011 / Awaas+ rural deprivation list with zero or kutcha house",
+        "Strict exclusion: Ownership of motorized 3/4-wheeler or mechanized agricultural equipment",
+        "Strict exclusion: Kisan Credit Card limit >= Rs 50,000",
+        "Strict exclusion: Family member in government employment or earning > Rs 15,000/month",
+        "Strict exclusion: Family member paying Income Tax or Professional Tax",
+        "Strict exclusion: Landholding of >= 2.5 acres irrigated or >= 5 acres unirrigated land"
+      ]
+    }
+  },
+  {
+    "name": "Ayushman Bharat - Pradhan Mantri Jan Arogya Yojana",
+    "aliases": ["AB-PMJAY", "PM-JAY", "Ayushman Bharat", "Modicare"],
+    "category": "Healthcare",
+    "level": "central",
+    "schemeType": "centrally-sponsored",
+    "description": "World's largest government-funded health assurance scheme providing health cover of Rs. 5 Lakh per family per year for secondary and tertiary care hospitalization across public and empaneled private hospitals.",
+    "benefits": [
+      "Comprehensive health coverage of Rs. 5,00,000 per family per year on a family floater basis",
+      "Cashless and paperless treatment at all empaneled public and private healthcare facilities",
+      "Covers up to 3 days of pre-hospitalization and 15 days of post-hospitalization expenses including diagnostics and medicines",
+      "No restriction on family size, age, or gender; pre-existing medical conditions covered from day one",
+      "Covers over 1,949 treatment procedures across medical and surgical specialties"
+    ],
+    "eligibility": [
+      "Rural households belonging to defined SECC 2011 deprivation categories (D1: single room kutcha house, D2: no adult age 16-59, D3: female headed no adult male, D4: disabled member no able adult, D5: SC/ST, D7: landless manual casual labor)",
+      "Urban households belonging to 11 occupational categories of workers (ragpickers, beggars, domestic workers, street vendors, construction workers, transport workers, etc.)",
+      "Senior citizens aged 70 years and above (Ayushman Vay Vandana card) regardless of family income as expanded in 2024"
+    ],
+    "exclusions": [
+      "Rural households with pucca houses or owning motorized vehicles or mechanized agricultural equipment",
+      "Households with regular government employees or pensioners",
+      "Households paying Income Tax or owning agricultural land above threshold limits",
+      "Households not enlisted in SECC 2011 database (unless covered under state-specific expanded schemes)"
+    ],
+    "requiredDocuments": [
+      "Aadhaar Card",
+      "Ration Card or PM-JAY Family Identification Letter (HHID)",
+      "Active mobile number linked to Aadhaar for biometric/OTP e-KYC",
+      "Ayushman Golden Card (generated after verification)"
+    ],
+    "applicationProcess": [
+      "Check eligibility on the official portal (beneficiary.nha.gov.in) using mobile number, Aadhaar number, or Ration Card number",
+      "If found eligible in the database, complete e-KYC using Aadhaar OTP, fingerprint, or iris scan",
+      "Verify family details and submit application for Ayushman Card approval",
+      "Download the Ayushman Bharat Golden Card or collect plastic card from nearest CSC or Empaneled Hospital helpdesk"
+    ],
+    "officialUrl": "https://nha.gov.in/PM-JAY",
+    "applicationUrl": "https://beneficiary.nha.gov.in",
+    "officialDocUrl": "https://pmjay.gov.in",
+    "source": "National Health Authority, Ministry of Health and Family Welfare, Government of India",
+    "sourcePlatform": "official-portal",
+    "sourceDocumentTitle": "Ayushman Bharat PM-JAY Operational Guidelines & Identification Criteria",
+    "verificationStatus": "verified",
+    "status": "active",
+    "hasDeterministicRule": true,
+    "verifiedBy": "GovGuide Data Audit Team",
+    "unresolvedQuestions": [
+      "Technical timeout on legacy portal pmjay.gov.in requiring routing to nha.gov.in and beneficiary.nha.gov.in",
+      "Exact interstate portability dispute resolution procedures in non-implementing states"
+    ],
+    "rule": {
+      "minAge": 0,
+      "maxAnnualIncome": 250000,
+      "isVerified": true,
+      "isComplete": false,
+      "hasUnsupportedCriteria": true,
+      "unsupportedCriteria": [
+        "Must be enlisted in SECC 2011 database under defined deprivation criteria or target NFSA lists",
+        "Must undergo e-KYC verification and obtain official Ayushman Bharat Card",
+        "Strict exclusion of households owning motorized vehicles or pucca houses in rural areas",
+        "Strict exclusion of government employees and income tax paying families"
+      ]
+    }
+  },
+  {
+    "name": "Sukanya Samriddhi Yojana",
+    "aliases": ["SSY", "Sukanya Samriddhi Account", "SSA", "Beti Bachao Beti Padhao Savings"],
+    "category": "Women & Child",
+    "level": "central",
+    "schemeType": "central-sector",
+    "description": "Government of India-backed small savings scheme under Beti Bachao Beti Padhao campaign, offering high interest and sovereign tax exemption to secure the higher education and marriage expenses of girl children.",
+    "benefits": [
+      "High sovereign-backed interest rate (currently 8.2% p.a., compounded annually)",
+      "Triple tax exemption under Section 80C of the Income Tax Act (Exempt-Exempt-Exempt: deposit, interest, and maturity tax-free)",
+      "Partial withdrawal up to 50% of the balance permitted for higher education once the girl attains age 18 or passes Class 10",
+      "Flexible deposit range from minimum Rs. 250 to maximum Rs. 1,50,000 per financial year for up to 15 years",
+      "Account matures upon completion of 21 years from account opening or upon marriage after age 18"
+    ],
+    "eligibility": [
+      "The account can be opened for any resident Indian girl child from birth up to 10 years of age",
+      "Opened and operated by natural parents or legal guardian on behalf of the minor girl child",
+      "Only one account is permitted in the name of a girl child; maximum two accounts per family (with exception for twins/triplets)"
+    ],
+    "exclusions": [
+      "Non-resident Indians (NRIs) and foreign nationals are not eligible",
+      "Opening an account for a girl child older than 10 years is prohibited",
+      "More than one account for the same girl child is invalid",
+      "Deposits in excess of Rs. 1,50,000 per financial year earn no interest and are refunded"
+    ],
+    "requiredDocuments": [
+      "Birth Certificate of the girl child issued by municipal/competent authority",
+      "Identity proof of the parent/legal guardian (Aadhaar Card, PAN Card, Voter ID, Passport)",
+      "Address proof of parent/guardian (Aadhaar Card, utility bill, Ration Card)",
+      "Recent passport-size photographs of the girl child and parent/guardian"
+    ],
+    "applicationProcess": [
+      "Obtain Sukanya Samriddhi Account opening form from any Post Office or authorized commercial bank branch",
+      "Fill in girl child's details, parent/guardian details, and initial deposit amount (minimum Rs. 250)",
+      "Attach copy of girl child's birth certificate and KYC documents of parent/guardian",
+      "Submit form and initial deposit cash/cheque/DD at the counter",
+      "Receive SSY passbook with account number, holder details, and transaction entries"
+    ],
+    "officialUrl": "https://www.indiapost.gov.in",
+    "applicationUrl": "https://www.indiapost.gov.in/Financial/Pages/Content/Post-Office-Saving-Schemes.aspx",
+    "officialDocUrl": "https://www.nsiindia.gov.in",
+    "source": "Department of Posts / Department of Economic Affairs, Ministry of Finance, Government of India",
+    "sourcePlatform": "official-portal",
+    "sourceDocumentTitle": "Government Savings Promotion Act - Sukanya Samriddhi Account Scheme, 2019 (GSR 914(E))",
+    "verificationStatus": "verified",
+    "status": "active",
+    "hasDeterministicRule": true,
+    "verifiedBy": "GovGuide Data Audit Team",
+    "unresolvedQuestions": [
+      "Digital application varies by bank; India Post requires initial physical form submission, while IPPB enables online deposits"
+    ],
+    "rule": {
+      "minAge": 0,
+      "maxAge": 10,
+      "genders": ["Female"],
+      "isVerified": true,
+      "isComplete": false,
+      "hasUnsupportedCriteria": true,
+      "unsupportedCriteria": [
+        "Beneficiary girl child must be a resident Indian citizen (NRIs and foreign nationals strictly excluded under G.S.R. 914(E))",
+        "Maximum of two accounts permitted per family (extended only for multiple birth twins/triplets in first/second order with medical birth certificate affidavit)",
+        "Only one account permitted in the name of a girl child across all post offices and authorized commercial banks",
+        "Account must be opened and operated by natural parents or legal guardian on behalf of the minor girl child until age 18"
+      ]
+    }
+  },
+  {
+    "name": "PM SVANidhi",
+    "aliases": ["PM Street Vendor's AtmaNirbhar Nidhi", "SVANidhi", "PM SVANidhi Scheme"],
+    "category": "Employment",
+    "level": "central",
+    "schemeType": "central-sector",
+    "description": "Special micro-credit facility providing affordable collateral-free working capital loans to urban and peri-urban street vendors to resume and expand their livelihoods.",
+    "benefits": [
+      "Initial working capital loan up to Rs. 10,000 with 1-year tenure",
+      "Enhanced second tranche loan up to Rs. 20,000 and third tranche loan up to Rs. 50,000 upon timely repayment",
+      "Interest subsidy of 7% per annum credited quarterly directly into the vendor's bank account via DBT",
+      "Cashback incentive of up to Rs. 1,200 per year (Rs. 100 per month) on conducting digital transactions",
+      "No collateral or processing fee required from eligible street vendors"
+    ],
+    "eligibility": [
+      "Street vendors vending in urban areas on or before March 24, 2020",
+      "Vendors in possession of Certificate of Vending / Identity Card issued by Urban Local Bodies (ULBs)",
+      "Vendors identified in the ULB vending survey or issued Letter of Recommendation (LoR) by the Town Vending Committee (TVC)",
+      "Vendors of surrounding peri-urban/rural areas vending in the geographical limits of the ULBs"
+    ],
+    "exclusions": [
+      "Non-street vendor businesses, established shops, permanent commercial establishments",
+      "Vendors operating exclusively in rural areas with no commercial footprint in urban local body jurisdictions",
+      "Vendors who have willfully defaulted on past bank loans without resolution"
+    ],
+    "requiredDocuments": [
+      "Aadhaar Card",
+      "Voter Identity Card",
+      "Certificate of Vending / Vendor Identity Card / Letter of Recommendation (LoR) from ULB/TVC",
+      "Bank Account Passbook (Aadhaar-seeded)",
+      "Active mobile number linked to Aadhaar"
+    ],
+    "applicationProcess": [
+      "Verify vendor eligibility and status on the official portal (pmsvanidhi.mohua.gov.in)",
+      "Apply online directly or through Common Service Centre (CSC) or Urban Local Body helpdesk",
+      "Select preferred Member Lending Institution (Public/Private Bank, SFB, MFI, SHG)",
+      "Upload Aadhaar, Vending Certificate/LoR, and bank details",
+      "Loan application processed and sanctioned directly into vendor's Aadhaar-linked bank account"
+    ],
+    "officialUrl": "https://pmsvanidhi.mohua.gov.in",
+    "applicationUrl": "https://pmsvanidhi.mohua.gov.in/Home/VendorRegistration",
+    "officialDocUrl": "https://pmsvanidhi.mohua.gov.in/SchemesGuidelines",
+    "source": "Ministry of Housing and Urban Affairs, Government of India",
+    "sourcePlatform": "official-portal",
+    "sourceDocumentTitle": "PM SVANidhi Scheme Guidelines & Letter of Recommendation (LoR) Protocol",
+    "verificationStatus": "verified",
+    "status": "active",
+    "hasDeterministicRule": true,
+    "verifiedBy": "GovGuide Data Audit Team",
+    "unresolvedQuestions": [
+      "Differences in Town Vending Committee (TVC) constitution speed across tier-2 and tier-3 municipalities"
+    ],
+    "rule": {
+      "minAge": 18,
+      "occupations": ["Street Vendor", "Vendor", "Hawker", "Daily Wage Earner", "Self Employed"],
+      "isVerified": true,
+      "isComplete": false,
+      "hasUnsupportedCriteria": true,
+      "unsupportedCriteria": [
+        "Must possess Certificate of Vending / ID Card or Letter of Recommendation (LoR) from Urban Local Body / TVC",
+        "Must have engaged in street vending in urban/peri-urban jurisdiction on or before March 24, 2020",
+        "Second tranche (Rs 20k) and third tranche (Rs 50k) strictly contingent on timely repayment of previous tranche"
+      ]
+    }
+  },
+  {
+    "name": "Karnataka Gruha Lakshmi Scheme",
+    "aliases": ["Gruha Lakshmi", "Gruhalakshmi Yojana", "Karnataka Guarantee Scheme - Gruha Lakshmi"],
+    "category": "Women & Child",
+    "level": "state",
+    "state": "Karnataka",
+    "schemeType": "state",
+    "applicableStates": ["Karnataka"],
+    "description": "Flagship Karnataka state guarantee scheme providing monthly financial assistance of Rs. 2,000 directly to women heads of families to empower homemakers and alleviate household financial distress.",
+    "benefits": [
+      "Direct cash assistance of Rs. 2,000 per month deposited directly into beneficiary's Aadhaar-linked bank account",
+      "Continuous monthly DBT support throughout the financial year",
+      "Free online application with zero processing fees"
+    ],
+    "eligibility": [
+      "Applicant must be a permanent woman resident of Karnataka",
+      "Applicant woman must be designated as the Head of the Family in Antyodaya, BPL, or APL ration cards issued by Food and Civil Supplies Department",
+      "Only one woman per household / ration card is eligible to receive benefits",
+      "Bank account must be Aadhaar-seeded with active NPCI mapping"
+    ],
+    "exclusions": [
+      "Households where the woman or her husband is an Income Tax payer",
+      "Households where the woman or her husband files Goods and Services Tax (GST) returns",
+      "Households where a male member is registered as the family head on the ration card (unless corrected or modified)",
+      "Government employees or pensioners' families under specific high-income brackets"
+    ],
+    "requiredDocuments": [
+      "Ration Card (Antyodaya / BPL / APL) issued by Karnataka Government",
+      "Aadhaar Card of the applicant woman",
+      "Aadhaar Card of the husband (if married)",
+      "Aadhaar-seeded bank passbook with NPCI mapping",
+      "Active mobile number linked to Aadhaar"
+    ],
+    "applicationProcess": [
+      "Check scheduled appointment slot via SMS or on Seva Sindhu Guarantee portal (sevasindhugs.karnataka.gov.in)",
+      "Visit designated center: Grama One, Karnataka One, Bengaluru One, or Bapuji Seva Kendra",
+      "Present Ration Card and Aadhaar cards of self and husband for biometric/OTP authentication",
+      "Operator enters details, prints physical acknowledgment slip, and application is registered",
+      "Monthly grant transferred directly through DBT following administrative validation"
+    ],
+    "officialUrl": "https://sevasindhugs.karnataka.gov.in",
+    "applicationUrl": "https://sevasindhugs.karnataka.gov.in",
+    "officialDocUrl": "https://karnataka.gov.in",
+    "source": "Department of Women and Child Development, Government of Karnataka",
+    "sourcePlatform": "official-portal",
+    "sourceDocumentTitle": "Karnataka Government Order No. WCD 120 MMW 2023 & Seva Sindhu Guarantee Guidelines",
+    "verificationStatus": "verified",
+    "status": "active",
+    "hasDeterministicRule": true,
+    "verifiedBy": "GovGuide Data Audit Team",
+    "unresolvedQuestions": [
+      "Periodic physical re-verification drives conducted by Anganwadi workers requiring biometric re-authentication"
+    ],
+    "rule": {
+      "minAge": 18,
+      "states": ["Karnataka"],
+      "genders": ["Female"],
+      "isVerified": true,
+      "isComplete": false,
+      "hasUnsupportedCriteria": true,
+      "unsupportedCriteria": [
+        "Woman must be officially designated as Head of Family on Karnataka BPL/APL/Antyodaya ration card",
+        "Strict exclusion: Beneficiary woman or her husband must not be an income-tax payer or GST return filer",
+        "Only one woman per household/ration card is eligible",
+        "Mandatory NPCI Aadhaar-seeded bank account mapping"
+      ]
+    }
+  },
+  {
+    "name": "Karnataka Yuva Nidhi Scheme",
+    "aliases": ["Yuva Nidhi", "Yuvanidhi Scheme", "Karnataka Youth Unemployment Allowance"],
+    "category": "Employment",
+    "level": "state",
+    "state": "Karnataka",
+    "schemeType": "state",
+    "applicableStates": ["Karnataka"],
+    "description": "Karnataka state government guarantee scheme providing monthly unemployment assistance of Rs. 3,000 for degree holders and Rs. 1,500 for diploma holders for up to 2 years while seeking employment.",
+    "benefits": [
+      "Monthly financial assistance of Rs. 3,000 for unemployed graduates (general, technical, and professional degrees)",
+      "Monthly financial assistance of Rs. 1,500 for unemployed diploma holders",
+      "Disbursed directly via DBT for a maximum duration of 2 years or until gaining employment/self-employment",
+      "Complimentary skill training and job placement assistance provided through Karnataka Skill Development Corporation (KSDC)"
+    ],
+    "eligibility": [
+      "Must be a domicile of Karnataka who has studied in Karnataka for at least 6 years",
+      "Must have completed graduate degree or diploma in the 2022-23 academic year or subsequent academic years from a recognized Karnataka board/university",
+      "Must remain continuously unemployed or non-self-employed for at least 180 days (6 months) from date of passing results",
+      "Must possess Aadhaar-seeded active bank account"
+    ],
+    "exclusions": [
+      "Employed individuals in government, public sector, private companies, or contract/temporary roles",
+      "Self-employed individuals or those carrying out independent business or commercial practice",
+      "Candidates pursuing higher education (post-graduation, second degrees, or full-time diploma/degrees)",
+      "Beneficiaries already availing apprenticeship allowances or other government unemployment stipends"
+    ],
+    "requiredDocuments": [
+      "SSLC/10th marks card and 12th/PUC marks card",
+      "Degree certificate / Diploma certificate / Provisional passing certificate",
+      "DigiLocker / National Academic Depository (NAD) verified education credentials",
+      "Karnataka Domicile proof (study certificate for 6 years in Karnataka)",
+      "Aadhaar Card and Aadhaar-seeded bank passbook"
+    ],
+    "applicationProcess": [
+      "Log in to the Seva Sindhu Guarantee portal (sevasindhugs.karnataka.gov.in) with Aadhaar and mobile OTP",
+      "Select 'Yuva Nidhi Application' and enter university registration/roll number to fetch degree data via NAD/DigiLocker",
+      "Self-declare unemployment status (minimum 180 days post graduation)",
+      "Submit application; verified automatically against PF/ESIC databases and educational repositories",
+      "Monthly DBT disbursed following monthly self-declaration of continuing unemployment"
+    ],
+    "officialUrl": "https://sevasindhugs.karnataka.gov.in",
+    "applicationUrl": "https://sevasindhugs.karnataka.gov.in",
+    "officialDocUrl": "https://karnataka.gov.in",
+    "source": "Department of Skill Development, Entrepreneurship and Livelihood, Government of Karnataka",
+    "sourcePlatform": "official-portal",
+    "sourceDocumentTitle": "Karnataka Government Order No. SDEL 137 EAP 2023 & Seva Sindhu Yuva Nidhi Guidelines",
+    "verificationStatus": "verified",
+    "status": "active",
+    "hasDeterministicRule": true,
+    "verifiedBy": "GovGuide Data Audit Team",
+    "unresolvedQuestions": [
+      "Monthly self-declaration portal window strictness and penalty for late reporting of newly gained employment"
+    ],
+    "rule": {
+      "minAge": 18,
+      "maxAge": 35,
+      "states": ["Karnataka"],
+      "occupations": ["Unemployed", "Student", "Job Seeker"],
+      "educationLevels": ["Graduate", "Post Graduate", "Diploma", "B.E.", "B.Tech", "B.Sc", "B.Com", "B.A."],
+      "isVerified": true,
+      "isComplete": false,
+      "hasUnsupportedCriteria": true,
+      "unsupportedCriteria": [
+        "Must have graduated/passed diploma in academic year 2022-23 or later from recognized Karnataka institution",
+        "Must have studied in Karnataka for at least 6 years (domicile verification)",
+        "Must have remained continuously unemployed for >= 180 days (6 months) post-graduation",
+        "Strict exclusion: Enrolled in higher education, employed in private/govt sector, or receiving other stipend"
+      ]
+    }
+  },
+  {
+    "name": "Mukhyamantri Majhi Ladki Bahin Yojana",
+    "aliases": ["Majhi Ladki Bahin", "Ladki Bahin Yojana", "Maharashtra Ladki Bahin"],
+    "category": "Financial Assistance",
+    "level": "state",
+    "state": "Maharashtra",
+    "schemeType": "state",
+    "applicableStates": ["Maharashtra"],
+    "description": "Flagship Maharashtra state welfare scheme providing monthly financial assistance of Rs. 1,500 to underprivileged adult women aged 21-65 years to foster economic independence and self-reliance.",
+    "benefits": [
+      "Direct benefit transfer of Rs. 1,500 per month deposited directly into beneficiary's Aadhaar-linked bank account",
+      "Yearly total assistance of Rs. 18,000 per eligible woman",
+      "Direct assistance to meet nutritional, educational, and household emergency needs"
+    ],
+    "eligibility": [
+      "Must be a permanent resident / domicile of Maharashtra state",
+      "Married, widowed, divorced, abandoned, destitute women, and one unmarried woman per family aged 21 to 65 years",
+      "Total annual family income from all sources must not exceed Rs. 2,50,000 (Rs. 2.5 Lakh)",
+      "Must have an active bank account in own name seeded with Aadhaar"
+    ],
+    "exclusions": [
+      "Families where any member pays Income Tax",
+      "Families where any member is a permanent/regular government employee, board director, or pensioner",
+      "Families owning a four-wheeler vehicle (tractors are exempted)",
+      "Families holding more than 5 acres of agricultural land",
+      "Beneficiaries already receiving Rs. 1,500 or more per month from any other government DBT scheme"
+    ],
+    "requiredDocuments": [
+      "Aadhaar Card of the applicant",
+      "Maharashtra Domicile Certificate or 15-year Ration Card / Voter ID / School Leaving Certificate",
+      "Tehsildar-issued Income Certificate (not exceeding Rs. 2.50 Lakh) or Yellow/Orange Ration Card",
+      "Bank passbook copy with Aadhaar-linked account details",
+      "Self-declaration affidavit confirming compliance with scheme exclusions"
+    ],
+    "applicationProcess": [
+      "Download the official Nari Shakti Doot mobile application or visit ladkibahin.maharashtra.gov.in",
+      "Register with mobile number and Aadhaar OTP authentication",
+      "Fill in demographic, address, family, and bank account information",
+      "Upload photograph, Aadhaar card, ration card/income certificate, and submit",
+      "Application vetted by Ward Committee in urban areas or Anganwadi/Panchayat committee in rural areas, followed by DBT credit"
+    ],
+    "officialUrl": "https://ladkibahin.maharashtra.gov.in",
+    "applicationUrl": "https://ladkibahin.maharashtra.gov.in",
+    "officialDocUrl": "https://www.maharashtra.gov.in",
+    "source": "Women and Child Development Department, Government of Maharashtra",
+    "sourcePlatform": "official-portal",
+    "sourceDocumentTitle": "Maharashtra Government Resolution (GR) No. Mahila-2024/CR-146/Desk-02",
+    "verificationStatus": "verified",
+    "status": "active",
+    "hasDeterministicRule": true,
+    "verifiedBy": "GovGuide Data Audit Team",
+    "unresolvedQuestions": [
+      "Verification of yellow/orange ration card holders in lieu of Tehsildar income certificates during high-traffic cutoff windows"
+    ],
+    "rule": {
+      "minAge": 21,
+      "maxAge": 65,
+      "maxAnnualIncome": 250000,
+      "states": ["Maharashtra"],
+      "genders": ["Female"],
+      "isVerified": true,
+      "isComplete": false,
+      "hasUnsupportedCriteria": true,
+      "unsupportedCriteria": [
+        "Must hold Yellow/Orange ration card or official Tehsildar income certificate proving family income <= Rs 2.5L",
+        "Strict exclusion: Any family member paying Income Tax or regular government employee/pensioner",
+        "Strict exclusion: Family owning four-wheeler vehicle (tractors exempted)",
+        "Strict exclusion: Beneficiary receiving >= Rs 1,500/month from other government DBT schemes"
+      ]
+    }
+  },
+  {
+    "name": "Mukhyamantri Kanya Sumangala Yojana",
+    "aliases": ["MKSY", "Kanya Sumangala", "UP Kanya Sumangala Yojana"],
+    "category": "Social Welfare",
+    "level": "state",
+    "state": "Uttar Pradesh",
+    "schemeType": "state",
+    "applicableStates": ["Uttar Pradesh"],
+    "description": "Uttar Pradesh state government conditional cash transfer scheme providing phased financial assistance up to Rs. 25,000 across 6 educational and health milestone stages of a girl child from birth to higher education.",
+    "benefits": [
+      "Total financial grant of Rs. 25,000 per girl child disbursed directly through DBT across 6 milestone stages",
+      "Stage 1: Rs. 5,000 at birth (born on/after 01/04/2019)",
+      "Stage 2: Rs. 2,000 upon complete 1-year immunization",
+      "Stage 3: Rs. 3,000 upon admission in Class 1",
+      "Stage 4: Rs. 3,000 upon admission in Class 6",
+      "Stage 5: Rs. 5,000 upon admission in Class 9",
+      "Stage 6: Rs. 7,000 upon passing Class 10/12 and taking admission in bachelor degree/2-year diploma",
+      "Direct DBT transfer into mother/father/guardian bank account (or girl's account for Stage 6)"
+    ],
+    "eligibility": [
+      "Must be a permanent resident and domicile of Uttar Pradesh",
+      "Total annual family income from all sources must not exceed Rs. 3,00,000 (Rs. 3 Lakh)",
+      "Maximum two girl children per family eligible (extended to three if twin girls are born in the second delivery)",
+      "Legally adopted girl children are eligible within the two-girl family limit"
+    ],
+    "exclusions": [
+      "Families whose annual income exceeds Rs. 3,00,000",
+      "Families residing outside Uttar Pradesh",
+      "Third girl child in a family (unless born as part of a twin delivery on the second birth)",
+      "Girls not enrolled in formal schooling or recognized degree/diploma institutions"
+    ],
+    "requiredDocuments": [
+      "UP Domicile Certificate / Residence Proof (Ration Card, Voter ID, Aadhaar)",
+      "Aadhaar Card of the girl child and parents/guardians",
+      "Competent authority Income Certificate (income <= Rs. 3 Lakh)",
+      "Stage-specific proof: Birth Certificate (Stage 1), Immunization Card (Stage 2), School/College Admission Certificate and Fee Receipt (Stages 3-6)",
+      "Joint bank passbook copy of parent/girl child",
+      "Notarized family affidavit confirming number of living children"
+    ],
+    "applicationProcess": [
+      "Visit the official MKSY portal (mksy.up.gov.in) and register as a citizen",
+      "Verify mobile number and Aadhaar OTP to create login credentials",
+      "Select appropriate stage (1 to 6) matching girl child's current milestone",
+      "Fill in parent and child details, upload domicile, income, and stage certificates",
+      "Application verified by Block Development Officer (rural) or SDM (urban) within 15 days, followed by DBT credit"
+    ],
+    "officialUrl": "https://mksy.up.gov.in",
+    "applicationUrl": "https://mksy.up.gov.in/facial/register.php",
+    "officialDocUrl": "https://mksy.up.gov.in",
+    "source": "Department of Women Welfare, Government of Uttar Pradesh",
+    "sourcePlatform": "official-portal",
+    "sourceDocumentTitle": "Uttar Pradesh MKSY Guidelines & Stage-Wise Operational Procedures",
+    "verificationStatus": "verified",
+    "status": "active",
+    "hasDeterministicRule": true,
+    "verifiedBy": "GovGuide Data Audit Team",
+    "unresolvedQuestions": [
+      "Verification timeline lags during stage transitions from primary to secondary school in rural tehsils"
+    ],
+    "rule": {
+      "minAge": 0,
+      "maxAge": 25,
+      "maxAnnualIncome": 300000,
+      "states": ["Uttar Pradesh"],
+      "genders": ["Female"],
+      "isVerified": true,
+      "isComplete": false,
+      "hasUnsupportedCriteria": true,
+      "unsupportedCriteria": [
+        "Maximum two girl children per family (extended to three only for twins in second delivery)",
+        "Stage-specific verification: Birth certificate (Stage 1), Immunization card (Stage 2), Class 1/6/9 school admission certificates (Stages 3-5), Degree/Diploma enrollment (Stage 6)",
+        "Mandatory notarized family composition affidavit"
+      ]
+    }
+  }
+]

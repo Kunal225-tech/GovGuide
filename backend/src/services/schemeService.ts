@@ -1,6 +1,20 @@
 import Scheme, { IScheme } from "../models/Scheme";
 import EligibilityRule from "../models/EligibilityRule";
 
+export const BIHAR_ONLY_SCHEME_FILTER: Record<string, any> = {
+  $or: [
+    {
+      level: "central",
+      $or: [
+        { applicableStates: { $exists: false } },
+        { applicableStates: { $size: 0 } },
+        { applicableStates: { $in: [/^all$/i, /^bihar$/i] } },
+      ],
+    },
+    { level: "state", state: /^bihar$/i },
+  ],
+};
+
 export class SchemeService {
   static async createScheme(schemeData: Partial<IScheme>): Promise<IScheme> {
     const newScheme = new Scheme(schemeData);
@@ -9,7 +23,7 @@ export class SchemeService {
   }
 
   static async getAllSchemes(): Promise<IScheme[]> {
-    const schemes = await Scheme.find().sort({ createdAt: -1 });
+    const schemes = await Scheme.find(BIHAR_ONLY_SCHEME_FILTER).sort({ createdAt: -1 });
     return schemes;
   }
 

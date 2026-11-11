@@ -39,16 +39,16 @@ const JOURNEY_STEPS: JourneyStep[] = [
     title: "Browse & Search Government Schemes",
     titleHi: "सरकारी योजनाओं को खोजें और देखें",
     description:
-      "Explore a consolidated catalog of Central and State government welfare schemes. Use sector categories, geographic state selectors, or keyword search to discover programs designed for your needs.",
+      "Explore a consolidated catalog of Bihar State and Central government welfare schemes. Use sector categories, jurisdiction level filters, or keyword search to discover programs designed for citizens of Bihar.",
     descriptionHi:
-      "केंद्र और राज्य सरकार की कल्याणकारी योजनाओं की एक समेकित सूची ब्राउज़ करें। अपनी आवश्यकताओं के अनुसार क्षेत्र, राज्य या कीवर्ड से खोजें।",
+      "बिहार राज्य सरकार और केंद्र सरकार की कल्याणकारी योजनाओं की एक समेकित सूची ब्राउज़ करें। अपनी आवश्यकताओं के अनुसार क्षेत्र, स्तर (बिहार/केंद्र) या कीवर्ड से खोजें।",
     details: [
-      "Filter by Central Government or specific Indian State.",
+      "Filter by Bihar State Government (including 7-Nischay flagship schemes) or Central Government.",
       "Browse through sectors such as Agriculture, Education, Healthcare, and Housing.",
       "Search by scheme title, benefits, or target beneficiaries.",
     ],
     detailsHi: [
-      "केंद्र सरकार या विशिष्ट भारतीय राज्य द्वारा फ़िल्टर करें।",
+      "बिहार राज्य सरकार (7 निश्चय सहित) या केंद्र सरकार की योजनाओं के अनुसार फ़िल्टर करें।",
       "कृषि, शिक्षा, स्वास्थ्य और आवास जैसे प्रमुख क्षेत्रों को ब्राउज़ करें।",
       "योजना के नाम, लाभ या लक्षित लाभार्थियों द्वारा खोजें।",
     ],
@@ -65,11 +65,11 @@ const JOURNEY_STEPS: JourneyStep[] = [
     title: "Create an Account & Complete Your Profile",
     titleHi: "खाता बनाएं और अपनी प्रोफ़ाइल पूरी करें",
     description:
-      "Sign up securely and fill in your demographic questionnaire. This simple questionnaire stores key criteria such as your age, state, annual income, occupation, education, and category in your private profile.",
+      "Sign up securely and fill in your demographic questionnaire. This simple questionnaire stores key criteria such as your age, Bihar district, annual income, occupation, education, and category in your private profile.",
     descriptionHi:
-      "सुरक्षित रूप से साइन अप करें और बुनियादी विवरण दर्ज करें। यह आपकी आयु, राज्य, आय, व्यवसाय और सामाजिक वर्ग को सुरक्षित रूप से सहेजता है।",
+      "सुरक्षित रूप से साइन अप करें और बुनियादी विवरण दर्ज करें। यह आपकी आयु, बिहार का जिला, आय, व्यवसाय और सामाजिक वर्ग (BC/EBC/OBC/SC/ST) सुरक्षित रूप से सहेजता है।",
     details: [
-      "Enter basic demographics: age, state, and district.",
+      "Enter basic demographics: age, gender, and your Bihar district (all 38 districts covered).",
       "Specify your occupation (farmer, student, salaried, self-employed, etc.).",
       "Provide household income bracket and social category for accurate matching.",
     ],

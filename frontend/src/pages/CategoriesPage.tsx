@@ -39,9 +39,9 @@ const SUPPORTED_CATEGORIES: CategoryMeta[] = [
     nameHi: "शिक्षा और छात्रवृत्ति",
     icon: GraduationCap,
     description:
-      "Scholarships, tuition fee waivers, research fellowships, and educational assistance for students across India.",
+      "Scholarships, tuition fee waivers, research fellowships, and educational assistance for students in Bihar.",
     descriptionHi:
-      "भारत भर में छात्रों के लिए छात्रवृत्ति, शिक्षण शुल्क छूट, अनुसंधान फेलोशिप और शैक्षिक सहायता।",
+      "बिहार में छात्रों के लिए छात्रवृत्ति, शिक्षण शुल्क छूट, अनुसंधान फेलोशिप और शैक्षिक सहायता।",
     badgeColor: "text-amber-800 border-amber-200 dark:border-amber-900 bg-amber-50 dark:bg-amber-950/40 dark:text-amber-300",
     iconColor: "text-amber-700 dark:text-amber-400",
     iconBg: "bg-amber-100 dark:bg-amber-900/30",
@@ -157,7 +157,10 @@ export function CategoriesPage() {
     setError(null);
     try {
       const data = await getSchemes();
-      setSchemes(data);
+      const biharApplicable = data.filter(
+        (s) => !(s.level === "state" && s.state && s.state.trim().toLowerCase() !== "bihar")
+      );
+      setSchemes(biharApplicable);
     } catch (err) {
       const msg = err instanceof Error ? err.message : t('common.error');
       setError(msg);

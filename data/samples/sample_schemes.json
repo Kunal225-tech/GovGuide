@@ -1,0 +1,159 @@
+[
+  {
+    "name": "Central Sector Interest Subsidy Scheme (CSIS)",
+    "description": "Scheme to provide full interest subsidy during the moratorium period on modern educational loans taken by students from economically weaker sections.",
+    "category": "Education",
+    "level": "central",
+    "schemeType": "central-sector",
+    "applicableStates": ["All"],
+    "benefits": [
+      "100% interest subsidy during the course period plus one year",
+      "Applicable for technical and professional higher education courses in India",
+      "Administered through Canara Bank nodal portal"
+    ],
+    "eligibility": [
+      "Students from Economically Weaker Sections (EWS)",
+      "Gross family annual income ceiling of Rs. 4.5 lakh",
+      "Enrolled in recognized professional/technical courses in India"
+    ],
+    "requiredDocuments": [
+      "Income Certificate issued by competent authority",
+      "Aadhaar Card",
+      "Loan Sanction Letter from scheduled commercial bank",
+      "Admission proof in recognized institution"
+    ],
+    "applicationProcess": [
+      "Apply through the Vidya Lakshmi portal or National Scholarship Portal",
+      "Submit bank loan account details and EWS certificate",
+      "Verification and direct interest credit by nodal bank"
+    ],
+    "officialUrl": "https://www.education.gov.in/csis",
+    "applicationUrl": "https://www.vidyalakshmi.co.in",
+    "source": "Department of Higher Education, Ministry of Education",
+    "sourcePlatform": "sample-dataset",
+    "sourceId": "EDU-CSIS-2026",
+    "status": "active",
+    "rule": {
+      "minAge": 17,
+      "maxAge": 30,
+      "maxAnnualIncome": 450000,
+      "educationLevels": ["Undergraduate", "Post Graduate"],
+      "isVerified": true
+    }
+  },
+  {
+    "name": "PM Poshan Shakti Nirman (Mid-Day Meal CSS)",
+    "description": "Centrally Sponsored Scheme providing one hot cooked nutritious meal per day to children in primary and upper primary classes across participating government schools.",
+    "category": "Women & Child",
+    "level": "central",
+    "schemeType": "centrally-sponsored",
+    "applicableStates": ["All"],
+    "benefits": [
+      "Free balanced daily hot cooked meal covering prescribed calories and protein",
+      "Encourages school enrollment, attendance, and nutritional retention",
+      "Cost-shared between Central government and State/UT administrations"
+    ],
+    "eligibility": [
+      "Children studying in classes I to VIII in Government and Government-aided schools",
+      "Enrolled in local body schools, Special Training Centres, and Madarsas"
+    ],
+    "requiredDocuments": [
+      "School admission enrollment number",
+      "Aadhaar identification of student or parent"
+    ],
+    "applicationProcess": [
+      "Automatic enrollment upon admission to any eligible government or government-aided school",
+      "No separate individual application fee or paperwork required"
+    ],
+    "officialUrl": "https://pmposhan.education.gov.in",
+    "source": "Ministry of Education, Government of India",
+    "sourcePlatform": "sample-dataset",
+    "sourceId": "EDU-PMPOSHAN-01",
+    "status": "active",
+    "rule": {
+      "minAge": 5,
+      "maxAge": 14,
+      "isVerified": true
+    }
+  },
+  {
+    "name": "Telangana Rythu Bandhu Scheme",
+    "description": "State welfare initiative providing direct financial investment support of Rs. 10,000 per acre per year to farmer patta holders to purchase agricultural inputs.",
+    "category": "Agriculture",
+    "level": "state",
+    "state": "Telangana",
+    "schemeType": "state",
+    "applicableStates": ["Telangana"],
+    "benefits": [
+      "Direct benefit transfer of Rs. 5,000 per acre per agricultural season (Kharif and Rabi)",
+      "Total Rs. 10,000 per acre per year for agriculture and horticulture crops",
+      "Zero interest grant to prevent indebtedness to private moneylenders"
+    ],
+    "eligibility": [
+      "Resident landholding farmer of Telangana with title passbook (Pattadar)",
+      "Land must be cultivated agriculture or horticulture land"
+    ],
+    "requiredDocuments": [
+      "Pattadar Passbook (Dharani portal registration)",
+      "Aadhaar Card",
+      "Bank Account Passbook"
+    ],
+    "applicationProcess": [
+      "Check name and land details in Dharani agricultural land records",
+      "Submit bank account details to local Agriculture Extension Officer (AEO)",
+      "Direct benefit transferred directly to verified bank account"
+    ],
+    "officialUrl": "https://rythubandhu.telangana.gov.in",
+    "source": "Department of Agriculture, Government of Telangana",
+    "sourcePlatform": "sample-dataset",
+    "sourceId": "TS-AGRI-RB-001",
+    "status": "active",
+    "rule": {
+      "minAge": 18,
+      "states": ["Telangana"],
+      "occupations": ["Farmer", "Agriculture"],
+      "isVerified": true
+    }
+  },
+  {
+    "name": "Chandigarh UT Pension for Widows and Destitute Women",
+    "description": "Union Territory social welfare program providing monthly pension of Rs. 2,000 to widows and destitute women residing in Chandigarh.",
+    "category": "Social Welfare",
+    "level": "state",
+    "state": "Chandigarh",
+    "schemeType": "ut",
+    "applicableStates": ["Chandigarh"],
+    "benefits": [
+      "Monthly financial assistance of Rs. 2,000 credited directly to DBT account",
+      "Financial security for vulnerable and destitute women without earning support"
+    ],
+    "eligibility": [
+      "Widow or destitute woman who is a permanent resident of Chandigarh for at least 3 years",
+      "Family annual income should not exceed Rs. 1,50,000",
+      "Not receiving any other government pension or financial assistance"
+    ],
+    "requiredDocuments": [
+      "Chandigarh 3-year residence proof (Voter ID, Ration card, Electricity bill)",
+      "Death certificate of husband (for widows)",
+      "Income certificate issued by Sub-Divisional Magistrate",
+      "Aadhaar card and active bank account passbook"
+    ],
+    "applicationProcess": [
+      "Download application form from official social welfare department portal",
+      "Submit completed form with certificates to the District Social Welfare Officer",
+      "Physical verification and approval by sanctioning committee"
+    ],
+    "officialUrl": "https://chdsw.gov.in",
+    "source": "Department of Social Welfare, Chandigarh Administration",
+    "sourcePlatform": "sample-dataset",
+    "sourceId": "CHD-SW-WIDOW-2026",
+    "status": "active",
+    "rule": {
+      "minAge": 18,
+      "states": ["Chandigarh"],
+      "genders": ["Female"],
+      "maxAnnualIncome": 150000,
+      "isVerified": true
+    }
+  }
+]

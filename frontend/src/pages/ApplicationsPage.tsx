@@ -139,15 +139,15 @@ export function ApplicationsPage() {
   function getStatusLabel(status: ApplicationStatus) {
     switch (status) {
       case "saved":
-        return t('tracker.status.saved');
+        return t('tracker.status.saved', 'Saved');
       case "in-progress":
-        return t('tracker.status.inProgress');
+        return t('tracker.status.inProgress', 'In Progress');
       case "submitted":
-        return t('tracker.status.submitted');
+        return t('tracker.status.submitted', 'Submitted');
       case "approved":
-        return t('tracker.status.approved');
+        return t('tracker.status.approved', 'Approved');
       case "rejected":
-        return t('tracker.status.rejected');
+        return t('tracker.status.rejected', 'Rejected');
       default:
         return status;
     }

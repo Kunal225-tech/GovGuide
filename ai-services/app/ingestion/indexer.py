@@ -41,9 +41,14 @@ class SchemeIndexer:
                 db = None
             if db is None:
                 db = mongo_client["govguide"]
-            query = {}
+            query = {
+                "$or": [
+                    {"level": "central"},
+                    {"level": "state", "state": {"$regex": "^bihar$", "$options": "i"}},
+                ]
+            }
             if categories:
-                query["category"] = {"$in": categories}
+                query = {"$and": [query, {"category": {"$in": categories}}]}
 
             schemes = list(db["schemes"].find(query))
             logger.info(f"Retrieved {len(schemes)} schemes from MongoDB for indexing.")
