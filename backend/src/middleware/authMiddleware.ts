@@ -1,44 +1,60 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+import { ENV } from "../config/env";
 
 interface JwtPayload {
   userId: string;
+  role?: string;
 }
 
 const authMiddleware = (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): void => {
   try {
     const authHeader = req.headers.authorization;
 
     if (!authHeader) {
-      return res.status(401).json({
+      res.status(401).json({
+        success: false,
         message: "Authentication required",
       });
+      return;
     }
 
-    const token = authHeader.split(" ")[1];
+    const token = authHeader.startsWith("Bearer ")
+      ? authHeader.slice(7).trim()
+      : authHeader.trim();
 
     if (!token) {
-      return res.status(401).json({
-        message: "Invalid token",
+      res.status(401).json({
+        success: false,
+        message: "Invalid token format",
       });
+      return;
     }
 
-    const decoded = jwt.verify(
-      token,
-      "govguide-secret-key"
-    ) as JwtPayload;
+    const decoded = jwt.verify(token, ENV.JWT_SECRET) as JwtPayload;
+
+    if (!decoded || !decoded.userId) {
+      res.status(401).json({
+        success: false,
+        message: "Invalid token payload",
+      });
+      return;
+    }
 
     req.userId = decoded.userId;
+    req.userRole = decoded.role || "user";
 
     next();
   } catch (error) {
-    return res.status(401).json({
+    res.status(401).json({
+      success: false,
       message: "Invalid or expired token",
     });
+    return;
   }
 };
 

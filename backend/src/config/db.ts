@@ -1,7 +1,9 @@
 import mongoose from "mongoose";
+import { ENV } from "./env";
+
 const connectDB = async () => {
     try {
-        await mongoose.connect("mongodb://127.0.0.1:27017/govguide")
+        await mongoose.connect(ENV.MONGODB_URI);
         console.log("MongoDB connected successfully");
     }
     catch (error){

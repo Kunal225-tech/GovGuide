@@ -1,11 +1,15 @@
 import mongoose , { Schema , Document} from "mongoose";
 
+export type ApplicationStatusType = "saved" | "in-progress" | "in-progess" | "submitted" | "approved" | "rejected";
+
 export interface IApplication extends Document {
     userId: mongoose.Types.ObjectId;
     schemeId: mongoose.Types.ObjectId;
-    status: "saved" | "in-progess" | "submitted" | "approved" | "rejected";
-    notes? : string;
+    status: ApplicationStatusType;
+    notes?: string;
     appliedAt: Date;
+    createdAt?: Date;
+    updatedAt?: Date;
 }
 
 const applicationSchema = new Schema<IApplication>(
@@ -22,7 +26,7 @@ const applicationSchema = new Schema<IApplication>(
         },
         status: {
             type: String,
-            enum: ["saved", "in-progess", "submitted", "approved", "rejected"],
+            enum: ["saved", "in-progress", "in-progess", "submitted", "approved", "rejected"],
             default: "saved",
         },
         notes: {

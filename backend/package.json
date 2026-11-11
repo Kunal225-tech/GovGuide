@@ -5,6 +5,18 @@
   "main": "index.js",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "seed": "ts-node-dev --transpile-only src/scripts/seedSchemes.ts",
+    "seed:pilot": "ts-node-dev --transpile-only src/scripts/seedPilotSchemes.ts",
+    "test:eligibility": "ts-node --transpile-only src/scripts/verifyEligibilityEngine.ts",
+    "test:security": "ts-node-dev --transpile-only src/scripts/testPhase4.ts",
+    "test:phase1": "ts-node-dev --transpile-only src/scripts/testPhase1.ts",
+    "test:phase2": "ts-node-dev --transpile-only src/scripts/testPhase2.ts",
+    "test:phaseA": "ts-node-dev --transpile-only src/scripts/testPhaseA.ts",
+    "test:phaseB": "ts-node-dev --transpile-only src/scripts/testPhaseB.ts",
+    "test:phaseB:remediation": "ts-node-dev --transpile-only src/scripts/testPhaseBRemediation.ts",
+    "test:phaseB4": "ts-node-dev --transpile-only src/scripts/testPhaseB4.ts",
+    "test:phaseB5": "ts-node-dev --transpile-only src/scripts/testPhaseB5.ts",
+    "ingest": "ts-node-dev --transpile-only src/pipeline/cli.ts",
     "build": "tsc",
     "start": "node dist/server.js"
   },
