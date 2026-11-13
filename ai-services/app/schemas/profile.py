@@ -6,7 +6,7 @@ class ProfileExtractRequest(BaseModel):
     text: str = Field(
         ...,
         min_length=3,
-        max_length=1000,
+        max_length=2000,
         description="Unstructured natural language self-description in English, Hindi, or Hinglish",
     )
     language: Optional[str] = Field(

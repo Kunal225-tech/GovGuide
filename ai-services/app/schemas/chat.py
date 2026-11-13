@@ -1,5 +1,5 @@
 from typing import List, Optional, Dict, Any
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 
 class UserDemographics(BaseModel):
@@ -31,11 +31,37 @@ class SchemeCitation(BaseModel):
 
 
 class ChatRequest(BaseModel):
-    query: str = Field(..., description="The citizen's question or message")
+    query: Optional[str] = Field(
+        default=None,
+        min_length=1,
+        max_length=1000,
+        description="The citizen's question or message",
+    )
+    message: Optional[str] = Field(
+        default=None,
+        min_length=1,
+        max_length=1000,
+        description="Alternative alias for query",
+    )
     conversation_history: List[ChatMessage] = Field(default_factory=list, description="Prior conversation context")
     user_profile: Optional[UserDemographics] = Field(default=None, description="Current user profile demographics")
     language: str = Field(default="en", description="Preferred response language: 'en' or 'hi'")
     top_k: int = Field(default=4, ge=1, le=10, description="Number of scheme chunks to retrieve")
+
+    @model_validator(mode="before")
+    @classmethod
+    def sync_query_message(cls, data: Any) -> Any:
+        if isinstance(data, dict):
+            msg = data.get("message")
+            qry = data.get("query")
+            if msg is not None and (qry is None or qry == ""):
+                data["query"] = msg
+            elif qry is not None and (msg is None or msg == ""):
+                data["message"] = qry
+            elif qry is None and msg is None:
+                data["query"] = ""
+                data["message"] = ""
+        return data
 
 
 class ChatResponse(BaseModel):

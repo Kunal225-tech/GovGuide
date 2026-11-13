@@ -62,12 +62,21 @@ export interface ProfileExtractResponse {
   extraction_source?: 'llm' | 'fallback' | string;
 }
 
-// Support both proxied endpoint and direct localhost:8000
-const PRIMARY_CHAT_URL = '/ai-service/api/v1/chat';
-const FALLBACK_CHAT_URL = 'http://127.0.0.1:8000/api/v1/chat';
+// Support VITE_AI_SERVICE_URL override or standard /ai-service proxy path
+const AI_BASE_URL = (import.meta.env.VITE_AI_SERVICE_URL as string | undefined)?.replace(/\/$/, '') || '/ai-service';
 
-const PRIMARY_EXTRACT_URL = '/ai-service/api/v1/profile/extract';
-const FALLBACK_EXTRACT_URL = 'http://127.0.0.1:8000/api/v1/profile/extract';
+const PRIMARY_CHAT_URL = `${AI_BASE_URL}/api/v1/chat`;
+const PRIMARY_EXTRACT_URL = `${AI_BASE_URL}/api/v1/profile/extract`;
+
+// Only attempt direct 127.0.0.1:8000 fallback during local development
+const isLocalhost =
+  typeof window !== 'undefined' &&
+  (window.location.hostname === 'localhost' ||
+    window.location.hostname === '127.0.0.1' ||
+    window.location.hostname === '::1');
+
+const FALLBACK_CHAT_URL = isLocalhost ? 'http://127.0.0.1:8000/api/v1/chat' : null;
+const FALLBACK_EXTRACT_URL = isLocalhost ? 'http://127.0.0.1:8000/api/v1/profile/extract' : null;
 
 export async function askSaathi(request: ChatRequest): Promise<ChatResponse> {
   let response: Response;
@@ -77,13 +86,17 @@ export async function askSaathi(request: ChatRequest): Promise<ChatResponse> {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(request),
     });
-  } catch {
-    // If proxy failed, retry directly to AI service port
-    response = await fetch(FALLBACK_CHAT_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(request),
-    });
+  } catch (err) {
+    if (FALLBACK_CHAT_URL) {
+      // If local Vite proxy failed, retry directly against local AI service port
+      response = await fetch(FALLBACK_CHAT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(request),
+      });
+    } else {
+      throw err;
+    }
   }
 
   if (!response.ok) {
@@ -116,13 +129,17 @@ export async function extractProfileWithAi(
       if (err instanceof DOMException && err.name === 'AbortError') {
         throw new Error('AI extraction timed out. Please try again or fill the form directly.', { cause: err });
       }
-      // If Vite proxy failed, retry directly against AI service port
-      response = await fetch(FALLBACK_EXTRACT_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: payload,
-        signal: controller.signal,
-      });
+      if (FALLBACK_EXTRACT_URL) {
+        // If local Vite proxy failed, retry directly against local AI service port
+        response = await fetch(FALLBACK_EXTRACT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: payload,
+          signal: controller.signal,
+        });
+      } else {
+        throw err;
+      }
     }
   } finally {
     clearTimeout(timeoutId);

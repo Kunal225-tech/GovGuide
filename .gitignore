@@ -15,4 +15,5 @@ __pycache__/
 ai-services/venv/
 ai-services/.venv/
 ai-services/qdrant_storage/
+qdrant_storage/
 

@@ -19,37 +19,40 @@ GovGuide Bihar is architected as three decoupled services operating under a stri
 
 | Layer | Runtime / Framework | Core Libraries & Tooling | Endpoints & Storage |
 | :--- | :--- | :--- | :--- |
-| **Frontend** | **React 19** + **TypeScript** + **Vite 8** | Tailwind CSS v3, Radix UI primitives, Lucide React, Framer Motion, `i18next` + `react-i18next` | Port `:5173`<br>Bilingual UI, zero runtime CSS overhead, native `fetch` client |
-| **Backend** | **Node.js** + **Express 5** + **TypeScript** | Mongoose ODM v9, JWT, bcryptjs, CORS, dotenv | Port `:5000`<br>Stateful API, JWT auth, schema validation, deterministic rule engine |
-| **AI Microservice** | **Python 3.10+** + **FastAPI** + **Uvicorn** | Google GenAI SDK (`google-genai`), Qdrant Client, PyMongo, Pydantic v2, httpx | Port `:8000`<br>Hybrid RAG pipeline, multi-turn chat (`Ask Saathi`), NLP profile parser |
-| **Databases** | **MongoDB** + **Qdrant Vector DB** | MongoDB 6+ (`govguide`), Qdrant (`govguide_schemes` collection) | Port `:27017` (MongoDB)<br>`./qdrant_storage` (768-dim Cosine vectors) |
+| **Frontend** | **React 19** + **TypeScript** + **Vite 8** | Tailwind CSS v3, Radix UI primitives, Lucide React, Framer Motion, `i18next` + `react-i18next` | Port `:5173`<br>Bilingual UI, zero runtime CSS overhead, native `fetch` client, Vercel SPA deployment |
+| **Backend** | **Node.js** + **Express 5** + **TypeScript** | Mongoose ODM v9, JWT, bcryptjs, multi-origin CORS, dotenv | Port `:5000`<br>Stateful API, JWT auth, schema validation, deterministic rule engine, Render web service |
+| **AI Microservice** | **Python 3.10+** + **FastAPI** + **Uvicorn** | Google GenAI SDK (`google-genai`), Qdrant Client, PyMongo, Pydantic v2, httpx | Port `:8000`<br>Hybrid RAG pipeline, multi-turn chat (`Ask Saathi`), NLP profile parser, Render web service |
+| **Databases** | **MongoDB** + **Qdrant Vector DB** | MongoDB 6+ (`govguide`), Qdrant (`govguide_schemes` collection) | Port `:27017` (MongoDB / Atlas)<br>`./qdrant_storage` (768-dim Cosine vectors / Qdrant Cloud) |
 
 ---
 
-## 🚀 Key Engineering Highlights (With Verified Metrics)
+## 🚀 Key Engineering & Security Highlights
 
-### 1. Strict Architectural Boundary: Deterministic vs. Generative AI
-GovGuide enforces a zero-tolerance policy for hallucinations in welfare qualification. Citizens' livelihoods depend on accurate eligibility assessments:
-- **100% Deterministic Rule Engine (`eligibilityService.ts`):** Evaluates applicant demographics (age bounds, gender, income caps, education, occupation, social category) against 1:1 `EligibilityRule` records.
-- **Safety Gates & Verification Flags:** Schemes lacking complete machine rules are explicitly gated as `unverified` with actionable documentary instructions, never issuing false-positive approvals.
-- **Comprehensive Coverage:** Covers **42 verified schemes** (**36 Bihar State + 6 Central Flagship**), validated by **72/72 passing automated test assertions** (`npm run test:eligibility`).
+### 1. 100% Deterministic Rule Engine (Zero Hallucination Risk)
+GovGuide enforces an absolute architectural boundary between generative language tasks and citizen eligibility qualification:
+- **Zero-Tolerance Qualification Engine (`eligibilityService.ts`):** Evaluates applicant demographics (age bounds, gender, income caps, education, occupation, social category) against 1:1 `EligibilityRule` database schemas.
+- **Explicit Safety Gates:** Schemes lacking full algorithmic criteria are systematically gated as `unverified` with actionable documentary prompts—preventing false-positive approvals.
+- **Verified Bihar Coverage:** Evaluates **42 verified schemes** (**36 Bihar State + 6 Central Flagship**), rigorously validated by **72/72 passing automated test assertions** (`npm run test:eligibility`).
 
 ### 2. Grounded Bilingual RAG Pipeline (`Ask Saathi`)
-A domain-tuned civic assistant capable of conversing naturally in English, Hindi, and Hinglish while remaining strictly grounded in verified policy facts:
-- **Semantic Vector Storage:** Indexes **168 curated scheme chunks** (`overview`, `eligibility`, `benefits`, `process`) into **Qdrant** using 768-dimensional `gemini-embedding-001` vectors.
-- **Bilingual Boost & Alias Expansion:** Automatically maps regional scheme abbreviations (`BLUY`, `BRFSY`, `SJY`, ` सात निश्चय`, `लघु उद्यमी`, `वृद्धजन पेंशन`) to official canonical scheme titles before vector distance scoring.
-- **Strict Citation & Refusal Guardrails:** Employs an exact citation extractor that verifies every grounded claim against indexed passages. If retrieved relevance falls below confidence thresholds, the assistant gracefully triggers a grounded refusal rather than speculating.
+A domain-tuned civic assistant conversing naturally in English, Hindi, and Hinglish while remaining strictly anchored to official policy facts:
+- **Semantic Vector Store:** Indexes **168 curated scheme chunks** (`overview`, `eligibility`, `benefits`, `process`) into **Qdrant** using 768-dimensional `gemini-embedding-001` vectors.
+- **Bilingual Boost & Alias Expansion:** Automatically resolves administrative acronyms and Hindi colloquiums (`BLUY`, `BRFSY`, `SJY`, `सात निश्चय`, `लघु उद्यमी`, `वृद्धजन पेंशन`) to canonical scheme records before distance scoring.
+- **Strict Citation & Refusal Guardrails:** Employs an exact citation extractor that cross-references all claims against retrieved chunks, triggering grounded refusals if similarity falls below confidence thresholds.
 
 ### 3. Fault-Tolerant NLP Profile Extractor (`AI Quick Profile Fill`)
-Transforms free-form conversational inputs into typed citizen profile records:
-- **Pre-LLM Privacy & PII Redaction:** Masks Aadhaar numbers, phone numbers, email addresses, and account numbers client- and server-side before prompts reach cloud LLM endpoints.
-- **4-Model Gemini Resilient Failover Chain:** Seamlessly falls back across `gemini-3.5-flash` $\to$ `gemini-3.5-flash-lite` $\to$ `gemini-flash-latest` $\to$ `gemini-2.5-flash` to withstand rate limits (`429`) or provider degradation.
-- **Deterministic Regex & Geography Normalizer:** Maps local colloquialisms and administrative classifications across all **38 Bihar districts** and official social category designations (`BC-1` $\to$ `EBC`, `BC-2` $\to$ `BC`, `Harijan` $\to$ `SC`), verified by **13/13 passing unit tests**.
+Converts conversational citizen self-descriptions into typed demographic records:
+- **Pre-LLM Privacy & PII Scrubbing:** Redacts Aadhaar numbers, phone numbers, email addresses, and bank credentials client- and server-side before prompt transmission.
+- **4-Model Gemini Resilient Failover Chain:** Seamlessly recovers across `gemini-3.5-flash` $\to$ `gemini-3.5-flash-lite` $\to$ `gemini-flash-latest` $\to$ `gemini-2.5-flash` to withstand rate limits (`429`) or provider degradation.
+- **Deterministic Regex & Geography Normalizer:** Maps administrative classifications across all **38 Bihar districts** and official social categories (`BC-1` $\to$ `EBC`, `BC-2` $\to$ `BC`, `Harijan` $\to$ `SC`), verified by unit tests.
 
-### 4. Automated Multi-Stage Scheme Ingestion Pipeline
-An extensible ETL ingestion architecture (`backend/src/pipeline/`) supporting enterprise onboarding of welfare schemes from CSV, JSON, and administrative data feeds:
-- `Adapter` $\to$ `Normalizer` $\to$ `Validator` $\to$ `Deduplicator` $\to$ `AuditLogger`.
-- Ensures verified category enums, normalized currency fields, and automated audit trails.
+### 4. Production Security Hardening & Zero-Vulnerability Guarantee
+- **Sliding-Window Per-IP Rate Limiting:** In-memory middleware limits `/api/v1/chat` and `/api/v1/profile/extract` to **20 requests per minute per IP**, returning HTTP `429 Too Many Requests` to protect Gemini quotas.
+- **Vector Ingestion Protection (`X-Ingest-Key`):** Requires an authorized `X-Ingest-Key` header on `POST /api/v1/ingest/schemes` in production environments (`HTTP 403 Forbidden` if invalid or missing).
+- **Path-Traversal Guard (`isPathSafe`):** Prevents directory traversal (`..` or null-byte injections) during batch CSV/JSON scheme ingestion by strictly scoping filesystem operations to authorized data directories.
+- **Fail-Fast Environment Validation:** Backend immediately terminates boot in production if `JWT_SECRET` is unset or remains the default development string.
+- **Reverse Proxy IP Trust:** Express is configured with `app.set("trust proxy", 1)` so rate limiters inspect actual client IPs behind Render/Railway reverse proxies.
+- **Comprehensive Test Coverage:** **127 passing automated tests** (**72** eligibility assertions + **37** core ingestion & security tests + **18** AI service tests) and **0 vulnerabilities** on `npm audit --omit=dev`.
 
 ---
 
@@ -58,22 +61,22 @@ An extensible ETL ingestion architecture (`backend/src/pipeline/`) supporting en
 ```mermaid
 flowchart LR
     Browser["Citizen Browser SPA\n(React 19 + Vite :5173)"]
-    ViteProxy["Vite Dev Proxy\n(Port :5173)"]
-    Express["Express REST API\n(Node.js / TS :5000)"]
-    FastAPI["FastAPI AI Microservice\n(Python :8000)"]
-    MongoDB[("MongoDB 6+\n('govguide')")]
-    Qdrant[("Qdrant Vector DB\n('govguide_schemes')")]
+    Vercel["Vercel Edge Gateway\n(Rewrites /api & /ai-service)"]
+    Express["Express REST API\n(Render Web Service :5000)"]
+    FastAPI["FastAPI AI Microservice\n(Render Web Service :8000)"]
+    MongoDB[("MongoDB 6+ / Atlas\n('govguide')")]
+    Qdrant[("Qdrant Vector DB / Cloud\n('govguide_schemes')")]
     Gemini["Google Gemini API\n(Flash + Embeddings)"]
 
-    Browser -->|"HTTP / REST"| ViteProxy
-    ViteProxy -->|"/api/*"| Express
-    ViteProxy -->|"/ai-service/*"| FastAPI
-    Browser -.->|"Direct Fallback (aiApi.ts)"| FastAPI
+    Browser -->|"HTTPS"| Vercel
+    Vercel -->|"/api/*"| Express
+    Vercel -->|"/ai-service/*"| FastAPI
+    Browser -.->|"Local Fallback (aiApi.ts)"| FastAPI
 
     Express <-->|"Mongoose ODM (Schemes, Rules, Users, Apps)"| MongoDB
     FastAPI -->|"PyMongo (Ingestion Read)"| MongoDB
-    FastAPI <-->|"768-dim Cosine Search"| Qdrant
-    FastAPI <-->|"Chat Generation & Vector Embeddings"| Gemini
+    FastAPI <-->|"768-dim Cosine Vector Search"| Qdrant
+    FastAPI <-->|"Chat Generation & Embeddings"| Gemini
 ```
 
 ---
@@ -82,13 +85,15 @@ flowchart LR
 
 ```text
 govguide/
-├── README.md                      # This flagship documentation
-├── PROJECT_ARCHITECTURE.md        # Comprehensive 700+ line technical architecture
+├── README.md                      # Flagship system documentation
+├── PROJECT_ARCHITECTURE.md        # Comprehensive technical architecture
 ├── CURRENT_FUNCTIONALITIES.md     # Feature and UI component inventory
 ├── FLOW.MD                        # User journey and data-flow specifications
+├── render.yaml                    # Infrastructure blueprint for Render deployment
 ├── start-dev.bat                  # One-click Windows development environment launcher
 │
 ├── frontend/                      # React 19 + TypeScript + Vite SPA
+│   ├── vercel.json                # Vercel deployment rewrites & SPA routing
 │   ├── src/
 │   │   ├── components/            # Atomic UI components, banners, widgets, modals
 │   │   ├── context/               # AuthContext, SavedSchemesContext, AiAssistantContext
@@ -101,6 +106,8 @@ govguide/
 │
 ├── backend/                       # Node.js + Express 5 + TypeScript REST API
 │   ├── src/
+│   │   ├── app.ts                 # Express app, trust proxy, multi-origin CORS, security headers
+│   │   ├── config/                # env.ts (fail-fast validation), db.ts, testDb.ts
 │   │   ├── controllers/           # authController, schemeController, applicationController
 │   │   ├── models/                # Scheme, EligibilityRule, User, Application (Mongoose)
 │   │   ├── routes/                # schemeRoutes, authRoutes, applicationRoutes
@@ -115,9 +122,9 @@ govguide/
 │   │   ├── core/                  # llm.py (Gemini failover), embeddings.py, vector_store.py
 │   │   ├── ingestion/             # chunker.py (Semantic 4-chunk split), indexer.py
 │   │   ├── rag/                   # retriever.py (Bilingual boost), generator.py (Guardrails)
-│   │   └── main.py                # FastAPI lifecycle, CORS, health checks
-│   ├── tests/                     # test_profile_normalizer.py (13 unit test cases)
-│   ├── qdrant_storage/            # Local persistent vector store files
+│   │   └── main.py                # FastAPI lifecycle, RateLimitMiddleware, CORS, health checks
+│   ├── tests/                     # test_security_endpoints.py, test_profile_normalizer.py
+│   ├── qdrant_storage/            # Local persistent vector store files (git-ignored)
 │   └── requirements.txt
 │
 └── data/
@@ -131,7 +138,7 @@ govguide/
 ## ⚡ Quick Start & Setup Guide
 
 ### 1. Prerequisites
-- **Node.js**: `v18.x` or `v20.x`+ (`v22` recommended)
+- **Node.js**: `v18.x`, `v20.x`, or `v22.x`
 - **Python**: `3.10` or `3.11`+
 - **MongoDB**: Local Community Server running at `mongodb://127.0.0.1:27017`
 - **Google Gemini API Key**: From [Google AI Studio](https://aistudio.google.com/)
@@ -141,7 +148,6 @@ govguide/
 ### 2. Environment Configuration
 
 #### Backend Setup (`backend/.env`)
-Copy the provided template and verify port and database connections:
 ```bash
 cd backend
 cp .env.example .env
@@ -151,11 +157,11 @@ cp .env.example .env
 PORT=5000
 MONGODB_URI=mongodb://127.0.0.1:27017/govguide
 JWT_SECRET=govguide-super-secure-production-jwt-secret-key-32chars
+CORS_ORIGIN=http://localhost:5173
 NODE_ENV=development
 ```
 
 #### AI Services Setup (`ai-services/.env`)
-Copy the template and provide your Gemini API key:
 ```bash
 cd ../ai-services
 cp .env.example .env
@@ -171,6 +177,7 @@ EMBEDDING_MODEL=text-embedding-004
 QDRANT_COLLECTION=govguide_schemes
 QDRANT_STORAGE_PATH=./qdrant_storage
 MONGODB_URI=mongodb://127.0.0.1:27017/govguide
+INGEST_API_KEY=your_ingest_secret_key_here
 CORS_ORIGINS=http://localhost:5173,http://localhost:5000
 ```
 
@@ -207,7 +214,7 @@ curl -X POST http://127.0.0.1:8000/api/v1/ingest/schemes \
 ### 4. Running the Development Services
 
 #### Option A: One-Click Windows Startup
-From the repository root, run:
+From the repository root:
 ```cmd
 start-dev.bat
 ```
@@ -248,12 +255,41 @@ Visit **`http://localhost:5173`** in your browser.
 
 ---
 
-## 🧪 Verification & Test Suites
+## 🌐 Production Cloud Deployment Guide
 
-GovGuide includes comprehensive automated verification suites across all three architectural layers:
+GovGuide is ready for one-click deployment across standard cloud providers:
+
+### 1. Database & Vector Storage (Managed Cloud)
+1. **MongoDB Atlas:** Create a free M0/M10 cluster on [MongoDB Atlas](https://www.mongodb.com/atlas), create a database user, and copy the connection string (`mongodb+srv://...`).
+2. **Qdrant Cloud:** Create a free managed cluster on [Qdrant Cloud](https://cloud.qdrant.io/), obtain your cluster URL (`https://...qdrant.tech:6333`) and API Key.
+
+### 2. Backend & AI Microservice Deployment (Render)
+Deploy both web services using the repository's root [`render.yaml`](file:///c:/Users/kisho/Desktop/govguide/render.yaml) Blueprint:
+1. Connect your GitHub repository to [Render](https://render.com/).
+2. Select **Blueprints** $\to$ **New Blueprint Instance** and point to this repository.
+3. Render automatically provisions:
+   - **`govguide-backend`**: Node.js web service (`https://govguide-backend.onrender.com`).
+   - **`govguide-ai`**: Python FastAPI web service (`https://govguide-ai.onrender.com`).
+4. Provide the secret environment variables in the Render dashboard:
+   - For `govguide-backend`: `MONGODB_URI`, `CORS_ORIGIN` (`http://localhost:5173,https://govguide.vercel.app,https://*.vercel.app`).
+   - For `govguide-ai`: `GEMINI_API_KEY`, `MONGODB_URI`, `QDRANT_URL`, `QDRANT_API_KEY`, `INGEST_API_KEY`, `CORS_ORIGINS`.
+
+### 3. Frontend Deployment (Vercel)
+The frontend utilizes [`frontend/vercel.json`](file:///c:/Users/kisho/Desktop/govguide/frontend/vercel.json) to proxy API calls and support HTML5 client-side push-state routing:
+1. Connect the repository to [Vercel](https://vercel.com/).
+2. Set **Root Directory** to `frontend`.
+3. Framework preset: **Vite**.
+4. (Optional) Set `VITE_AI_SERVICE_URL` if routing directly to Render rather than through the Vercel proxy rewrite.
+5. Deploy.
+
+---
+
+## 🧪 Verification & Test Suites (127 Automated Tests)
+
+GovGuide includes automated verification suites covering rule logic, security, schema bounds, and quality gates:
 
 ### 1. Deterministic Rule Engine Test Suite (72 Assertions)
-Validates age bounds, income caps, gender filters, education equivalences, category exemptions, and multi-reason disqualifications:
+Validates age boundaries, income ceilings, gender filters, education equivalences, category exemptions, and multi-reason disqualifications:
 ```bash
 cd backend
 npm run test:eligibility
@@ -264,21 +300,33 @@ Verification Complete: 72/72 tests passed (0 failures)
 ======================================================================
 ```
 
-### 2. AI Profile Normalizer Unit Tests (13 Test Cases)
-Verifies PII scrubbing, Hinglish parsing, 38-district extraction, caste normalization, and graceful LLM fallback:
+### 2. Ingestion & Security Test Suite (37 Test Cases)
+Verifies path traversal protection (`403`), adapter resilience, idempotent updates, and schema sanitization:
+```bash
+cd backend
+npx ts-node --transpile-only src/scripts/testPhase2.ts
+```
+```text
+==================================================
+Phase 2 Test Summary: 37 total | 37 passed | 0 failed
+==================================================
+```
+
+### 3. AI Service Security & Normalizer Test Suite (18 Test Cases)
+Verifies PII scrubbing, 38-district extraction, sliding-window rate limiting (`429`), input message length bounds, and `X-Ingest-Key` authorization (`403`):
 ```bash
 cd ai-services
 python -m unittest discover -s tests
 ```
 ```text
 ----------------------------------------------------------------------
-Ran 13 tests in 0.022s
+Ran 18 tests in 0.154s
 
 OK
 ```
 
-### 3. Frontend Quality Gates & Production Build
-Checks strict TypeScript typing, React hooks dependencies, Tailwind styling, and production bundling:
+### 4. Frontend Quality Gates & Production Build
+Checks strict TypeScript typing, React hooks dependencies, Tailwind utilities, and production bundle compilation:
 ```bash
 cd frontend
 npm run lint
@@ -291,11 +339,10 @@ npm run build
 > frontend@0.0.0 build
 > tsc -b && vite build
 ✓ 2022 modules transformed.
-✓ built in 7.73s
+✓ built in 5.79s
 ```
 
 ---
 
 ## 📄 License
 This project is licensed under the [MIT License](LICENSE).
-

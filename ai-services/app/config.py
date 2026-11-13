@@ -26,6 +26,9 @@ class Settings(BaseSettings):
     QDRANT_COLLECTION: str = "govguide_schemes"
     QDRANT_STORAGE_PATH: str = "./qdrant_storage"
 
+    # Ingestion & Admin Security
+    INGEST_API_KEY: str = ""
+
     # MongoDB Settings
     MONGODB_URI: str = "mongodb://127.0.0.1:27017/govguide"
 

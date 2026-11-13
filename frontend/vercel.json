@@ -1,0 +1,18 @@
+{
+  "framework": "vite",
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://govguide-backend.onrender.com/api/:path*"
+    },
+    {
+      "source": "/ai-service/:path*",
+      "destination": "https://govguide-ai.onrender.com/:path*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
+

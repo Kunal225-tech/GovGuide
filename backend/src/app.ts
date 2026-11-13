@@ -8,8 +8,12 @@ import applicationRoutes from "./routes/applicationRoutes";
 import savedRoutes from "./routes/savedRoutes";
 import ingestionRoutes from "./routes/ingestionRoutes";
 import { errorHandler, notFoundHandler } from "./middleware/errorHandler";
+import { ENV } from "./config/env";
 
 const app = express();
+
+// Trust reverse proxy (Render, Railway, Nginx) so req.ip and rate limiters reflect true client IP
+app.set("trust proxy", 1);
 
 // Basic Security Headers Middleware
 app.use((_req, res, next) => {
@@ -20,10 +24,32 @@ app.use((_req, res, next) => {
   next();
 });
 
-// Configure CORS
+// Configure CORS with multi-origin and wildcard support
+const allowedOrigins = (ENV.CORS_ORIGIN || "http://localhost:5173")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN || "http://localhost:5173",
+    origin: (origin, callback) => {
+      // Allow requests with no origin (mobile apps, server-to-server, curl)
+      if (!origin) return callback(null, true);
+
+      const isAllowed = allowedOrigins.some((allowed) => {
+        if (allowed === "*" || allowed === origin) return true;
+        if (allowed.includes("*")) {
+          const regex = new RegExp("^" + allowed.replace(/\./g, "\\.").replace(/\*/g, ".*") + "$");
+          return regex.test(origin);
+        }
+        return false;
+      });
+
+      if (isAllowed) {
+        return callback(null, true);
+      }
+      return callback(new Error(`CORS policy violation: Origin '${origin}' is not allowed`));
+    },
     credentials: true,
   })
 );

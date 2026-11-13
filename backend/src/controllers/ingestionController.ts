@@ -8,10 +8,23 @@ import { IngestionOptions } from "../pipeline/types";
 const MAX_API_RECORDS = 1000;
 
 function isPathSafe(filePath: string): boolean {
+  if (!filePath || typeof filePath !== "string") return false;
+  if (filePath.includes("\0")) return false;
+
   const resolved = path.resolve(filePath);
   const cwd = path.resolve(process.cwd());
-  // Path must be within project directory or parent data directory
-  return resolved.startsWith(cwd) || resolved.includes("data");
+  const projectRoot = path.resolve(cwd, "..");
+
+  // Only allow paths strictly residing within project workspace or canonical data directories
+  const allowedRoots = [
+    cwd,
+    path.resolve(cwd, "data"),
+    path.resolve(projectRoot, "data"),
+  ];
+
+  return allowedRoots.some((allowedRoot) => {
+    return resolved === allowedRoot || resolved.startsWith(allowedRoot + path.sep);
+  });
 }
 
 export class IngestionController {
