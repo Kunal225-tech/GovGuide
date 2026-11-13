@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useAuth } from "@/context/AuthContext";
 import { useSavedSchemes } from "@/context/SavedSchemesContext";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/utils";
 
 interface SaveButtonProps {
   schemeId: string;
@@ -59,11 +60,13 @@ export function SaveButton({
         variant={saved ? "default" : "outline"}
         onClick={handleClick}
         disabled={isBusy}
-        className={`inline-flex items-center gap-2 rounded-md font-bold px-5 h-11 shadow-none transition-colors ${
+        className={cn(
+          "inline-flex items-center gap-2 rounded-md font-bold px-5 h-11 shadow-none transition-colors",
           saved
             ? "bg-saffron hover:bg-saffron/90 text-white border-transparent"
-            : "border-border text-navy hover:bg-surface-muted"
-        } ${className}`}
+            : "border-border text-navy hover:bg-surface-muted",
+          className
+        )}
         aria-label={actionLabel}
       >
         {isBusy ? (

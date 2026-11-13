@@ -9,9 +9,9 @@ import {
 
 const router = Router();
 
-// Scheme discovery routes (Protected by authMiddleware)
-router.get("/", authMiddleware, SchemeController.getAllSchemes);
-router.get("/:id", authMiddleware, SchemeController.getSchemeById);
+// Scheme discovery routes (Public read access)
+router.get("/", SchemeController.getAllSchemes);
+router.get("/:id", SchemeController.getSchemeById);
 
 // Admin-only management routes
 router.post(

@@ -23,31 +23,20 @@ const router = createBrowserRouter([
       { index: true, element: <HomePage /> },
       { path: 'how-it-works', element: <HowItWorksPage /> },
       { path: 'about', element: <AboutPage /> },
-      // --- Protected Scheme Discovery & Citizen Routes ---
+      // --- Public Scheme Discovery Routes ---
       {
         path: 'schemes',
-        element: (
-          <ProtectedRoute>
-            <SchemesPage />
-          </ProtectedRoute>
-        ),
+        element: <SchemesPage />,
       },
       {
         path: 'schemes/:id',
-        element: (
-          <ProtectedRoute>
-            <SchemeDetailsPage />
-          </ProtectedRoute>
-        ),
+        element: <SchemeDetailsPage />,
       },
       {
         path: 'categories',
-        element: (
-          <ProtectedRoute>
-            <CategoriesPage />
-          </ProtectedRoute>
-        ),
+        element: <CategoriesPage />,
       },
+      // --- Protected Citizen Routes ---
       {
         path: 'profile',
         element: (

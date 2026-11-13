@@ -8,7 +8,7 @@ export const register = async (
   try {
     const { name, email, password } = req.body;
 
-    const user = await registerUser({
+    const { user, token } = await registerUser({
       name,
       email,
       password,
@@ -17,6 +17,7 @@ export const register = async (
     res.status(201).json({
       success: true,
       message: "User registered successfully",
+      token,
       user: {
         id: user.id,
         _id: user._id,

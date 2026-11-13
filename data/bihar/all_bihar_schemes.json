@@ -1013,6 +1013,8 @@
     "name": "Mukhyamantri Vridhajan Pension Yojana (MVPY)",
     "aliases": [
       "MVPY Bihar",
+      "Mukhyamantri Vridhjan Pension Yojana",
+      "Vridhjan Pension Bihar",
       "Old Age Pension Bihar",
       "Bihar Vridha Pension",
       "मुख्यमंत्री वृद्धजन पेंशन योजना"
@@ -1074,6 +1076,7 @@
   {
     "name": "Laxmi Bai Social Security Pension Scheme",
     "aliases": [
+      "Laxmibai Social Security Pension Yojana",
       "Laxmibai Widow Pension",
       "Bihar Vidhwa Pension",
       "लक्ष्मीबाई सामाजिक सुरक्षा पेंशन योजना"
@@ -1761,6 +1764,611 @@
         "Job Seeker",
         "Driver",
         "Self Employed"
+      ],
+      "isVerified": true,
+      "isComplete": true,
+      "hasUnsupportedCriteria": false,
+      "unsupportedCriteria": []
+    }
+  },
+  {
+    "name": "Bihar Laghu Udyami Yojana",
+    "aliases": [
+      "BLUY",
+      "Laghu Udyami Yojana",
+      "Bihar 2 Lakh Grant Scheme",
+      "बिहार लघु उद्यमी योजना",
+      "लघु उद्यमी योजना"
+    ],
+    "category": "Entrepreneurship",
+    "level": "state",
+    "state": "Bihar",
+    "applicableStates": [
+      "Bihar"
+    ],
+    "schemeType": "state",
+    "verificationStatus": "verified",
+    "description": "State capital grant scheme providing Rs. 2,00,000 in three non-refundable installments to poor families across all categories in Bihar with monthly income up to Rs. 6,000 (annual income up to Rs. 72,000) to launch micro-enterprises.",
+    "benefits": [
+      "100% non-refundable capital grant of up to Rs. 2,00,000 per eligible household (zero repayment)",
+      "Disbursed directly in 3 milestone installments: 25% (Rs. 50,000) + 50% (Rs. 1,00,000) + 25% (Rs. 50,000)",
+      "Covers 62 approved manufacturing, artisan, food processing, handicraft, and service trades",
+      "Equal eligibility across General, OBC/BC, EBC, SC, ST, EWS, and Minority families"
+    ],
+    "eligibility": [
+      "Permanent resident of Bihar",
+      "Age between 18 and 50 years",
+      "Family monthly income must not exceed Rs. 6,000 (annual income <= Rs. 72,000) certified via RTPS",
+      "Open to all social categories (General, OBC, BC, EBC, SC, ST, Minority) where no family member has received Mukhyamantri Udyami Yojana benefits"
+    ],
+    "exclusions": [
+      "Existing beneficiaries of the Rs. 10 Lakh Mukhyamantri Udyami Yojana",
+      "Families with annual income exceeding Rs. 72,000"
+    ],
+    "requiredDocuments": [
+      "Aadhaar Card linked with active mobile number (Bihar residential address)",
+      "Income Certificate (<= Rs. 72,000/year) issued on ServicePlus RTPS",
+      "Bihar Residential Certificate and Caste Certificate (if applicable)",
+      "Age Proof (Matric Certificate, Birth Certificate, PAN, or Aadhaar)",
+      "Cancelled Cheque or Aadhaar-seeded Bank Passbook"
+    ],
+    "applicationProcess": [
+      "Register online on Bihar Industries Department portal: udyami.bihar.gov.in",
+      "Verify identity via Aadhaar OTP and upload RTPS Income and Residence certificates",
+      "Computerized selection and phased 3-installment DBT release"
+    ],
+    "officialUrl": "https://udyami.bihar.gov.in",
+    "applicationUrl": "https://udyami.bihar.gov.in",
+    "source": "Department of Industries, Government of Bihar",
+    "sourcePlatform": "official-portal",
+    "status": "active",
+    "hasDeterministicRule": true,
+    "rule": {
+      "minAge": 18,
+      "maxAge": 50,
+      "maxAnnualIncome": 72000,
+      "states": [
+        "Bihar"
+      ],
+      "isVerified": true,
+      "isComplete": true,
+      "hasUnsupportedCriteria": false,
+      "unsupportedCriteria": []
+    }
+  },
+  {
+    "name": "Mukhyamantri Civil Seva Protsahan Yojana",
+    "aliases": [
+      "CM Civil Seva Protsahan Bihar",
+      "Bihar Civil Seva Protsahan",
+      "BPSC UPSC Incentive Bihar",
+      "मुख्यमंत्री सिविल सेवा प्रोत्साहन योजना"
+    ],
+    "category": "Education",
+    "level": "state",
+    "state": "Bihar",
+    "applicableStates": [
+      "Bihar"
+    ],
+    "schemeType": "state",
+    "verificationStatus": "verified",
+    "description": "Umbrella merit incentive by Government of Bihar granting Rs. 50,000 for clearing BPSC Preliminary Examination and Rs. 1,00,000 for clearing UPSC Civil Services Preliminary Examination to eligible SC, ST, EBC, and Women candidates.",
+    "benefits": [
+      "One-time Rs. 50,000 direct cash incentive upon clearing BPSC Combined Competitive Preliminary Exam",
+      "One-time Rs. 1,00,000 direct cash incentive upon clearing UPSC Civil Services Preliminary Exam",
+      "Supports Mains & Interview coaching, books, and residential preparation expenses with zero repayment"
+    ],
+    "eligibility": [
+      "Permanent resident of Bihar",
+      "Belonging to Scheduled Caste (SC), Scheduled Tribe (ST), Extremely Backward Class (EBC / BC-1), Backward Class (OBC/BC under eligible welfare drives), or Women candidates of any category",
+      "Minimum graduate qualification and age 21 to 42 years, having cleared BPSC or UPSC Preliminary Exam"
+    ],
+    "exclusions": [
+      "Candidates already employed in regular Central/State government or PSU service",
+      "Candidates who have previously availed this same preliminary incentive"
+    ],
+    "requiredDocuments": [
+      "BPSC / UPSC Prelims Admit Card and Official Result Proof",
+      "Aadhaar Card and Bihar Domicile Certificate (RTPS)",
+      "Caste Certificate (for SC/ST/EBC/OBC categories)",
+      "Graduation Degree / Certificate and Bank Passbook"
+    ],
+    "applicationProcess": [
+      "Apply online via SC/ST or BC/EBC Welfare portal or WCDC Bihar portal",
+      "Upload Preliminary Examination admit card and domicile/caste certificates",
+      "Direct DBT transfer to bank account after result cross-verification"
+    ],
+    "officialUrl": "https://bcebcwelfare.bihar.gov.in",
+    "applicationUrl": "https://scstwelfare.bih.nic.in",
+    "source": "SC/ST Welfare, BC & EBC Welfare and WCDC Departments, Government of Bihar",
+    "sourcePlatform": "official-portal",
+    "status": "active",
+    "hasDeterministicRule": true,
+    "rule": {
+      "minAge": 21,
+      "maxAge": 42,
+      "categories": [
+        "SC",
+        "ST",
+        "EBC",
+        "OBC",
+        "BC"
+      ],
+      "categoryExemptGenders": [
+        "Female"
+      ],
+      "educationLevels": [
+        "Graduate",
+        "Post Graduate",
+        "Doctorate (PhD)"
+      ],
+      "states": [
+        "Bihar"
+      ],
+      "isVerified": true,
+      "isComplete": true,
+      "hasUnsupportedCriteria": false,
+      "unsupportedCriteria": []
+    }
+  },
+  {
+    "name": "Bihar Rajya Fasal Sahayata Yojana",
+    "aliases": [
+      "BRFSY",
+      "Fasal Sahayata Bihar",
+      "Bihar Crop Assistance",
+      "बिहार राज्य फसल सहायता योजना",
+      "फसल सहायता योजना"
+    ],
+    "category": "Agriculture",
+    "level": "state",
+    "state": "Bihar",
+    "applicableStates": [
+      "Bihar"
+    ],
+    "schemeType": "state",
+    "verificationStatus": "verified",
+    "description": "Zero-premium state crop damage assistance scheme by Bihar Cooperative Department providing Rs. 7,500 per hectare (up to 20% yield loss) and Rs. 10,000 per hectare (above 20% yield loss) for Raiyat and Non-Raiyat farmers.",
+    "benefits": [
+      "Rs. 7,500 per hectare compensation when notified crop yield loss is up to 20%",
+      "Rs. 10,000 per hectare compensation when crop yield loss exceeds 20% (up to maximum 2 hectares / Rs. 20,000)",
+      "100% state-funded with zero insurance premium payable by farmers",
+      "Equal coverage for both Raiyat (landowner) and Non-Raiyat (sharecropper/bataidar) cultivators"
+    ],
+    "eligibility": [
+      "Permanent resident farmer of Bihar aged 18 years or above",
+      "Registered on Bihar DBT Agriculture portal",
+      "Cultivating notified Kharif or Rabi crops as landowner (Raiyat) or sharecropper (Non-Raiyat)"
+    ],
+    "exclusions": [
+      "Non-notified crops outside departmental Panchayat lists",
+      "Claims exceeding the 2-hectare ceiling per season"
+    ],
+    "requiredDocuments": [
+      "DBT Agriculture Farmer Registration ID (Bihar)",
+      "Aadhaar Card and Aadhaar-linked Bank Account",
+      "LPC / Land Revenue Receipt (for Raiyat farmers)",
+      "Self-Declaration countersigned by Ward Member / Kisan Salahkar (for Non-Raiyat sharecroppers)"
+    ],
+    "applicationProcess": [
+      "Ensure Farmer Registration on dbtagriculture.bihar.gov.in",
+      "Submit crop declaration on Cooperative Department portal (pacsonline.bih.nic.in/fsy)",
+      "Automatic Panchayat-level Crop Cutting Experiment assessment and DBT payout"
+    ],
+    "officialUrl": "https://pacsonline.bih.nic.in/fsy",
+    "applicationUrl": "https://state.bihar.gov.in/cooperative",
+    "source": "Cooperative Department, Government of Bihar",
+    "sourcePlatform": "official-portal",
+    "status": "active",
+    "hasDeterministicRule": true,
+    "rule": {
+      "minAge": 18,
+      "occupations": [
+        "Farmer",
+        "Agriculture",
+        "Cultivator"
+      ],
+      "states": [
+        "Bihar"
+      ],
+      "isVerified": true,
+      "isComplete": true,
+      "hasUnsupportedCriteria": false,
+      "unsupportedCriteria": []
+    }
+  },
+  {
+    "name": "Satat Jeevikoparjan Yojana (SJY)",
+    "aliases": [
+      "SJY Bihar",
+      "Ultra Poor Livelihood Bihar",
+      "JEEViKA SJY",
+      "सतत जीविकोपार्जन योजना"
+    ],
+    "category": "Financial Assistance",
+    "level": "state",
+    "state": "Bihar",
+    "applicableStates": [
+      "Bihar"
+    ],
+    "schemeType": "state",
+    "verificationStatus": "verified",
+    "description": "Targeted JEEViKA ultra-poor graduation initiative delivering grant-based productive assets, enterprise training, and Rs. 1,000 monthly subsistence allowance totaling up to Rs. 1,00,000 - Rs. 2,00,000 for extremely poor Bihar households.",
+    "benefits": [
+      "Productive asset and business inventory grant of Rs. 60,000 to Rs. 2,00,000 (non-refundable)",
+      "Monthly consumption/subsistence gap stipend of Rs. 1,000 for up to 7 months",
+      "Dedicated coaching by JEEViKA Master Resource Persons (MRPs) and enterprise bookkeeping",
+      "Integrated linkage to Ration Card, Ayushman Bharat, and social security pensions"
+    ],
+    "eligibility": [
+      "Rural resident household in Bihar identified as ultra-poor or extremely vulnerable",
+      "Household annual income <= Rs. 72,000 (landless, destitute, single-woman-headed, or former toddy/country-liquor dependent households)",
+      "Applicant aged 18 to 60 years"
+    ],
+    "exclusions": [
+      "Affluent households with salaried government employment or substantial irrigated landholdings"
+    ],
+    "requiredDocuments": [
+      "Aadhaar Card",
+      "Bihar Residential / Domicile Proof",
+      "BPL / Antyodaya Ration Card or RTPS Income Certificate (<= Rs. 72,000)",
+      "Savings Bank Passbook"
+    ],
+    "applicationProcess": [
+      "Identification via Gram Sabha and JEEViKA Village Organization (VO) Participatory Identification of Poor",
+      "Micro-Investment Plan approval with JEEViKA CRP/MRP",
+      "Direct DBT transfer of subsistence and enterprise asset funds via BRLPS"
+    ],
+    "officialUrl": "https://brlps.in",
+    "applicationUrl": "https://brlps.in",
+    "source": "Bihar Rural Livelihoods Promotion Society (JEEViKA), Government of Bihar",
+    "sourcePlatform": "official-portal",
+    "status": "active",
+    "hasDeterministicRule": true,
+    "rule": {
+      "minAge": 18,
+      "maxAge": 60,
+      "maxAnnualIncome": 72000,
+      "states": [
+        "Bihar"
+      ],
+      "isVerified": true,
+      "isComplete": true,
+      "hasUnsupportedCriteria": false,
+      "unsupportedCriteria": []
+    }
+  },
+  {
+    "name": "Mukhyamantri Prakhand Parivahan Yojana",
+    "aliases": [
+      "Prakhand Parivahan Bihar",
+      "Block Bus Subsidy Bihar",
+      "MPPY",
+      "मुख्यमंत्री प्रखंड परिवहन योजना"
+    ],
+    "category": "Employment",
+    "level": "state",
+    "state": "Bihar",
+    "applicableStates": [
+      "Bihar"
+    ],
+    "schemeType": "state",
+    "verificationStatus": "verified",
+    "description": "State transport employment scheme granting Rs. 5,00,000 subsidy per bus to eligible unemployed youth across Bihar blocks to strengthen block-to-district headquarters bus connectivity.",
+    "benefits": [
+      "Flat Rs. 5,00,000 (Five Lakh) direct subsidy towards purchase of a new passenger bus",
+      "Covers 7 selected beneficiaries per eligible block across reserved and general categories",
+      "Creates sustainable rural-urban passenger transport entrepreneurship"
+    ],
+    "eligibility": [
+      "Permanent resident of the concerned rural Block in Bihar (excluding district headquarter blocks)",
+      "Age 18 years or above and not in government employment",
+      "Must hold valid driving license or engage a licensed heavy passenger vehicle driver"
+    ],
+    "exclusions": [
+      "Residents of district headquarter blocks",
+      "Government or public sector employees"
+    ],
+    "requiredDocuments": [
+      "Aadhaar Card and Bihar Residence Certificate (RTPS)",
+      "Caste Certificate (for SC/ST/EBC/BC/Minority quota)",
+      "10th / Matriculation Marksheet",
+      "Valid Driving License and Bank Account Passbook"
+    ],
+    "applicationProcess": [
+      "Apply online on Bihar Transport Department portal (transport.bihar.gov.in)",
+      "Merit-cum-seniority block selection by District Transport Officer (DTO) committee",
+      "Submit vehicle purchase invoice and permit for Rs. 5 Lakh DBT release"
+    ],
+    "officialUrl": "https://state.bihar.gov.in/transport",
+    "applicationUrl": "https://state.bihar.gov.in/transport",
+    "source": "Transport Department, Government of Bihar",
+    "sourcePlatform": "official-portal",
+    "status": "active",
+    "hasDeterministicRule": true,
+    "rule": {
+      "minAge": 18,
+      "maxAge": 60,
+      "occupations": [
+        "Unemployed",
+        "Job Seeker",
+        "Driver",
+        "Self Employed"
+      ],
+      "states": [
+        "Bihar"
+      ],
+      "isVerified": true,
+      "isComplete": true,
+      "hasUnsupportedCriteria": false,
+      "unsupportedCriteria": []
+    }
+  },
+  {
+    "name": "Mukhyamantri Alpsankhyak Rozgar Rin Yojana",
+    "aliases": [
+      "Minority Employment Loan Bihar",
+      "Alpsankhyak Udyami Loan",
+      "मुख्यमंत्री अल्पसंख्यक रोजगार ऋण योजना"
+    ],
+    "category": "Entrepreneurship",
+    "level": "state",
+    "state": "Bihar",
+    "applicableStates": [
+      "Bihar"
+    ],
+    "schemeType": "state",
+    "verificationStatus": "verified",
+    "description": "Concessional enterprise loan of Rs. 1,00,000 to Rs. 5,00,000 at 5% simple annual interest (5% rebate on timely repayment) implemented by Bihar State Minorities Financial Corporation.",
+    "benefits": [
+      "Business startup or expansion loan from Rs. 1,00,000 up to Rs. 5,00,000",
+      "Low 5% simple interest rate with moratorium before installment recovery begins",
+      "5% additional interest rebate for prompt repayment of installments"
+    ],
+    "eligibility": [
+      "Permanent resident of Bihar belonging to notified Minority community (Muslim, Christian, Sikh, Buddhist, Jain, Parsi)",
+      "Age 18 to 50 years",
+      "Annual family income not exceeding Rs. 4,00,000"
+    ],
+    "exclusions": [
+      "Regular government employees and loan defaulters"
+    ],
+    "requiredDocuments": [
+      "Aadhaar Card and Bihar Residence Certificate",
+      "Income Certificate (<= Rs. 4,00,000/yr) issued via RTPS",
+      "Minority Community Certificate / Affidavit",
+      "Project Proposal and Bank Account Details"
+    ],
+    "applicationProcess": [
+      "Apply through District Minority Welfare Office or Bihar State Minorities Financial Corporation (bsmfc.org)",
+      "District-level screening committee approval and loan disbursement"
+    ],
+    "officialUrl": "https://bsmfc.org",
+    "applicationUrl": "https://state.bihar.gov.in/minoritywelfare",
+    "source": "Minority Welfare Department, Government of Bihar",
+    "sourcePlatform": "official-portal",
+    "status": "active",
+    "hasDeterministicRule": true,
+    "rule": {
+      "minAge": 18,
+      "maxAge": 50,
+      "maxAnnualIncome": 400000,
+      "categories": [
+        "Minority"
+      ],
+      "states": [
+        "Bihar"
+      ],
+      "isVerified": true,
+      "isComplete": true,
+      "hasUnsupportedCriteria": false,
+      "unsupportedCriteria": []
+    }
+  },
+  {
+    "name": "Har Ghar Nal Ka Jal Yojana (Saat Nischay)",
+    "aliases": [
+      "Nal Ka Jal Yojana",
+      "Mukhyamantri Gramin Peyjal Nischay",
+      "हर घर नल का जल योजना"
+    ],
+    "category": "Social Welfare",
+    "level": "state",
+    "state": "Bihar",
+    "applicableStates": [
+      "Bihar"
+    ],
+    "schemeType": "state",
+    "verificationStatus": "verified",
+    "description": "Flagship Saat Nischay mission guaranteeing safe, treated piped drinking water tap connection directly to every rural and urban household in Bihar free of connection charges.",
+    "benefits": [
+      "Free piped household tap water connection supplying clean treated water (70 LPCD norm)",
+      "Special iron, fluoride, and arsenic treatment plants in affected districts of Bihar",
+      "Community maintenance grant through Ward Implementation & Management Committee (WIMC)"
+    ],
+    "eligibility": [
+      "Every residential household located in any Gram Panchayat or Urban Local Body of Bihar"
+    ],
+    "exclusions": [
+      "Commercial industrial water plants"
+    ],
+    "requiredDocuments": [
+      "Aadhaar Card or Voter ID of head of household",
+      "Proof of Bihar residence / Ward household entry"
+    ],
+    "applicationProcess": [
+      "Contact Ward Member / Ward Implementation & Management Committee (WIMC) or PHED / Panchayati Raj office",
+      "Register grievances or pending tap connection requests on PHED / Nishchay complaint helpline (1800-123-1121)"
+    ],
+    "officialUrl": "https://state.bihar.gov.in/phed",
+    "applicationUrl": "https://state.bihar.gov.in/prdbihar",
+    "source": "PHED & Panchayati Raj Department, Government of Bihar",
+    "sourcePlatform": "official-portal",
+    "status": "active",
+    "hasDeterministicRule": true,
+    "rule": {
+      "states": [
+        "Bihar"
+      ],
+      "isVerified": true,
+      "isComplete": true,
+      "hasUnsupportedCriteria": false,
+      "unsupportedCriteria": []
+    }
+  },
+  {
+    "name": "Har Ghar Bijli Lagatar Yojana (Saat Nischay)",
+    "aliases": [
+      "Har Ghar Bijli Yojana",
+      "Mukhyamantri Vidyut Sambandh Nischay",
+      "हर घर बिजली लगातार"
+    ],
+    "category": "Social Welfare",
+    "level": "state",
+    "state": "Bihar",
+    "applicableStates": [
+      "Bihar"
+    ],
+    "schemeType": "state",
+    "verificationStatus": "verified",
+    "description": "Saat Nischay power access program providing free domestic electricity service connections and state tariff subsidy through NBPDCL and SBPDCL across every household in Bihar.",
+    "benefits": [
+      "Free new domestic electricity connection and smart/digital energy meter without upfront connection fee",
+      "State government Mukhyamantri Vidyut Upbhokta Sahayata subsidy reducing per-unit household tariffs",
+      "Priority agricultural feeder and solar street light linkage under Saat Nischay-2"
+    ],
+    "eligibility": [
+      "All un-electrified or residential domestic households in rural and urban Bihar"
+    ],
+    "exclusions": [
+      "Commercial or heavy industrial tariff connections"
+    ],
+    "requiredDocuments": [
+      "Aadhaar Card or Voter ID",
+      "House Ownership / Occupancy proof or Ward declaration",
+      "Active Mobile Number for Suvidha App OTP"
+    ],
+    "applicationProcess": [
+      "Apply online via Bihar Bijli Suvidha Mobile App or Har Ghar Bijli portal (hargharbijli.bsphcl.co.in)",
+      "Choose NBPDCL (North Bihar) or SBPDCL (South Bihar) distribution company",
+      "Track meter installation within 7-15 days"
+    ],
+    "officialUrl": "https://hargharbijli.bsphcl.co.in",
+    "applicationUrl": "https://suvidha.bsphcl.co.in",
+    "source": "Energy Department (BSPHCL / NBPDCL / SBPDCL), Government of Bihar",
+    "sourcePlatform": "official-portal",
+    "status": "active",
+    "hasDeterministicRule": true,
+    "rule": {
+      "states": [
+        "Bihar"
+      ],
+      "isVerified": true,
+      "isComplete": true,
+      "hasUnsupportedCriteria": false,
+      "unsupportedCriteria": []
+    }
+  },
+  {
+    "name": "Mukhyamantri Gramin Gali-Nali Pakkikaran Nischay Yojana",
+    "aliases": [
+      "Gali Nali Yojana",
+      "Pakkikaran Nischay Bihar",
+      "पक्की गली नाली योजना"
+    ],
+    "category": "Housing",
+    "level": "state",
+    "state": "Bihar",
+    "applicableStates": [
+      "Bihar"
+    ],
+    "schemeType": "state",
+    "verificationStatus": "verified",
+    "description": "Saat Nischay rural infrastructure program constructing all-weather PCC concrete lanes (gali) and covered household drains (nali) connecting every rural habitation ward across Bihar.",
+    "benefits": [
+      "All-weather PCC / paver-block street construction linking rural homes to main village roads",
+      "Covered brick/concrete drainage system preventing monsoon waterlogging and vector-borne diseases",
+      "Direct Gram Sabha and Ward Sabha planning for transparent public execution"
+    ],
+    "eligibility": [
+      "All rural wards and habitations across all 38 districts of Bihar"
+    ],
+    "exclusions": [
+      "Private gated properties outside public village pathways"
+    ],
+    "requiredDocuments": [
+      "Ward Sabha Resolution / Citizen Petition (no individual fee or document required)"
+    ],
+    "applicationProcess": [
+      "Propose lane/drain coverage during Ward Sabha meeting via Ward Member and Panchayat Secretary",
+      "Approval under Gram Panchayat Development Plan (GPDP) and execution via WIMC"
+    ],
+    "officialUrl": "https://state.bihar.gov.in/prdbihar",
+    "applicationUrl": "https://state.bihar.gov.in/prdbihar",
+    "source": "Panchayati Raj Department, Government of Bihar",
+    "sourcePlatform": "official-portal",
+    "status": "active",
+    "hasDeterministicRule": true,
+    "rule": {
+      "states": [
+        "Bihar"
+      ],
+      "isVerified": true,
+      "isComplete": true,
+      "hasUnsupportedCriteria": false,
+      "unsupportedCriteria": []
+    }
+  },
+  {
+    "name": "Lohia Swachh Bihar Abhiyan (LSBA)",
+    "aliases": [
+      "LSBA Bihar",
+      "Swachh Bihar Toilet Subsidy",
+      "Sauchaalay Nirman Anudan Bihar",
+      "लोहिया स्वच्छ बिहार अभियान"
+    ],
+    "category": "Healthcare",
+    "level": "state",
+    "state": "Bihar",
+    "applicableStates": [
+      "Bihar"
+    ],
+    "schemeType": "state",
+    "verificationStatus": "verified",
+    "description": "State sanitation mission under Saat Nischay & SBM-G offering Rs. 12,000 financial incentive for construction of Individual Household Latrines (IHHL) and ODF Plus waste management in rural Bihar.",
+    "benefits": [
+      "Direct DBT cash incentive of Rs. 12,000 per eligible household after construction and geo-tagged verification of toilet",
+      "Solid and liquid waste management (Swachhta Karmi collection & compost units) at Gram Panchayat level",
+      "Promotes household dignity, public hygiene, and clean water protection"
+    ],
+    "eligibility": [
+      "Permanent rural resident of Bihar aged 18 years or above without an existing functional household toilet",
+      "Priority to BPL, SC/ST, small/marginal farmers, landless labourers, and households with annual income <= Rs. 1,80,000"
+    ],
+    "exclusions": [
+      "Households that have already availed toilet construction grant previously"
+    ],
+    "requiredDocuments": [
+      "Aadhaar Card and Ration Card / BPL details",
+      "Geo-tagged photograph of constructed household toilet",
+      "Aadhaar-linked Bank Passbook and Bihar Residence details"
+    ],
+    "applicationProcess": [
+      "Apply online via SBM-G / LSBA portal (sbm.gov.in) or through Gram Panchayat Swachhagrahi / Block Coordinator",
+      "Block verification and geo-tagging after unit completion",
+      "Direct DBT transfer of Rs. 12,000 to beneficiary bank account"
+    ],
+    "officialUrl": "https://lsba.bih.nic.in",
+    "applicationUrl": "https://sbm.gov.in",
+    "source": "Rural Development Department (LSBA), Government of Bihar",
+    "sourcePlatform": "official-portal",
+    "status": "active",
+    "hasDeterministicRule": true,
+    "rule": {
+      "minAge": 18,
+      "maxAnnualIncome": 180000,
+      "states": [
+        "Bihar"
       ],
       "isVerified": true,
       "isComplete": true,

@@ -56,16 +56,17 @@ async function runTestSuite(): Promise<void> {
     const testAdminEmail = `test_admin_${Date.now()}@example.com`;
 
     // 1.1 Register regular citizen
-    const citizen = await registerUser({
+    const { user: citizen, token: citizenRegisterToken } = await registerUser({
       name: "Citizen Tester",
       email: testUserEmail,
       password: "password123",
       role: "user",
     });
     assert(citizen.role === "user", "Citizen defaults to role='user'");
+    assert(typeof citizenRegisterToken === "string" && citizenRegisterToken.length > 20, "Registration returns JWT token");
 
     // 1.2 Register admin
-    const admin = await registerUser({
+    const { user: admin } = await registerUser({
       name: "Admin Tester",
       email: testAdminEmail,
       password: "adminpassword123",

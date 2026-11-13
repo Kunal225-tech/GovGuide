@@ -1,4 +1,5 @@
-import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
   Compass,
@@ -12,6 +13,8 @@ import {
   BookOpen,
   Building2,
   FileCheck2,
+  Scale,
+  Lock,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -20,6 +23,17 @@ import { Button } from "@/components/ui/button";
 export function AboutPage() {
   const { t, i18n } = useTranslation();
   const isHi = i18n.language === "hi";
+  const { hash } = useLocation();
+
+  useEffect(() => {
+    const targetHash = hash || window.location.hash;
+    if (!targetHash) return;
+    const elementId = targetHash.replace(/^#/, "");
+    const target = document.getElementById(elementId);
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [hash]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -309,6 +323,114 @@ export function AboutPage() {
               <Link to="/how-it-works">{t('nav.howItWorks')}</Link>
             </Button>
           </div>
+        </section>
+
+        {/* ===== SECTION 6: TERMS OF USE (#terms) ===== */}
+        <section id="terms" className="scroll-mt-24 pt-4">
+          <Card className="border-border bg-card shadow-none">
+            <CardHeader className="pb-3 border-b border-border/60">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-md bg-stone-100 dark:bg-[#292826] border border-border flex items-center justify-center text-navy">
+                  <Scale className="w-4 h-4 text-primary" />
+                </div>
+                <div>
+                  <span className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
+                    {isHi ? "सेवा की शर्तें" : "Civic Portal Governance"}
+                  </span>
+                  <CardTitle className="text-xl text-navy">
+                    {isHi ? "उपयोग की शर्तें (Terms of Use)" : "Terms of Use"}
+                  </CardTitle>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="pt-5 space-y-3 text-sm text-muted-foreground leading-relaxed">
+              <p>
+                {isHi
+                  ? "GovGuide बिहार के नागरिकों को केंद्र और बिहार राज्य सरकार की कल्याणकारी योजनाओं की जानकारी, पात्रता विश्लेषण और आवेदन मार्गदर्शन प्रदान करने वाला एक स्वतंत्र सूचनात्मक पोर्टल है।"
+                  : "GovGuide is an independent civic information and eligibility guidance portal designed to help Bihar residents discover Central and Bihar State welfare schemes and prepare application checklists."}
+              </p>
+              <ul className="space-y-2 list-disc pl-5">
+                <li>
+                  <strong className="text-navy font-semibold">
+                    {isHi ? "आधिकारिक पोर्टल पर आवेदन:" : "Official Portal Submission:"}
+                  </strong>{" "}
+                  {isHi
+                    ? "GovGuide आवेदन फॉर्म एकत्र नहीं करता और न ही किसी योजना की स्वीकृति देता है। सभी अंतिम आवेदन संबंधित सरकारी पोर्टल (जैसे ServicePlus, RTPS, या आधिकारिक मंत्रालयों) पर ही जमा किए जाने चाहिए।"
+                    : "GovGuide does not collect official applications or issue approvals. All formal submissions must be completed directly on the authorized government portal or designated DRCC/RTPS facilitation centre."}
+                </li>
+                <li>
+                  <strong className="text-navy font-semibold">
+                    {isHi ? "सूचना की सटीकता:" : "Verification Responsibility:"}
+                  </strong>{" "}
+                  {isHi
+                    ? "योजना की पात्रता, लाभ राशि और समय-सीमा विभागीय अधिसूचनाओं के अनुसार बदल सकती है। नागरिकों को आवेदन से पहले आधिकारिक वेबसाइट पर नवीनतम दिशानिर्देश जांचने की सलाह दी जाती है।"
+                    : "Scheme guidelines, financial benefits, and cut-off dates remain subject to departmental notifications. Citizens are advised to verify final requirements on the linked official portal before submitting."}
+                </li>
+                <li>
+                  <strong className="text-navy font-semibold">
+                    {isHi ? "निःशुल्क उपयोग:" : "Non-Commercial Access:"}
+                  </strong>{" "}
+                  {isHi
+                    ? "यह पोर्टल नागरिकों के व्यक्तिगत और सूचनात्मक उपयोग के लिए पूरी तरह निःशुल्क है; किसी भी बिचौलिए को शुल्क का भुगतान न करें।"
+                    : "This portal is provided strictly free of cost for personal citizen use. GovGuide never authorizes intermediaries to charge fees for scheme discovery or eligibility checks."}
+                </li>
+              </ul>
+            </CardContent>
+          </Card>
+        </section>
+
+        {/* ===== SECTION 7: PRIVACY POLICY (#privacy) ===== */}
+        <section id="privacy" className="scroll-mt-24">
+          <Card className="border-border bg-card shadow-none">
+            <CardHeader className="pb-3 border-b border-border/60">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-md bg-stone-100 dark:bg-[#292826] border border-border flex items-center justify-center text-navy">
+                  <Lock className="w-4 h-4 text-emerald-700 dark:text-emerald-400" />
+                </div>
+                <div>
+                  <span className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
+                    {isHi ? "डेटा संरक्षण नीति" : "Citizen Data Safeguards"}
+                  </span>
+                  <CardTitle className="text-xl text-navy">
+                    {isHi ? "गोपनीयता एवं डेटा सुरक्षा नीति (Privacy Policy)" : "Privacy & Data Protection Policy"}
+                  </CardTitle>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="pt-5 space-y-3 text-sm text-muted-foreground leading-relaxed">
+              <p>
+                {isHi
+                  ? "हम नागरिक गोपनीयता और डेटा न्यूनतमकरण (Data Minimization) के सिद्धांतों का पालन करते हैं। आपकी प्रोफ़ाइल जानकारी का उपयोग केवल आपके लिए उपयुक्त योजनाओं और पात्रता मिलान दिखाने हेतु किया जाता है।"
+                  : "GovGuide follows strict data-minimization principles. Profile details you enter are used exclusively to compute deterministic scheme eligibility and personalize guidance within your session."}
+              </p>
+              <ul className="space-y-2 list-disc pl-5">
+                <li>
+                  <strong className="text-navy font-semibold">
+                    {isHi ? "क्या संग्रहीत किया जाता है:" : "Information Stored:"}
+                  </strong>{" "}
+                  {isHi
+                    ? "खाता पंजीकरण के लिए नाम व ईमेल और पात्रता मिलान हेतु वैकल्पिक जनसांख्यिकीय विवरण (आयु, आय सीमा, श्रेणी, व्यवसाय, जिला) सुरक्षित रूप से रखे जाते हैं।"
+                    : "Account registration stores your name and email address along with optional demographic fields (age, income bracket, social category, occupation, district) needed for eligibility matching."}
+                </li>
+                <li>
+                  <strong className="text-navy font-semibold">
+                    {isHi ? "कोई आधार या बायोमेट्रिक संग्रह नहीं:" : "No Aadhaar or Biometric Storage:"}
+                  </strong>{" "}
+                  {isHi
+                    ? "GovGuide आपका आधार नंबर, बैंक खाता विवरण या बायोमेट्रिक डेटा न तो मांगता है और न ही संग्रहीत करता है।"
+                    : "GovGuide never collects, verifies, or stores Aadhaar numbers, PAN credentials, bank account numbers, or biometric records."}
+                </li>
+                <li>
+                  <strong className="text-navy font-semibold">
+                    {isHi ? "डेटा नियंत्रण व सुरक्षा:" : "Access Control & Transparency:"}
+                  </strong>{" "}
+                  {isHi
+                    ? "पासवर्ड एन्क्रिप्टेड रूप में सुरक्षित रहते हैं और आपकी प्रोफ़ाइल जानकारी किसी तृतीय-पक्ष विज्ञापनदाता को कभी नहीं बेची या साझा की जाती है। आप किसी भी समय अपनी प्रोफ़ाइल संपादित कर सकते हैं।"
+                    : "Account credentials are encrypted using industry-standard hashing, and citizen profiles are never sold or shared with third-party advertisers. You may update your profile details at any time."}
+                </li>
+              </ul>
+            </CardContent>
+          </Card>
         </section>
       </div>
     </div>

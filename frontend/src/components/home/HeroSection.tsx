@@ -16,7 +16,6 @@ import {
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { TrustSection } from './TrustSection';
-import { useAuth } from '@/context/AuthContext';
 import { getSchemes } from '@/services/schemeApi';
 
 const DIRECTORY_CATEGORIES = [
@@ -33,7 +32,6 @@ export function HeroSection() {
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryCounts, setCategoryCounts] = useState<Record<string, number> | null>(null);
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
   const isHi = i18n.language === 'hi';
 
   useEffect(() => {
@@ -61,13 +59,6 @@ export function HeroSection() {
 
   function executeSearch(queryText: string) {
     const query = queryText.trim();
-    if (!isAuthenticated) {
-      navigate('/login', {
-        state: { from: query ? `/schemes?q=${encodeURIComponent(query)}` : '/schemes' },
-      });
-      return;
-    }
-
     if (!query) {
       navigate('/schemes');
       return;

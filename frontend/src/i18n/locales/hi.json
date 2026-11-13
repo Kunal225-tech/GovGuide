@@ -201,7 +201,21 @@
     "incomeLimit": "अधिकतम वार्षिक आय",
     "categoryRequirement": "जाति / सामाजिक वर्ग",
     "employmentRequirement": "रोजगार की स्थिति",
-    "residenceRequirement": "लागू राज्य"
+    "residenceRequirement": "लागू राज्य",
+    "quickOverview": "त्वरित सारांश",
+    "department": "विभाग",
+    "targetCategory": "लक्षित वर्ग",
+    "ageLimit": "आयु सीमा",
+    "trainingStipend": "प्रशिक्षण भत्ता",
+    "jurisdiction": "अधिकार क्षेत्र",
+    "minEducation": "न्यूनतम शिक्षा",
+    "eligibilityMatchTitle": "प्रोफ़ाइल पात्रता जांच",
+    "profileEligible": "आपकी प्रोफ़ाइल इस योजना के स्वचालित पात्रता मानदंडों को पूरा करती है।",
+    "profileIncompleteNotice": "यह जांचने के लिए अपनी नागरिक प्रोफ़ाइल पूरी करें कि आपकी आयु, वर्ग और जिला इस योजना से कैसे मेल खाते हैं।",
+    "profileMissingFields": "पूर्ण पात्रता जांच के लिए अपनी प्रोफ़ाइल में {{fields}} जोड़ें।",
+    "updateProfile": "प्रोफ़ाइल अपडेट करें",
+    "viewEligibility": "विवरण देखें",
+    "yourProfileLabel": "आपकी प्रोफ़ाइल"
   },
   "eligible": {
     "title": "व्यक्तिगत योजना पात्रता",
@@ -312,7 +326,7 @@
       "self-employed": "स्वरोजगार / व्यवसायी (Self-Employed)"
     },
     "disability": "दिव्यांगजन (PwD)",
-    "saveProfile": "प्रोफ़ाइल सहेजें",
+    "saveProfile": "प्रोफ़ाइल बदलाव सहेजें",
     "savedSuccess": "प्रोफ़ाइल सफलतापूर्वक अपडेट हो गई!",
     "checkEligibilityBtn": "पात्र योजनाएं अभी देखें",
     "personalInfo": "व्यक्तिगत जानकारी",
@@ -364,7 +378,7 @@
       "discardButton": "हटाएँ",
       "applyButton": "चयनित फ़ॉर्म में लागू करें",
       "fieldBadge": "AI द्वारा भरा गया",
-      "appliedReminder": "फ़ॉर्म में {{count}} AI-निकाले गए विवरण लागू किए गए हैं। नीचे हाइलाइट किए गए फ़ील्ड जांचें और सहेजने के लिए 'प्रोफ़ाइल सहेजें' पर क्लिक करें।"
+      "appliedReminder": "फ़ॉर्म में {{count}} AI-निकाले गए विवरण लागू किए गए हैं। नीचे हाइलाइट किए गए फ़ील्ड जांचें और सहेजने के लिए 'प्रोफ़ाइल बदलाव सहेजें' पर क्लिक करें।"
     }
   },
   "auth": {

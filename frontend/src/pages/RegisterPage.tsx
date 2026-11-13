@@ -1,16 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Eye, EyeOff, AlertCircle, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { Eye, EyeOff, AlertCircle, ArrowRight, ShieldAlert } from 'lucide-react';
 import { AuthLayout } from '@/components/auth/AuthLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useAuth } from '@/context/AuthContext';
+import type { User } from '@/types/user';
 
 type RegisterMode = 'email' | 'mobile';
 
 export function RegisterPage() {
   const { t } = useTranslation();
-  const [registerMode, setRegisterMode] = useState<RegisterMode>('mobile');
+  const [registerMode, setRegisterMode] = useState<RegisterMode>('email');
 
   // Shared Form Fields
   const [name, setName] = useState('');
@@ -22,12 +24,6 @@ export function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  // Mobile Mode State
-  const [mobile, setMobile] = useState('');
-  const [otp, setOtp] = useState('');
-  const [otpSent, setOtpSent] = useState(false);
-  const [countdown, setCountdown] = useState(0);
-
   // UI States
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<{
@@ -35,24 +31,11 @@ export function RegisterPage() {
     email?: string;
     password?: string;
     confirmPassword?: string;
-    mobile?: string;
-    otp?: string;
     general?: string;
   }>({});
-  const [successNotice, setSuccessNotice] = useState<string | null>(null);
 
   const navigate = useNavigate();
-
-  // Resend OTP countdown timer
-  useEffect(() => {
-    if (countdown <= 0) return;
-    const interval = setInterval(() => {
-      setCountdown((prev) => prev - 1);
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [countdown]);
-
-  const validateMobile = (phone: string) => /^[6-9]\d{9}$/.test(phone);
+  const { register } = useAuth();
 
   const validateEmailForm = () => {
     const newErrors: typeof errors = {};
@@ -91,99 +74,41 @@ export function RegisterPage() {
     return isValid;
   };
 
-  const handleSendMobileOtp = () => {
-    setSuccessNotice(null);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-    const newErrors: typeof errors = {};
-    let isValid = true;
-
-    if (!name.trim()) {
-      newErrors.name = 'Full legal name is required';
-      isValid = false;
-    }
-
-    if (!mobile.trim()) {
-      newErrors.mobile = 'Mobile number is required';
-      isValid = false;
-    } else if (!validateMobile(mobile)) {
-      newErrors.mobile = 'Enter a valid 10-digit Indian mobile number (starts with 6-9)';
-      isValid = false;
-    }
-
-    if (!isValid) {
-      setErrors(newErrors);
+    if (registerMode !== 'email') {
       return;
     }
 
-    setErrors({});
+    if (!validateEmailForm()) return;
+
     setIsLoading(true);
+    try {
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: name.trim(), email: email.trim(), password }),
+      });
 
-    setTimeout(() => {
-      setIsLoading(false);
-      setOtpSent(true);
-      setCountdown(30);
-      setSuccessNotice(
-        `OTP sent to +91 ${mobile.slice(0, 2)}****${mobile.slice(-4)}. For demo verification, enter OTP: 123456`
-      );
-    }, 600);
-  };
+      const data = await response.json();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSuccessNotice(null);
-
-    if (registerMode === 'email') {
-      if (!validateEmailForm()) return;
-
-      setIsLoading(true);
-      try {
-        const response = await fetch('/api/auth/register', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name: name.trim(), email: email.trim(), password }),
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
+      if (response.ok) {
+        if (data.token && data.user) {
+          register(data.token, data.user as User);
+          navigate('/profile', { replace: true });
+        } else {
           navigate('/login', {
             state: { message: 'Citizen registration successful! Please sign in with your account credentials.' },
           });
-        } else {
-          setErrors({ general: data.message || 'Registration failed. Please check your details and try again.' });
         }
-      } catch {
-        setErrors({ general: 'Network error. Please make sure the server is running.' });
-      } finally {
-        setIsLoading(false);
+      } else {
+        setErrors({ general: data.message || 'Registration failed. Please check your details and try again.' });
       }
-    } else {
-      // Mobile OTP Registration
-      if (!otpSent) {
-        handleSendMobileOtp();
-        return;
-      }
-
-      if (!otp.trim()) {
-        setErrors({ otp: 'Please enter the 6-digit OTP' });
-        return;
-      }
-      if (!/^\d{6}$/.test(otp)) {
-        setErrors({ otp: 'OTP must be exactly 6 digits' });
-        return;
-      }
-
-      setIsLoading(true);
-      setTimeout(() => {
-        setIsLoading(false);
-        if (otp === '123456' || /^\d{6}$/.test(otp)) {
-          navigate('/login', {
-            state: { message: `Mobile registration verified for +91 ${mobile}! Please sign in to access your profile.` },
-          });
-        } else {
-          setErrors({ otp: 'Invalid OTP entered. Please try 123456 for demo verification.' });
-        }
-      }, 700);
+    } catch {
+      setErrors({ general: 'Network error. Please make sure the server is running.' });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -207,7 +132,6 @@ export function RegisterPage() {
           onClick={() => {
             setRegisterMode('mobile');
             setErrors({});
-            setSuccessNotice(null);
           }}
           className={`py-1.5 px-3 rounded-md flex items-center justify-center gap-2 transition-all cursor-pointer focus:outline-none focus:ring-1 focus:ring-[#D95D39] text-xs sm:text-sm ${
             registerMode === 'mobile'
@@ -227,7 +151,6 @@ export function RegisterPage() {
           onClick={() => {
             setRegisterMode('email');
             setErrors({});
-            setSuccessNotice(null);
           }}
           className={`py-1.5 px-3 rounded-md flex items-center justify-center gap-2 transition-all cursor-pointer focus:outline-none focus:ring-1 focus:ring-[#D95D39] text-xs sm:text-sm ${
             registerMode === 'email'
@@ -251,19 +174,9 @@ export function RegisterPage() {
           </div>
         )}
 
-        {/* Success Alert */}
-        {successNotice && (
-          <div
-            role="status"
-            className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 dark:bg-emerald-950/30 dark:border-emerald-900/60 dark:text-emerald-300 rounded-md text-xs sm:text-sm flex items-start gap-2.5"
-          >
-            <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5 text-emerald-600" />
-            <p className="leading-snug">{successNotice}</p>
-          </div>
-        )}
-
-        {/* Full Name Input (Stacked vertically, no icons inside) */}
-        <div className="space-y-1">
+        {/* Full Name Input (Email Registration) */}
+        {registerMode === 'email' && (
+          <div className="space-y-1">
           <label htmlFor="register-name" className="block text-xs font-semibold text-stone-900 dark:text-[#F4F4F0]">
             Full Name (as per Aadhaar / Official ID) <span className="text-red-500">*</span>
           </label>
@@ -284,7 +197,8 @@ export function RegisterPage() {
           {errors.name && (
             <p className="text-xs text-red-500 font-medium">{errors.name}</p>
           )}
-        </div>
+          </div>
+        )}
 
         {/* ----------------- EMAIL REGISTRATION FIELDS ----------------- */}
         {registerMode === 'email' && (
@@ -386,110 +300,51 @@ export function RegisterPage() {
           </div>
         )}
 
-        {/* ----------------- MOBILE REGISTRATION FIELDS ----------------- */}
+        {/* ----------------- MOBILE REGISTRATION SANDBOX NOTICE ----------------- */}
         {registerMode === 'mobile' && (
-          <div id="reg-panel-mobile" role="tabpanel" aria-labelledby="reg-tab-mobile" className="space-y-2.5">
-            <div className="space-y-1">
-              <label htmlFor="register-mobile" className="block text-xs font-semibold text-stone-900 dark:text-[#F4F4F0]">
-                10-Digit Mobile Number <span className="text-red-500">*</span>
-              </label>
-              <div className="relative flex rounded-md">
-                <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-stone-300 dark:border-[#3A3834] bg-stone-100 dark:bg-[#292826] text-xs font-bold text-stone-800 dark:text-[#F4F4F0] select-none">
-                  +91
-                </span>
-                <Input
-                  id="register-mobile"
-                  type="tel"
-                  inputMode="numeric"
-                  maxLength={10}
-                  placeholder="98765 43210"
-                  value={mobile}
-                  disabled={otpSent && countdown > 0}
-                  onChange={(e) => {
-                    const cleaned = e.target.value.replace(/\D/g, '').slice(0, 10);
-                    setMobile(cleaned);
-                    if (errors.mobile) setErrors({ ...errors, mobile: undefined });
+          <div id="reg-panel-mobile" role="tabpanel" aria-labelledby="reg-tab-mobile" className="space-y-3 py-2">
+            <div
+              role="status"
+              className="p-4 rounded-md border border-amber-300 dark:border-amber-800/60 bg-amber-50 dark:bg-amber-950/30 text-amber-900 dark:text-amber-200 text-xs sm:text-sm flex items-start gap-3"
+            >
+              <ShieldAlert className="w-4 h-4 shrink-0 mt-0.5 text-amber-600 dark:text-amber-400" />
+              <div className="space-y-2">
+                <p className="font-medium leading-relaxed">
+                  Mobile OTP gateway is in sandbox mode. Please sign in using your Email & Password.
+                </p>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setRegisterMode('email');
+                    setErrors({});
                   }}
-                  className={`rounded-l-none h-10 px-3 bg-white dark:bg-[#141413] border border-stone-300 dark:border-[#3A3834] font-mono tracking-wider text-sm dark:text-[#F4F4F0] ${
-                    errors.mobile ? 'border-red-500' : ''
-                  }`}
-                  autoComplete="tel-national"
-                />
+                  className="h-8 text-xs font-semibold border-amber-400 dark:border-amber-700 bg-white dark:bg-[#1C1B19] text-stone-900 dark:text-[#F4F4F0] hover:bg-amber-100 dark:hover:bg-[#292826]"
+                >
+                  Use Email Registration
+                  <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
+                </Button>
               </div>
-              {errors.mobile && (
-                <p className="text-xs text-red-500 font-medium">{errors.mobile}</p>
-              )}
             </div>
-
-            {/* OTP Input */}
-            {otpSent && (
-              <div className="space-y-1 pt-0.5">
-                <div className="flex items-center justify-between">
-                  <label htmlFor="register-otp" className="block text-xs font-semibold text-stone-900 dark:text-[#F4F4F0]">
-                    Enter 6-Digit OTP <span className="text-red-500">*</span>
-                  </label>
-                  <button
-                    type="button"
-                    disabled={countdown > 0}
-                    onClick={handleSendMobileOtp}
-                    className="text-xs font-semibold text-[#1E3A8A] dark:text-[#D95D39] hover:underline disabled:text-stone-400 cursor-pointer disabled:cursor-not-allowed"
-                  >
-                    {countdown > 0 ? `Resend in ${countdown}s` : 'Resend OTP'}
-                  </button>
-                </div>
-                <Input
-                  id="register-otp"
-                  type="text"
-                  inputMode="numeric"
-                  maxLength={6}
-                  placeholder="••••••"
-                  value={otp}
-                  onChange={(e) => {
-                    const cleaned = e.target.value.replace(/\D/g, '').slice(0, 6);
-                    setOtp(cleaned);
-                    if (errors.otp) setErrors({ ...errors, otp: undefined });
-                  }}
-                  className="h-10 text-center font-mono text-base tracking-[0.4em] bg-white dark:bg-[#141413] border border-stone-300 dark:border-[#3A3834] dark:text-[#F4F4F0] rounded-md"
-                  autoComplete="one-time-code"
-                />
-                {errors.otp && (
-                  <p className="text-xs text-red-500 font-medium">{errors.otp}</p>
-                )}
-                <div className="flex items-center justify-between text-[11px] text-stone-500 dark:text-[#A8A29E] pt-0.5">
-                  <span>Demo OTP code: 123456</span>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setOtpSent(false);
-                      setOtp('');
-                    }}
-                    className="text-[#1E3A8A] dark:text-[#D95D39] hover:underline"
-                  >
-                    Change number
-                  </button>
-                </div>
-              </div>
-            )}
           </div>
         )}
 
-        {/* Submit Action Button: Warm Terracotta */}
-        <Button
-          type="submit"
-          disabled={isLoading}
-          className="w-full h-10 rounded-md font-semibold text-white bg-[#1E3A8A] hover:bg-[#172554] dark:bg-[#D95D39] dark:hover:bg-[#C44D2B] shadow-none flex items-center justify-center gap-2 transition-colors !mt-3 disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer text-sm"
-        >
-          {isLoading ? (
-            <span>Creating account...</span>
-          ) : registerMode === 'mobile' && !otpSent ? (
-            <span>Send OTP to Mobile</span>
-          ) : registerMode === 'mobile' ? (
-            <span>Verify OTP & Register</span>
-          ) : (
-            <span>Create Citizen Account</span>
-          )}
-          {!isLoading && <ArrowRight className="w-4 h-4" />}
-        </Button>
+        {/* Submit Action Button */}
+        {registerMode === 'email' && (
+          <Button
+            type="submit"
+            disabled={isLoading}
+            className="w-full h-10 rounded-md font-semibold text-white bg-[#1E3A8A] hover:bg-[#172554] dark:bg-[#D95D39] dark:hover:bg-[#C44D2B] shadow-none flex items-center justify-center gap-2 transition-colors !mt-3 disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer text-sm"
+          >
+            {isLoading ? (
+              <span>Creating account...</span>
+            ) : (
+              <span>Create Citizen Account</span>
+            )}
+            {!isLoading && <ArrowRight className="w-4 h-4" />}
+          </Button>
+        )}
 
         {/* Clear Terms & Privacy Policy Note below Submit Button */}
         <p className="text-[10.5px] text-center text-stone-500 dark:text-[#A8A29E] leading-tight pt-1 select-none">

@@ -54,7 +54,8 @@ export const saveScheme = async (req: Request, res: Response): Promise<void> => 
       });
 
       if (application) {
-        if (application.status !== "saved") {
+        const activeStatuses = ["in-progress", "in-progess", "submitted", "approved", "rejected"];
+        if (application.status !== "saved" && !activeStatuses.includes(application.status)) {
           application.status = "saved";
           await application.save();
         }
@@ -162,7 +163,6 @@ export const getSavedSchemes = async (req: Request, res: Response): Promise<void
 
     const applications = await Application.find({
       userId: userObjectId,
-      status: "saved",
     })
       .populate("schemeId")
       .sort({ createdAt: -1 });
@@ -177,7 +177,7 @@ export const getSavedSchemes = async (req: Request, res: Response): Promise<void
         _id: app._id,
         scheme: app.schemeId,
         schemeId: (app.schemeId as any)._id,
-        status: app.status,
+        status: app.status === ("in-progess" as any) ? "in-progress" : app.status,
         savedAt: (app as any).createdAt || app.appliedAt,
       })),
     });

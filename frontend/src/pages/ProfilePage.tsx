@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import {
   User,
@@ -10,6 +10,7 @@ import {
   Save,
   RotateCcw,
   Sparkles,
+  ChevronDown,
 } from "lucide-react";
 import { getProfile, updateProfile, AuthError } from "@/services/profileApi";
 import type {
@@ -23,6 +24,7 @@ import { Card } from "@/components/ui/card";
 import { AiProfileAutoFillPanel } from "@/components/profile/AiProfileAutoFillPanel";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
+import { getInitials } from "@/utils";
 
 // ============================================================
 // ProfilePage
@@ -63,13 +65,6 @@ const EDUCATION_OPTIONS = [
 const CATEGORY_OPTIONS = [
   "General", "OBC", "BC", "EBC", "SC", "ST", "EWS", "Minority", "Other",
 ];
-
-function getInitials(name: string): string {
-  if (!name) return "";
-  const parts = name.trim().split(/\s+/);
-  if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
-  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-}
 
 function formatIndianCurrency(amountStr: string): string | null {
   if (!amountStr || amountStr.trim() === "") return null;
@@ -123,11 +118,7 @@ export function ProfilePage() {
   >({});
   const [aiAppliedCount, setAiAppliedCount] = useState<number | null>(null);
 
-  useEffect(() => {
-    loadProfile();
-  }, []);
-
-  async function loadProfile() {
+  const loadProfile = useCallback(async () => {
     setPageState("loading");
     setFetchErrorMsg("");
     try {
@@ -147,7 +138,11 @@ export function ProfilePage() {
         setPageState("fetch-error");
       }
     }
-  }
+  }, [updateUser]);
+
+  useEffect(() => {
+    loadProfile();
+  }, [loadProfile]);
 
   function clearFieldHighlight(field: keyof FormFields) {
     setAiHighlightedFields((prev) => {
@@ -338,15 +333,18 @@ export function ProfilePage() {
 
   if (pageState === "loading") {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#111110]">
         <ProfileHeader loading />
-        <div className="max-w-3xl mx-auto px-4 py-8 pb-16">
+        <div className="max-w-[840px] mx-auto px-4 sm:px-6 py-8 pb-16">
           <div className="space-y-5 animate-pulse">
             {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="rounded-md border border-border bg-card p-6 space-y-4">
-                <div className="h-4 w-32 bg-muted rounded" />
-                <div className="h-10 w-full bg-muted rounded-md" />
-                <div className="h-10 w-full bg-muted rounded-md" />
+              <div
+                key={i}
+                className="rounded-xl border border-slate-200 dark:border-[#2E2D2A] bg-white dark:bg-[#1C1B19] p-6 space-y-4 shadow-xs"
+              >
+                <div className="h-4 w-32 bg-slate-200 dark:bg-[#292826] rounded" />
+                <div className="h-11 w-full bg-slate-100 dark:bg-[#292826] rounded-lg" />
+                <div className="h-11 w-full bg-slate-100 dark:bg-[#292826] rounded-lg" />
               </div>
             ))}
           </div>
@@ -357,21 +355,23 @@ export function ProfilePage() {
 
   if (pageState === "auth-error") {
     return (
-      <div className="min-h-screen bg-background flex flex-col">
+      <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#111110] flex flex-col">
         <ProfileHeader />
-        <div className="max-w-3xl mx-auto px-4 py-16 flex-1 flex flex-col items-center justify-center text-center gap-5">
-          <div className="p-5 rounded-md bg-primary/10 text-primary border border-primary/20">
+        <div className="max-w-[840px] mx-auto px-4 sm:px-6 py-16 flex-1 flex flex-col items-center justify-center text-center gap-5">
+          <div className="p-5 rounded-xl bg-blue-50 text-[#1E3A8A] border border-blue-200 dark:bg-[#D95D39]/15 dark:text-[#D95D39] dark:border-[#D95D39]/30">
             <LogIn className="w-10 h-10" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-navy mb-2">{t('auth.login.title')}</h2>
-            <p className="text-muted-foreground text-sm max-w-sm mx-auto">
+            <h2 className="text-2xl font-bold text-slate-900 dark:text-[#F4F4F0] mb-2">
+              {t('auth.login.title')}
+            </h2>
+            <p className="text-slate-600 dark:text-[#A8A29E] text-sm max-w-sm mx-auto">
               {t('eligible.guestNoticeDesc')}
             </p>
           </div>
           <Button
             asChild
-            className="rounded-md px-8 font-bold text-white bg-primary hover:bg-primary-hover shadow-none"
+            className="rounded-lg px-8 font-semibold text-white bg-[#1E3A8A] hover:bg-[#172554] dark:bg-[#D95D39] dark:hover:bg-[#C44D2B] shadow-none"
           >
             <Link to="/login">{t('auth.login.signIn')}</Link>
           </Button>
@@ -382,18 +382,18 @@ export function ProfilePage() {
 
   if (pageState === "fetch-error") {
     return (
-      <div className="min-h-screen bg-background flex flex-col">
+      <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#111110] flex flex-col">
         <ProfileHeader />
-        <div className="max-w-3xl mx-auto px-4 py-16 flex-1 flex flex-col items-center justify-center text-center gap-4">
-          <div className="p-4 rounded-md bg-destructive/10 text-destructive border border-destructive/20">
+        <div className="max-w-[840px] mx-auto px-4 sm:px-6 py-16 flex-1 flex flex-col items-center justify-center text-center gap-4">
+          <div className="p-4 rounded-xl bg-red-50 text-red-600 border border-red-200 dark:bg-red-950/30 dark:text-red-400 dark:border-red-900/50">
             <AlertCircle className="w-8 h-8" />
           </div>
-          <h2 className="text-xl font-bold text-navy">{t('common.error')}</h2>
-          <p className="text-muted-foreground text-sm max-w-sm">{fetchErrorMsg}</p>
+          <h2 className="text-xl font-bold text-slate-900 dark:text-[#F4F4F0]">{t('common.error')}</h2>
+          <p className="text-slate-600 dark:text-[#A8A29E] text-sm max-w-sm">{fetchErrorMsg}</p>
           <Button
             onClick={loadProfile}
             variant="outline"
-            className="mt-2 flex items-center gap-2 rounded-md font-bold text-navy border-border"
+            className="mt-2 flex items-center gap-2 rounded-lg font-semibold text-slate-700 dark:text-[#F4F4F0] border-slate-300 dark:border-[#2E2D2A] hover:bg-slate-50 dark:hover:bg-[#292826]"
           >
             <RefreshCcw className="w-4 h-4" />
             {t('common.retry')}
@@ -404,51 +404,62 @@ export function ProfilePage() {
   }
 
   const userInitials = getInitials(userName);
+  const isComplete = completionPercentage === 100;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#111110]">
       <ProfileHeader />
 
-      <div className="max-w-3xl mx-auto px-4 py-8 pb-16 space-y-6">
+      <div className="max-w-[840px] mx-auto px-4 sm:px-6 py-8 pb-16 space-y-6">
 
         {/* ---- User Identity Card ---- */}
-        <Card className="p-5 border-border bg-card rounded-md shadow-none flex items-center justify-between gap-4">
+        <Card className="p-5 sm:p-6 border border-slate-200 dark:border-[#2E2D2A] bg-white dark:bg-[#1C1B19] rounded-xl shadow-xs flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3.5 min-w-0">
-            <div className="w-12 h-12 rounded-md bg-stone-100 text-stone-800 dark:bg-[#292826] dark:text-[#F4F4F0] flex items-center justify-center font-bold text-base shrink-0 border border-stone-200 dark:border-[#3A3834]">
+            <div className="w-12 h-12 rounded-full bg-slate-100 text-slate-800 dark:bg-[#292826] dark:text-[#F4F4F0] flex items-center justify-center font-semibold text-base shrink-0 border border-slate-200 dark:border-[#3A3834]">
               {userInitials || <User className="w-5 h-5" />}
             </div>
             <div className="min-w-0">
-              <p className="font-bold text-navy dark:text-white truncate text-base leading-snug">
+              <p className="font-bold text-slate-900 dark:text-[#F4F4F0] truncate text-base leading-snug">
                 {userName || "Citizen"}
               </p>
-              <p className="text-xs sm:text-sm text-muted-foreground truncate">
+              <p className="text-xs sm:text-sm text-slate-500 dark:text-[#A8A29E] truncate">
                 {userEmail}
               </p>
             </div>
           </div>
 
           {/* Profile Completion Indicator */}
-          <div className="flex flex-col items-end gap-1.5 shrink-0">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-stone-100 text-stone-800 dark:bg-[#292826] dark:text-[#F4F4F0] border border-stone-200 dark:border-[#3A3834]">
+          <div className="flex flex-col items-end gap-2 shrink-0">
+            <div
+              className={`inline-flex items-center gap-1.5 font-semibold text-xs px-2.5 py-1 rounded-full border ${
+                isComplete
+                  ? "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/50 dark:text-emerald-300 dark:border-emerald-900"
+                  : "bg-amber-50 text-amber-800 border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-900/50"
+              }`}
+            >
               <span
-                className={`w-2 h-2 rounded-full ${
-                  completionPercentage === 100
-                    ? "bg-green-500"
-                    : "bg-[#D95D39]"
+                className={`w-1.5 h-1.5 rounded-full ${
+                  isComplete ? "bg-emerald-600 dark:bg-emerald-400" : "bg-[#EA580C] dark:bg-[#D95D39]"
                 }`}
               />
               <span>
                 {completionPercentage}% {t('profile.complete', 'Complete')}
               </span>
             </div>
-            <div className="w-24 sm:w-28 h-1.5 bg-stone-200 dark:bg-[#292826] rounded-md overflow-hidden">
+            <div
+              className="w-28 sm:w-32 h-1.5 bg-slate-200 dark:bg-[#292826] rounded-full overflow-hidden"
+              role="progressbar"
+              aria-valuenow={completionPercentage}
+              aria-valuemin={0}
+              aria-valuemax={100}
+            >
               <div
-                className={`h-full rounded-md transition-all duration-300 ${
-                  completionPercentage === 100
-                    ? "bg-green-500"
-                    : "bg-[#D95D39]"
-                }`}
-                style={{ width: `${completionPercentage}%` }}
+                className={
+                  isComplete
+                    ? "bg-emerald-500 h-1.5 rounded-full w-full transition-all duration-300"
+                    : "bg-[#EA580C] dark:bg-[#D95D39] h-1.5 rounded-full transition-all duration-300"
+                }
+                style={isComplete ? undefined : { width: `${completionPercentage}%` }}
               />
             </div>
           </div>
@@ -456,13 +467,13 @@ export function ProfilePage() {
 
         {/* Save feedback banners */}
         {saveState === "saved" && (
-          <div className="p-3.5 rounded-md bg-green-50 border border-green-200 text-green-700 dark:bg-green-900/20 dark:border-green-900/40 dark:text-green-400 flex items-center gap-2 text-sm font-medium shadow-none">
+          <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 dark:bg-emerald-950/30 dark:border-emerald-900/50 dark:text-emerald-300 flex items-center gap-2 text-sm font-medium shadow-xs">
             <CheckCircle2 className="w-4 h-4 shrink-0" />
             {t('profile.savedSuccess')}
           </div>
         )}
         {saveState === "error" && saveErrorMsg && (
-          <div className="p-3.5 rounded-md bg-red-50 border border-red-200 text-red-600 dark:bg-red-900/20 dark:border-red-900/40 dark:text-red-400 flex items-center gap-2 text-sm font-medium shadow-none">
+          <div className="p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-700 dark:bg-red-900/20 dark:border-red-900/40 dark:text-red-400 flex items-center gap-2 text-sm font-medium shadow-xs">
             <AlertCircle className="w-4 h-4 shrink-0" />
             {saveErrorMsg}
           </div>
@@ -476,12 +487,12 @@ export function ProfilePage() {
         />
 
         {aiAppliedCount !== null && aiAppliedCount > 0 && (
-          <div className="p-3.5 rounded-md bg-emerald-50 border border-emerald-200 text-emerald-800 dark:bg-emerald-950/30 dark:border-emerald-900/50 dark:text-emerald-300 flex items-center gap-2 text-sm font-medium shadow-none">
+          <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 dark:bg-emerald-950/30 dark:border-emerald-900/50 dark:text-emerald-300 flex items-center gap-2 text-sm font-medium shadow-xs">
             <Sparkles className="w-4 h-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
             <span>
               {t(
                 'profile.aiAutoFill.appliedReminder',
-                'Applied {{count}} AI-extracted field(s) to the form. Review the highlighted fields below and click Save Profile to confirm.',
+                'Applied {{count}} AI-extracted field(s) to the form. Review the highlighted fields below and click Save Profile Changes to confirm.',
                 { count: aiAppliedCount }
               )}
             </span>
@@ -489,30 +500,35 @@ export function ProfilePage() {
         )}
 
         {/* The form */}
-        <form onSubmit={handleSubmit} noValidate className="space-y-6">
-
-          {/* ---- Card 1: Personal Information ---- */}
-          <FormSection title={t('profile.personalInfo', 'Personal Information')}>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FieldGroup
-                id="profile-age"
-                label={t('profile.age', 'Age (years)')}
-                error={errors.age}
-                aiHighlighted={aiHighlightedFields.age}
-              >
-                <Input
-                  id="profile-age"
-                  name="age"
-                  type="number"
-                  placeholder="e.g. 28"
-                  min={1}
-                  max={120}
-                  value={form.age}
-                  onChange={handleChange}
-                  aria-invalid={!!errors.age}
-                  className={`h-10 bg-background ${getFieldBorderClass(Boolean(errors.age), aiHighlightedFields.age)}`}
-                />
-              </FieldGroup>
+        <Card className="bg-white dark:bg-[#1C1B19] border border-slate-200 dark:border-[#2E2D2A] rounded-xl p-6 sm:p-8 shadow-xs">
+          <form onSubmit={handleSubmit} noValidate>
+            <div className="space-y-8">
+              {/* ---- Section 1: Personal Information ---- */}
+              <FormSection title={t('profile.personalInfo', 'Personal Information')}>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FieldGroup
+                    id="profile-age"
+                    label={t('profile.age', 'Age (years)')}
+                    error={errors.age}
+                    aiHighlighted={aiHighlightedFields.age}
+                  >
+                    <Input
+                      id="profile-age"
+                      name="age"
+                      type="number"
+                      placeholder="e.g. 28"
+                      min={1}
+                      max={120}
+                      value={form.age}
+                      onChange={handleChange}
+                      aria-invalid={!!errors.age}
+                      className={`${INPUT_BASE_CLASSES} px-3.5 ${getFieldBorderClass(
+                        Boolean(errors.age),
+                        aiHighlightedFields.age,
+                        "border-slate-300 dark:border-[#2E2D2A]"
+                      )}`}
+                    />
+                  </FieldGroup>
 
               <FieldGroup
                 id="profile-gender"
@@ -644,93 +660,102 @@ export function ProfilePage() {
               error={errors.annualIncome}
               aiHighlighted={aiHighlightedFields.annualIncome}
             >
-              <div className="relative rounded-md shadow-xs">
-                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-muted-foreground font-semibold text-sm">
-                  ₹
+                <div className="relative">
+                  <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500 dark:text-[#A8A29E] font-semibold text-sm">
+                    ₹
+                  </div>
+                  <Input
+                    id="profile-income"
+                    name="annualIncome"
+                    type="number"
+                    placeholder="e.g. 250000"
+                    min={0}
+                    value={form.annualIncome}
+                    onChange={handleChange}
+                    aria-invalid={!!errors.annualIncome}
+                    className={`${INPUT_BASE_CLASSES} pl-8 pr-3.5 ${getFieldBorderClass(
+                      Boolean(errors.annualIncome),
+                      aiHighlightedFields.annualIncome,
+                      "border-slate-300 dark:border-[#2E2D2A]"
+                    )}`}
+                  />
                 </div>
-                <Input
-                  id="profile-income"
-                  name="annualIncome"
-                  type="number"
-                  placeholder="e.g. 250000"
-                  min={0}
-                  value={form.annualIncome}
-                  onChange={handleChange}
-                  aria-invalid={!!errors.annualIncome}
-                  className={`pl-8 h-10 bg-background ${getFieldBorderClass(Boolean(errors.annualIncome), aiHighlightedFields.annualIncome)}`}
-                />
-              </div>
-              {formattedIncomeText && (
-                <p className="text-xs text-stone-700 dark:text-stone-300 font-medium flex items-center gap-1 mt-1.5">
-                  <span className="text-muted-foreground">
-                    {t('profile.incomeFormatted', 'Formatted:')}
-                  </span>
-                  <span className="font-semibold">{formattedIncomeText}</span>
-                </p>
-              )}
-            </FieldGroup>
-          </FormSection>
+                {formattedIncomeText && (
+                  <p className="text-xs text-slate-700 dark:text-stone-300 font-medium flex items-center gap-1 mt-1.5">
+                    <span className="text-slate-500 dark:text-[#A8A29E]">
+                      {t('profile.incomeFormatted', 'Formatted:')}
+                    </span>
+                    <span className="font-semibold">{formattedIncomeText}</span>
+                  </p>
+                )}
+              </FieldGroup>
+            </FormSection>
+            </div>
 
-          {/* ---- Action Button Bar ---- */}
-          <div className="pt-2 flex flex-col-reverse sm:flex-row items-center justify-end gap-3">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleReset}
-              disabled={!isDirty || saveState === "saving"}
-              className="w-full sm:w-auto px-5 py-2.5 rounded-md font-medium border-border text-navy dark:text-foreground hover:bg-surface-muted transition-colors"
-            >
-              <RotateCcw className="w-4 h-4 mr-1.5" />
-              {t('profile.reset', 'Reset')}
-            </Button>
+            {/* ---- Action Button Bar ---- */}
+            <div className="border-t border-slate-200 dark:border-[#2E2D2A] pt-5 mt-6 flex flex-col-reverse sm:flex-row justify-end gap-3">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleReset}
+                disabled={!isDirty || saveState === "saving"}
+                className="w-full sm:w-auto h-10 px-5 rounded-lg font-medium border-slate-300 dark:border-[#2E2D2A] text-slate-700 dark:text-[#F4F4F0] hover:bg-slate-50 dark:hover:bg-[#292826] transition-colors"
+              >
+                <RotateCcw className="w-4 h-4 mr-1.5" />
+                {t('profile.reset', 'Reset')}
+              </Button>
 
-            <Button
-              type="submit"
-              disabled={saveState === "saving"}
-              className="w-full sm:w-auto px-6 py-2.5 bg-stone-900 hover:bg-stone-800 dark:bg-[#D95D39] dark:hover:bg-[#C44D2B] text-white font-medium rounded-md shadow-none flex items-center justify-center gap-2 transition-all disabled:opacity-70 disabled:cursor-not-allowed"
-            >
-              {saveState === "saving" ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  {t('common.loading', 'Saving...')}
-                </>
-              ) : (
-                <>
-                  <Save className="w-4 h-4" />
-                  {t('profile.saveProfile', 'Save Profile')}
-                </>
-              )}
-            </Button>
-          </div>
-        </form>
+              <Button
+                type="submit"
+                disabled={saveState === "saving"}
+                className="w-full sm:w-auto h-10 px-6 bg-[#1E3A8A] hover:bg-[#172554] dark:bg-[#D95D39] dark:hover:bg-[#C44D2B] text-white font-semibold rounded-lg shadow-none flex items-center justify-center gap-2 transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+              >
+                {saveState === "saving" ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    {t('common.loading', 'Saving...')}
+                  </>
+                ) : (
+                  <>
+                    <Save className="w-4 h-4" />
+                    {t('profile.saveProfile', 'Save Profile Changes')}
+                  </>
+                )}
+              </Button>
+            </div>
+          </form>
+        </Card>
       </div>
     </div>
   );
 }
 
+const INPUT_BASE_CLASSES =
+  "h-11 rounded-lg bg-white dark:bg-[#111110] text-sm text-slate-900 dark:text-[#F4F4F0] shadow-none focus:outline-none focus:border-blue-700 focus:ring-2 focus:ring-blue-700/15 focus-visible:outline-none focus-visible:border-blue-700 focus-visible:ring-2 focus-visible:ring-blue-700/15 dark:focus:border-[#D95D39] dark:focus:ring-[#D95D39]/20 dark:focus-visible:border-[#D95D39] dark:focus-visible:ring-[#D95D39]/20";
+
 function ProfileHeader({ loading = false }: { loading?: boolean }) {
   const { t } = useTranslation();
 
   return (
-    <div className="border-b border-border bg-surface">
-      <div className="max-w-3xl mx-auto px-4 py-8 md:py-10">
-        <div className="inline-block px-2.5 py-1 rounded-md bg-stone-100 text-stone-700 dark:bg-[#292826] dark:text-[#F4F4F0] text-xs font-bold tracking-widest uppercase border border-stone-200 dark:border-[#3A3834] mb-3">
+    <div className="bg-white dark:bg-[#1C1B19] border-b border-slate-200 dark:border-[#2E2D2A] py-8">
+      <div className="max-w-[840px] mx-auto px-4 sm:px-6">
+        <div className="inline-block px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 dark:bg-[#292826] dark:text-[#F4F4F0] text-xs font-bold tracking-widest uppercase border border-slate-200 dark:border-[#3A3834] mb-3">
           {loading ? (
-            <span className="h-3 w-16 bg-muted rounded animate-pulse inline-block" />
+            <span className="h-3 w-16 bg-slate-200 dark:bg-[#292826] rounded animate-pulse inline-block" />
           ) : (
             t('nav.myProfile', 'My Profile')
           )}
         </div>
-        <h1 className="text-3xl md:text-4xl font-bold text-navy mb-2 tracking-tight">
+        <h1 className="text-3xl font-bold text-slate-900 dark:text-[#F4F4F0] mb-2 tracking-tight">
           {loading ? (
-            <span className="h-8 w-48 bg-muted rounded animate-pulse inline-block" />
+            <span className="h-8 w-48 bg-slate-200 dark:bg-[#292826] rounded animate-pulse inline-block" />
           ) : (
             t('profile.title', 'Citizen Profile')
           )}
         </h1>
-        <p className="text-muted-foreground text-sm sm:text-base max-w-2xl leading-relaxed">
+        <p className="text-slate-600 dark:text-[#A8A29E] text-sm sm:text-base max-w-2xl leading-relaxed">
           {loading ? (
-            <span className="h-4 w-72 bg-muted rounded animate-pulse inline-block" />
+            <span className="h-4 w-72 bg-slate-200 dark:bg-[#292826] rounded animate-pulse inline-block" />
           ) : (
             t(
               'profile.subtitle',
@@ -751,12 +776,12 @@ function FormSection({
   children: React.ReactNode;
 }) {
   return (
-    <Card className="p-6 border-border bg-card rounded-md space-y-4 shadow-none">
-      <h2 className="text-xs font-bold text-navy dark:text-[#F4F4F0] uppercase tracking-wider border-b border-border/60 pb-3">
+    <section className="space-y-4">
+      <h2 className="text-xs font-bold text-slate-800 dark:text-[#F4F4F0] uppercase tracking-wider border-b border-slate-200/80 dark:border-[#2E2D2A] pb-2.5">
         {title}
       </h2>
       {children}
-    </Card>
+    </section>
   );
 }
 
@@ -765,7 +790,7 @@ function getFieldBorderClass(
   aiHighlighted?: boolean,
   defaultBorderClass = ""
 ): string {
-  if (hasError) return "border-red-500";
+  if (hasError) return "border-red-500 dark:border-red-500";
   if (aiHighlighted) {
     return "border-emerald-500 ring-1 ring-emerald-500/25 dark:border-emerald-500/80";
   }
@@ -792,7 +817,7 @@ function FieldGroup({
   return (
     <div className="space-y-1.5">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <label htmlFor={id} className="block text-sm font-semibold text-navy dark:text-white">
+        <label htmlFor={id} className="block text-sm font-semibold text-slate-800 dark:text-[#F4F4F0]">
           {label}
         </label>
         {aiHighlighted && (
@@ -802,10 +827,10 @@ function FieldGroup({
           </span>
         )}
       </div>
-      {hint && <p className="text-xs text-muted-foreground">{hint}</p>}
+      {hint && <p className="text-xs text-slate-500 dark:text-[#A8A29E]">{hint}</p>}
       {children}
       {error && (
-        <p className="text-xs text-red-500 font-medium flex items-center gap-1 mt-1">
+        <p className="text-xs text-red-600 dark:text-red-400 font-medium flex items-center gap-1 mt-1">
           <AlertCircle className="w-3.5 h-3.5 shrink-0" />
           {error}
         </p>
@@ -836,25 +861,31 @@ function SelectInput({
   aiHighlighted?: boolean;
 }) {
   return (
-    <select
-      id={id}
-      name={name}
-      value={value}
-      onChange={onChange}
-      disabled={disabled}
-      aria-invalid={!!error}
-      className={`flex h-10 w-full rounded-md border bg-background px-3 py-1 text-sm text-foreground shadow-xs outline-none transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-muted/40 ${getFieldBorderClass(
-        Boolean(error),
-        aiHighlighted,
-        "border-input"
-      )}`}
-    >
-      <option value="">{placeholder}</option>
-      {options.map((opt) => (
-        <option key={opt} value={opt}>
-          {opt}
-        </option>
-      ))}
-    </select>
+    <div className="relative">
+      <select
+        id={id}
+        name={name}
+        value={value}
+        onChange={onChange}
+        disabled={disabled}
+        aria-invalid={!!error}
+        className={`appearance-none flex w-full border pl-3.5 pr-10 transition-[border-color,box-shadow] disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-slate-50 dark:disabled:bg-[#1C1B19] ${INPUT_BASE_CLASSES} ${getFieldBorderClass(
+          Boolean(error),
+          aiHighlighted,
+          "border-slate-300 dark:border-[#2E2D2A]"
+        )}`}
+      >
+        <option value="">{placeholder}</option>
+        {options.map((opt) => (
+          <option key={opt} value={opt}>
+            {opt}
+          </option>
+        ))}
+      </select>
+      <ChevronDown
+        className="w-4 h-4 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500 dark:text-[#A8A29E]"
+        aria-hidden="true"
+      />
+    </div>
   );
 }

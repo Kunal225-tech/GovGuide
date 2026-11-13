@@ -60,7 +60,13 @@ export function EligiblePage() {
           )
       );
 
-      if (allUnverifiedOrFailed && hasMissingProfileFields && !user?.profile?.state) {
+      const missingCoreProfile =
+        !user?.profile?.age &&
+        !user?.profile?.gender &&
+        !user?.profile?.category &&
+        !user?.profile?.occupation;
+
+      if (allUnverifiedOrFailed && hasMissingProfileFields && missingCoreProfile) {
         setResults(data);
         setPageState('incomplete-profile');
         return;

@@ -114,7 +114,7 @@ export async function extractProfileWithAi(
       });
     } catch (err) {
       if (err instanceof DOMException && err.name === 'AbortError') {
-        throw new Error('AI extraction timed out. Please try again or fill the form directly.');
+        throw new Error('AI extraction timed out. Please try again or fill the form directly.', { cause: err });
       }
       // If Vite proxy failed, retry directly against AI service port
       response = await fetch(FALLBACK_EXTRACT_URL, {

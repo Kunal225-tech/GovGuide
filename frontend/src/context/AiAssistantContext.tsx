@@ -208,19 +208,26 @@ export function AiAssistantProvider({ children }: { children: ReactNode }) {
         setIsTyping(false);
       }
     },
-    [isTyping, messages, language, user]
+    [isTyping, messages, language, user, updateUser]
   );
 
   const pendingQueryRef = useRef<string | null>(null);
 
   const openAssistant = useCallback(
     (initialQuery?: string) => {
-      setIsOpen(true);
-      if (initialQuery && initialQuery.trim()) {
-        pendingQueryRef.current = initialQuery.trim();
+      const trimmed = initialQuery?.trim();
+      if (isOpen) {
+        if (trimmed) {
+          sendMessage(trimmed);
+        }
+        return;
       }
+      if (trimmed) {
+        pendingQueryRef.current = trimmed;
+      }
+      setIsOpen(true);
     },
-    []
+    [isOpen, sendMessage]
   );
 
   // Send pending query after opening

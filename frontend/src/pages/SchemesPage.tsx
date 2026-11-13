@@ -109,6 +109,9 @@ export function SchemesPage() {
   const [selectedLevel, setSelectedLevel] = useState<GovernmentLevel>(() => {
     const lvl = searchParams.get("level");
     if (lvl === "all" || lvl === "central" || lvl === "state") return lvl;
+    const stateParam = searchParams.get("state")?.trim().toLowerCase();
+    if (stateParam === "bihar") return "state";
+    if (stateParam === "central") return "central";
     return "all";
   });
   const [selectedSocialCategory, setSelectedSocialCategory] = useState<string>(
@@ -122,7 +125,7 @@ export function SchemesPage() {
   // --- MOBILE FILTER TOGGLE ---
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState<boolean>(false);
 
-  // Sync state from URL query parameters (e.g. /schemes?category=Education)
+  // Sync state from URL query parameters (e.g. /schemes?category=Education or /schemes?state=Bihar&q=...)
   useEffect(() => {
     let cancelled = false;
     Promise.resolve().then(() => {
@@ -139,25 +142,26 @@ export function SchemesPage() {
         setSelectedCategory("All");
       }
 
-      const searchFromUrl = searchParams.get("q") || searchParams.get("search");
-      if (searchFromUrl !== null) {
-        setSearchQuery(searchFromUrl);
-      }
+      const searchFromUrl = searchParams.get("q") || searchParams.get("search") || "";
+      setSearchQuery(searchFromUrl);
 
       const levelFromUrl = searchParams.get("level");
+      const stateFromUrl = searchParams.get("state")?.trim().toLowerCase();
       if (levelFromUrl === "all" || levelFromUrl === "central" || levelFromUrl === "state") {
         setSelectedLevel(levelFromUrl);
+      } else if (stateFromUrl === "bihar") {
+        setSelectedLevel("state");
+      } else if (stateFromUrl === "central") {
+        setSelectedLevel("central");
+      } else {
+        setSelectedLevel("all");
       }
 
       const socialCatFromUrl = searchParams.get("socialCategory");
-      if (socialCatFromUrl) {
-        setSelectedSocialCategory(socialCatFromUrl);
-      }
+      setSelectedSocialCategory(socialCatFromUrl || "all");
 
       const districtFromUrl = searchParams.get("district");
-      if (districtFromUrl) {
-        setSelectedDistrict(districtFromUrl);
-      }
+      setSelectedDistrict(districtFromUrl || "");
     });
 
     return () => {
@@ -205,6 +209,26 @@ export function SchemesPage() {
   const handleCategoryChange = (category: string) => {
     setSelectedCategory(category);
     updateUrlParams(searchQuery, category, selectedLevel, selectedSocialCategory, selectedDistrict);
+  };
+
+  const handleLevelChange = (level: GovernmentLevel) => {
+    setSelectedLevel(level);
+    updateUrlParams(searchQuery, selectedCategory, level, selectedSocialCategory, selectedDistrict);
+  };
+
+  const handleSocialCategoryChange = (socialCat: string) => {
+    setSelectedSocialCategory(socialCat);
+    updateUrlParams(searchQuery, selectedCategory, selectedLevel, socialCat, selectedDistrict);
+  };
+
+  const handleDistrictChange = (district: string) => {
+    setSelectedDistrict(district);
+    updateUrlParams(searchQuery, selectedCategory, selectedLevel, selectedSocialCategory, district);
+  };
+
+  const handleClearSearchQuery = () => {
+    setSearchQuery("");
+    updateUrlParams("", selectedCategory, selectedLevel, selectedSocialCategory, selectedDistrict);
   };
 
   const handleClearFilters = () => {
@@ -261,28 +285,43 @@ export function SchemesPage() {
         return false;
       }
 
-      // 5. Social Category Filter
+      // 5. Social Category Filter (matches name, description, and eligibility criteria)
       if (selectedSocialCategory !== "all") {
         const cat = selectedSocialCategory.toLowerCase();
-        const nameLower = scheme.name.toLowerCase();
-        if (cat === "general") {
-          if ((nameLower.includes("sc/st") || nameLower.includes("ebc")) && !nameLower.includes("yuva")) {
+        const combinedText = `${scheme.name} ${scheme.description} ${(scheme.eligibility || []).join(" ")}`.toLowerCase();
+
+        if (cat === "ebc") {
+          if (!/\b(ebc|extremely backward|bc-1)\b/.test(combinedText)) {
             return false;
           }
-        } else if (cat === "ebc") {
-          if (nameLower.includes("sc/st") && !nameLower.includes("ebc")) {
+        } else if (cat === "obc" || cat === "bc") {
+          const withoutEbcPhrase = combinedText.replace(/extremely\s+backward\s+class(?:es)?/g, "");
+          const hasObcToken = /(?:^|[\s,/(])(obc|bc-2|bc)(?:$|[\s,/):.])/.test(combinedText);
+          const hasBackwardClass = /\bbackward class/.test(withoutEbcPhrase);
+          if (!hasObcToken && !hasBackwardClass) {
             return false;
           }
-        } else if (cat === "sc" || cat === "st") {
-          if (nameLower.includes("ebc") && !nameLower.includes("sc")) {
+        } else if (cat === "sc") {
+          if (!/\b(scheduled caste|sc)\b/.test(combinedText)) {
+            return false;
+          }
+        } else if (cat === "st") {
+          if (!/\b(scheduled tribe|st)\b/.test(combinedText)) {
             return false;
           }
         } else if (cat === "minority") {
-          if (nameLower.includes("sc/st") || nameLower.includes("ebc")) {
+          const mentionsMinority = /\b(minority|minorities)\b/.test(combinedText);
+          const isExclusiveOtherCategory =
+            /\b(sc\/st|scheduled caste|scheduled tribe|ebc|extremely backward|bc-1|bc-2)\b/.test(combinedText) &&
+            !/\b(all categories|any caste)\b/.test(combinedText);
+          if (!mentionsMinority && isExclusiveOtherCategory) {
             return false;
           }
-        } else if (cat === "obc") {
-          if (nameLower.includes("sc/st")) {
+        } else if (cat === "general") {
+          const isExclusiveReserved =
+            /\b(sc\/st|scheduled caste|scheduled tribe|ebc|extremely backward|bc-1|minority)\b/.test(combinedText) &&
+            !/\b(general|all categories|any caste)\b/.test(combinedText);
+          if (isExclusiveReserved) {
             return false;
           }
         }
@@ -443,7 +482,7 @@ export function SchemesPage() {
                           <button
                             key={levelOpt.id}
                             type="button"
-                            onClick={() => setSelectedLevel(levelOpt.id)}
+                            onClick={() => handleLevelChange(levelOpt.id)}
                             className={`h-8 rounded-md text-xs font-medium transition-colors flex items-center justify-center ${
                               isSelected
                                 ? "bg-card text-foreground font-semibold border border-border"
@@ -470,7 +509,7 @@ export function SchemesPage() {
                     <select
                       id="scheme-category-select"
                       value={selectedSocialCategory}
-                      onChange={(e) => setSelectedSocialCategory(e.target.value)}
+                      onChange={(e) => handleSocialCategoryChange(e.target.value)}
                       className="flex h-10 w-full rounded-md border border-input bg-background dark:bg-[#141413] dark:border-[#3A3834] px-3 py-1 text-sm text-foreground outline-none transition-colors focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[2px]"
                     >
                       {SOCIAL_CATEGORIES.map((cat) => (
@@ -494,7 +533,7 @@ export function SchemesPage() {
                     <select
                       id="scheme-district-select"
                       value={selectedDistrict}
-                      onChange={(e) => setSelectedDistrict(e.target.value)}
+                      onChange={(e) => handleDistrictChange(e.target.value)}
                       className="flex h-10 w-full rounded-md border border-input bg-background dark:bg-[#141413] dark:border-[#3A3834] px-3 py-1 text-sm text-foreground outline-none transition-colors focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[2px]"
                     >
                       <option value="">{isHi ? 'सभी 38 जिले' : 'All 38 Districts'}</option>
@@ -519,7 +558,7 @@ export function SchemesPage() {
                         <span>"{searchQuery}"</span>
                         <button
                           type="button"
-                          onClick={() => setSearchQuery("")}
+                          onClick={handleClearSearchQuery}
                           aria-label="Remove search filter"
                           className="hover:text-destructive"
                         >
@@ -535,7 +574,7 @@ export function SchemesPage() {
                         <span>{getCategoryLabel(selectedCategory)}</span>
                         <button
                           type="button"
-                          onClick={() => setSelectedCategory("All")}
+                          onClick={() => handleCategoryChange("All")}
                           aria-label="Remove category filter"
                           className="hover:text-destructive"
                         >
@@ -551,7 +590,7 @@ export function SchemesPage() {
                         <span className="capitalize">{selectedLevel === "central" ? (isHi ? 'केंद्रीय' : 'Central') : (isHi ? 'राज्य' : 'State')}</span>
                         <button
                           type="button"
-                          onClick={() => setSelectedLevel("all")}
+                          onClick={() => handleLevelChange("all")}
                           aria-label="Remove level filter"
                           className="hover:text-destructive"
                         >
@@ -567,7 +606,7 @@ export function SchemesPage() {
                         <span>{SOCIAL_CATEGORIES.find((c) => c.id === selectedSocialCategory)?.[isHi ? 'labelHi' : 'labelEn'] || selectedSocialCategory}</span>
                         <button
                           type="button"
-                          onClick={() => setSelectedSocialCategory("all")}
+                          onClick={() => handleSocialCategoryChange("all")}
                           aria-label="Remove social category filter"
                           className="hover:text-destructive"
                         >
@@ -635,18 +674,18 @@ export function SchemesPage() {
                   <span className="leading-relaxed">
                     {isHi ? (
                       <>
-                        <strong>{selectedDistrict}</strong> जिले के लिए योजनाएं प्रदर्शित हैं। युवा योजनाओं (स्टूडेंट क्रेडिट कार्ड, स्वयं सहायता भत्ता, KYP) के मूल प्रमाण-पत्र सत्यापन हेतु अपने जिले के <strong>DRCC कार्यालय</strong> से संपर्क करें।
+                        <strong>{selectedDistrict}</strong> जिले के लिए सभी लागू बिहार राज्य और केंद्रीय योजनाएं प्रदर्शित हैं। छात्र व युवा योजनाओं तथा प्रमाण-पत्र सत्यापन हेतु अपने जिले के <strong>DRCC / RTPS केंद्र</strong> से संपर्क करें।
                       </>
                     ) : (
                       <>
-                        Showing welfare programs applicable in <strong>{selectedDistrict}</strong> district. For youth schemes (BSCCS, SHA, KYP), physical document verification takes place at your local <strong>DRCC office</strong>.
+                        Showing all applicable Bihar State & Central welfare programs for <strong>{selectedDistrict}</strong> district. Document verification and certificate facilitation take place at your local <strong>DRCC / RTPS centre</strong>.
                       </>
                     )}
                   </span>
                 </div>
                 <button
                   type="button"
-                  onClick={() => setSelectedDistrict("")}
+                  onClick={() => handleDistrictChange("")}
                   className="text-[#D95D39] hover:underline font-bold shrink-0 ml-2 cursor-pointer"
                 >
                   {isHi ? 'हटाएं' : 'Clear'}

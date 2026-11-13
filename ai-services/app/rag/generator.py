@@ -37,18 +37,28 @@ SCHEME_ALIASES_MAP = {
     "ebc udyami": ["ebc udyami", "अति पिछड़ा उद्यमी"],
     "mahila udyami": ["mahila udyami", "महिला उद्यमी"],
     "yuva udyami": ["yuva udyami", "युवा उद्यमी"],
-    "vridhajan": ["mvpy", "vridhajan", "वृद्धजन पेंशन"],
-    "laxmi bai": ["laxmi bai", "लक्ष्मी बाई"],
+    "laghu udyami": ["laghu udyami", "bluy", "बिहार लघु उद्यमी", "लघु उद्यमी योजना"],
+    "civil seva": ["civil seva protsahan", "bpsc", "upsc", "सिविल सेवा प्रोत्साहन"],
+    "vridhajan": ["mvpy", "vridhajan", "vridhjan", "वृद्धजन पेंशन", "मुख्यमंत्री वृद्धजन पेंशन"],
+    "laxmi bai": ["laxmi bai", "laxmibai", "vidhwa pension", "लक्ष्मीबाई", "लक्ष्मी बाई"],
     "divyangjan": ["divyangjan", "दिव्यांगजन पेंशन"],
     "vivah": ["kanya vivah", "कन्या विवाह"],
     "krishi input": ["krishi input", "कृषि इनपुट"],
+    "fasal sahayata": ["fasal sahayata", "brfsy", "बिहार राज्य फसल सहायता", "फसल सहायता योजना"],
     "diesel": ["diesel anudan", "डीजल अनुदान"],
     "yantrikikaran": ["yantrikikaran", "कृषि यांत्रिकीकरण"],
     "bal hriday": ["bal hriday", "बाल हृदय"],
     "chikitsa": ["chikitsa sahayata", "चिकित्सा सहायता"],
     "pravasi": ["pravasi mazdoor", "प्रवासी मजदूर"],
     "jeevika": ["jeevika", "जीविका"],
-    "parivahan": ["mgpy", "gram parivahan", "ग्राम परिवहन"],
+    "satat jeevikoparjan": ["satat jeevikoparjan", "sjy", "सतत जीविकोपार्जन", "जीविकोपार्जन योजना"],
+    "gram parivahan": ["mgpy", "gram parivahan", "ग्राम परिवहन"],
+    "prakhand parivahan": ["mppy", "prakhand parivahan", "प्रखंड परिवहन"],
+    "alpsankhyak": ["alpsankhyak rozgar", "minority employment loan", "अल्पसंख्यक रोजगार ऋण"],
+    "nal ka jal": ["nal ka jal", "हर घर नल का जल", "नल का जल"],
+    "bijli": ["har ghar bijli", "हर घर बिजली"],
+    "gali-nali": ["gali nali", "gali-nali", "पक्की गली नाली", "गली-नाली"],
+    "lohia swachh": ["lohia swachh", "lsba", "लोहिया स्वच्छ बिहार"],
 }
 
 REFUSAL_MARKERS = [
@@ -227,8 +237,9 @@ class RAGGenerator:
                 key_words = [w for w in name_lower.split() if len(w) > 3 and w not in generic_stopwords]
                 matched_kw_count = sum(1 for kw in key_words if kw in answer_lower)
                 acronyms = {
-                    "bsccs", "mnssby", "kyp", "mvpy", "mgpy", "bpsc", "upsc", "pms",
-                    "pmmy", "pmjay", "pmkisan", "pmayg", "ssy", "svanidhi"
+                    "bsccs", "mnssby", "kyp", "mvpy", "mgpy", "mppy", "bluy",
+                    "brfsy", "sjy", "lsba", "bpsc", "upsc", "pms", "pmmy",
+                    "pmjay", "pmkisan", "pmayg", "ssy", "svanidhi"
                 }
                 has_acronym_match = any(ac in answer_lower for ac in acronyms if ac in name_lower)
                 if has_acronym_match or matched_kw_count >= 2:

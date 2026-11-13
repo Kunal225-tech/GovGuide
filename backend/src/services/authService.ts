@@ -23,12 +23,32 @@ export interface SafeUserData {
   profile?: any;
 }
 
+export interface AuthResponseData {
+  user: SafeUserData;
+  token: string;
+}
+
+const toSafeUserData = (user: {
+  _id: { toString(): string };
+  name: string;
+  email: string;
+  role: "user" | "admin";
+  profile?: any;
+}): SafeUserData => ({
+  id: user._id.toString(),
+  _id: user._id.toString(),
+  name: user.name,
+  email: user.email,
+  role: user.role,
+  profile: user.profile || {},
+});
+
 export const registerUser = async ({
   name,
   email,
   password,
   role = "user",
-}: RegisterData): Promise<SafeUserData> => {
+}: RegisterData): Promise<AuthResponseData> => {
   const normalizedEmail = email.trim().toLowerCase();
   const trimmedName = name.trim();
 
@@ -45,20 +65,18 @@ export const registerUser = async ({
     role,
   });
 
+  const token = generateToken(newUser._id.toString(), newUser.role);
+
   return {
-    id: newUser._id.toString(),
-    _id: newUser._id.toString(),
-    name: newUser.name,
-    email: newUser.email,
-    role: newUser.role,
-    profile: newUser.profile || {},
+    user: toSafeUserData(newUser),
+    token,
   };
 };
 
 export const loginUser = async ({
   email,
   password,
-}: LoginData): Promise<{ user: SafeUserData; token: string }> => {
+}: LoginData): Promise<AuthResponseData> => {
   const normalizedEmail = email.trim().toLowerCase();
 
   const user = await User.findOne({ email: normalizedEmail });
@@ -74,14 +92,7 @@ export const loginUser = async ({
   const token = generateToken(user._id.toString(), user.role);
 
   return {
-    user: {
-      id: user._id.toString(),
-      _id: user._id.toString(),
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      profile: user.profile || {},
-    },
+    user: toSafeUserData(user),
     token,
   };
 };

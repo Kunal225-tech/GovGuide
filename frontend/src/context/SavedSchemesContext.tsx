@@ -31,19 +31,29 @@ const SavedSchemesContext = createContext<SavedSchemesContextType | undefined>(
   undefined
 );
 
+function getStringProp(value: unknown, key: "_id" | "id"): string | null {
+  if (typeof value === "object" && value !== null && key in value) {
+    const prop = (value as Record<string, unknown>)[key];
+    return typeof prop === "string" && prop ? prop : null;
+  }
+  return null;
+}
+
 // Helper to consistently extract the scheme ID from a SavedSchemeItem
 function extractSchemeId(item: SavedSchemeItem): string {
   if (typeof item.schemeId === "string" && item.schemeId) {
     return item.schemeId;
   }
-  if (item.schemeId && typeof (item.schemeId as any)._id === "string") {
-    return (item.schemeId as any)._id;
+  const nestedSchemeRefId = getStringProp(item.schemeId, "_id");
+  if (nestedSchemeRefId) {
+    return nestedSchemeRefId;
   }
   if (item.scheme && typeof item.scheme._id === "string") {
     return item.scheme._id;
   }
-  if (item.scheme && typeof (item.scheme as any).id === "string") {
-    return (item.scheme as any).id;
+  const fallbackSchemeId = getStringProp(item.scheme, "id");
+  if (fallbackSchemeId) {
+    return fallbackSchemeId;
   }
   return "";
 }

@@ -201,7 +201,21 @@
     "incomeLimit": "Max Annual Income",
     "categoryRequirement": "Caste / Social Category",
     "employmentRequirement": "Employment Status",
-    "residenceRequirement": "Applicable State"
+    "residenceRequirement": "Applicable State",
+    "quickOverview": "Quick Overview",
+    "department": "Department",
+    "targetCategory": "Target Category",
+    "ageLimit": "Age Limit",
+    "trainingStipend": "Training Stipend",
+    "jurisdiction": "Jurisdiction",
+    "minEducation": "Min. Education",
+    "eligibilityMatchTitle": "Profile Eligibility Check",
+    "profileEligible": "Your profile satisfies the automated eligibility criteria for this scheme.",
+    "profileIncompleteNotice": "Complete your Citizen Profile to see how your Age, Category, and District match this scheme's criteria.",
+    "profileMissingFields": "Add {{fields}} to your profile to verify full eligibility.",
+    "updateProfile": "Update Profile",
+    "viewEligibility": "View Details",
+    "yourProfileLabel": "Your profile"
   },
   "eligible": {
     "title": "Personalized Scheme Eligibility",
@@ -312,7 +326,7 @@
       "self-employed": "Self-Employed / Business"
     },
     "disability": "Person with Disability (PwD)",
-    "saveProfile": "Save Profile",
+    "saveProfile": "Save Profile Changes",
     "savedSuccess": "Profile updated successfully!",
     "checkEligibilityBtn": "View Eligible Schemes Now",
     "personalInfo": "Personal Information",
@@ -364,7 +378,7 @@
       "discardButton": "Discard",
       "applyButton": "Apply Selected to Form",
       "fieldBadge": "AI Filled",
-      "appliedReminder": "Applied {{count}} AI-extracted field(s) to the form. Review the highlighted fields below and click Save Profile to confirm."
+      "appliedReminder": "Applied {{count}} AI-extracted field(s) to the form. Review the highlighted fields below and click Save Profile Changes to confirm."
     }
   },
   "auth": {

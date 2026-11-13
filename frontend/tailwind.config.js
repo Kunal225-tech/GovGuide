@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 import defaultTheme from 'tailwindcss/defaultTheme';
+import colors from 'tailwindcss/colors';
 
 export default {
   darkMode: "class",
@@ -29,7 +30,10 @@ export default {
         border: 'var(--border)',
         saffron: 'var(--saffron)',
         'saffron-cta': 'var(--saffron-cta)',
-        green: 'var(--green)',
+        green: {
+          ...colors.green,
+          DEFAULT: 'var(--green)',
+        },
         carbon: '#111110',
         graphite: '#1C1B19',
         terracotta: {
@@ -69,6 +73,7 @@ export default {
         pill: 'var(--radius-pill)',
       },
       boxShadow: {
+        xs: 'var(--shadow-xs)',
         sm: 'var(--shadow-sm)',
         md: 'var(--shadow-md)',
         lg: 'var(--shadow-lg)',

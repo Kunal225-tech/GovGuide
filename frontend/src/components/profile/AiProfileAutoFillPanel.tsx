@@ -232,29 +232,53 @@ export function AiProfileAutoFillPanel({
     setErrorMsg(null);
   }
 
+  const isProfileComplete = completionPercentage === 100;
+
   return (
-    <Card className="border-amber-200/80 dark:border-amber-900/50 bg-gradient-to-br from-amber-50/60 via-background to-background dark:from-amber-950/20 shadow-sm overflow-hidden">
+    <Card
+      className={
+        isProfileComplete
+          ? "border border-slate-200 bg-white hover:border-slate-300 dark:border-[#2E2D2A] dark:bg-[#1C1B19] dark:hover:border-[#3A3834] rounded-xl shadow-xs overflow-hidden transition-colors"
+          : "border border-amber-200 bg-amber-50/40 hover:border-amber-300 dark:border-amber-900/50 dark:bg-amber-950/15 dark:hover:border-amber-800/70 rounded-xl shadow-xs overflow-hidden transition-colors"
+      }
+    >
       {/* Collapsible Header */}
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
         aria-expanded={isOpen}
-        className="w-full px-5 py-4 flex items-center justify-between gap-3 text-left hover:bg-amber-50/40 dark:hover:bg-amber-950/30 transition-colors"
+        className={
+          isProfileComplete
+            ? "w-full px-5 py-4 flex items-center justify-between gap-3 text-left hover:bg-slate-50/70 dark:hover:bg-[#292826]/50 transition-colors"
+            : "w-full px-5 py-4 flex items-center justify-between gap-3 text-left hover:bg-amber-50/70 dark:hover:bg-amber-950/30 transition-colors"
+        }
       >
         <div className="flex items-start sm:items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-saffron/15 text-saffron flex items-center justify-center shrink-0">
-            <Sparkles className="w-4.5 h-4.5" />
+          <div
+            className={
+              isProfileComplete
+                ? "w-9 h-9 rounded-lg bg-slate-100 text-slate-600 dark:bg-[#292826] dark:text-[#A8A29E] flex items-center justify-center shrink-0"
+                : "w-9 h-9 rounded-lg bg-amber-100/80 text-[#EA580C] dark:bg-amber-950/60 dark:text-[#D95D39] flex items-center justify-center shrink-0"
+            }
+          >
+            <Sparkles className="w-4 h-4" />
           </div>
           <div>
             <div className="flex flex-wrap items-center gap-2">
-              <h2 className="text-sm sm:text-base font-bold text-navy dark:text-white">
+              <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-[#F4F4F0]">
                 {t("profile.aiAutoFill.title", "AI Quick Profile Fill")}
               </h2>
-              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-saffron/15 text-saffron border border-saffron/25">
+              <span
+                className={
+                  isProfileComplete
+                    ? "inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-slate-100 text-slate-600 border border-slate-200 dark:bg-[#292826] dark:text-[#A8A29E] dark:border-[#3A3834]"
+                    : "inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-amber-100/70 text-amber-800 border border-amber-200 dark:bg-amber-950/50 dark:text-amber-300 dark:border-amber-900/50"
+                }
+              >
                 EN / हिन्दी / Hinglish
               </span>
             </div>
-            <p className="text-xs text-muted-foreground mt-0.5">
+            <p className="text-xs text-slate-500 dark:text-[#A8A29E] mt-0.5">
               {t(
                 "profile.aiAutoFill.subtitle",
                 "Describe yourself once in plain words — review extracted fields before updating your form."
@@ -263,7 +287,7 @@ export function AiProfileAutoFillPanel({
           </div>
         </div>
 
-        <span className="text-muted-foreground shrink-0">
+        <span className="text-slate-500 dark:text-[#A8A29E] shrink-0">
           {isOpen ? (
             <ChevronUp className="w-4 h-4" />
           ) : (
@@ -274,7 +298,13 @@ export function AiProfileAutoFillPanel({
 
       {/* Expandable Body */}
       {isOpen && (
-        <div className="px-5 pb-5 pt-1 space-y-4 border-t border-amber-100 dark:border-amber-900/40">
+        <div
+          className={
+            isProfileComplete
+              ? "px-5 pb-5 pt-1 space-y-4 border-t border-slate-200 dark:border-[#2E2D2A]"
+              : "px-5 pb-5 pt-1 space-y-4 border-t border-amber-200/70 dark:border-amber-900/40"
+          }
+        >
           {/* Example Prompt Chips */}
           <div className="pt-3 space-y-1.5">
             <p className="text-xs font-medium text-muted-foreground">
@@ -327,7 +357,7 @@ export function AiProfileAutoFillPanel({
                 "e.g. I am a 20 year old B.Tech student from Patna, EBC category, family income 1.8 lakh..."
               )}
               disabled={extracting}
-              className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground shadow-xs outline-none transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] disabled:opacity-60 resize-y min-h-[84px]"
+              className="w-full rounded-lg border border-slate-300 dark:border-[#3A3834] bg-white dark:bg-[#141413] px-3.5 py-2.5 text-sm text-slate-900 dark:text-[#F4F4F0] placeholder:text-slate-400 dark:placeholder:text-[#A8A29E] outline-none transition-colors focus:outline-none focus:border-blue-700 focus:ring-2 focus:ring-blue-700/15 dark:focus:border-[#D95D39] dark:focus:ring-[#D95D39]/20 disabled:opacity-60 resize-y min-h-[84px]"
             />
             <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
               <span className="inline-flex items-center gap-1.5">
@@ -360,7 +390,7 @@ export function AiProfileAutoFillPanel({
               type="button"
               onClick={handleExtract}
               disabled={extracting || inputText.trim().length < 3}
-              className="bg-navy hover:bg-navy-dark text-white dark:bg-saffron dark:text-navy dark:hover:bg-saffron/90 gap-2 cursor-pointer"
+              className="bg-[#1E3A8A] hover:bg-[#172554] text-white dark:bg-[#D95D39] dark:hover:bg-[#C44D2B] rounded-lg gap-2 cursor-pointer"
             >
               {extracting ? (
                 <>

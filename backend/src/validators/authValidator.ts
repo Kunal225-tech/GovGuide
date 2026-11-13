@@ -29,8 +29,8 @@ export const validateRegister = (
     errors.push("A valid email address is required.");
   }
 
-  if (!password || typeof password !== "string" || password.length < 6) {
-    errors.push("Password must be at least 6 characters long.");
+  if (!password || typeof password !== "string" || password.length < 8) {
+    errors.push("Password must be at least 8 characters long.");
   } else if (password.length > 128) {
     errors.push("Password must not exceed 128 characters.");
   }

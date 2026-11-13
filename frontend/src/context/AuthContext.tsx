@@ -33,6 +33,8 @@ interface AuthState {
   loading: boolean;
   /** Call after a successful /api/auth/login response */
   login: (token: string, user: User) => void;
+  /** Call after a successful /api/auth/register response */
+  register: (token: string, user: User) => void;
   /** Clears auth state + localStorage and navigates to /login */
   logout: () => void;
   /** Updates user in AuthContext and localStorage */
@@ -92,12 +94,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(() => readStoredAuth().user);
   const [loading] = useState(false);
 
-  const login = useCallback((newToken: string, newUser: User) => {
+  const persistSession = useCallback((newToken: string, newUser: User) => {
     localStorage.setItem(TOKEN_KEY, newToken);
     localStorage.setItem(USER_KEY, JSON.stringify(newUser));
     setToken(newToken);
     setUser(newUser);
   }, []);
+
+  const login = useCallback(
+    (newToken: string, newUser: User) => {
+      persistSession(newToken, newUser);
+    },
+    [persistSession]
+  );
+
+  const register = useCallback(
+    (newToken: string, newUser: User) => {
+      persistSession(newToken, newUser);
+    },
+    [persistSession]
+  );
 
   const logout = useCallback(() => {
     localStorage.removeItem(TOKEN_KEY);
@@ -141,10 +157,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       isAuthenticated: !!token,
       loading,
       login,
+      register,
       logout,
       updateUser,
     }),
-    [user, token, loading, login, logout, updateUser]
+    [user, token, loading, login, register, logout, updateUser]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
