@@ -36,6 +36,8 @@ services:
     envVars:
       - key: ENVIRONMENT
         value: production
+      - key: HOST
+        value: 0.0.0.0
       - key: GEMINI_MODEL
         value: gemini-3.5-flash
       - key: EMBEDDING_MODEL

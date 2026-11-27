@@ -88,9 +88,7 @@ export const loginUser = async ({
   if (!isPasswordCorrect) {
     throw new Error("Invalid email or password");
   }
-
   const token = generateToken(user._id.toString(), user.role);
-
   return {
     user: toSafeUserData(user),
     token,

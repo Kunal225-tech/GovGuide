@@ -12,8 +12,19 @@ venv/
 .venv/
 __pycache__/
 *.pyc
+*.pyo
+.pytest_cache/
+.coverage
+htmlcov/
 ai-services/venv/
 ai-services/.venv/
 ai-services/qdrant_storage/
 qdrant_storage/
+
+# Logs & Testing
+*.log
+coverage/
+.turbo/
+.cache/
+INTERVIEW_PREP_GUIDE.md
 
