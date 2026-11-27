@@ -3,11 +3,11 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://govguide-backend.onrender.com/api/:path*"
+      "destination": "https://govguide-backend-uc7w.onrender.com/api/:path*"
     },
     {
       "source": "/ai-service/:path*",
-      "destination": "https://govguide-ai.onrender.com/:path*"
+      "destination": "https://govguide-ai-8sk1.onrender.com/:path*"
     },
     {
       "source": "/(.*)",
