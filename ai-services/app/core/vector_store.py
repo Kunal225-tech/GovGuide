@@ -28,6 +28,8 @@ class VectorStoreManager:
         if self._client is None:
             if self.settings.QDRANT_URL:
                 qdrant_url = self.settings.QDRANT_URL.strip()
+                if not qdrant_url.startswith("http://") and not qdrant_url.startswith("https://"):
+                    qdrant_url = f"https://{qdrant_url}"
                 api_key = self.settings.QDRANT_API_KEY.strip() if self.settings.QDRANT_API_KEY else None
                 logger.info(f"Connecting to remote Qdrant at {qdrant_url}")
                 self._client = QdrantClient(
