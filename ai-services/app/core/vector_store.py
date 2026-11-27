@@ -27,10 +27,12 @@ class VectorStoreManager:
         """
         if self._client is None:
             if self.settings.QDRANT_URL:
-                logger.info(f"Connecting to remote Qdrant at {self.settings.QDRANT_URL}")
+                qdrant_url = self.settings.QDRANT_URL.strip()
+                api_key = self.settings.QDRANT_API_KEY.strip() if self.settings.QDRANT_API_KEY else None
+                logger.info(f"Connecting to remote Qdrant at {qdrant_url}")
                 self._client = QdrantClient(
-                    url=self.settings.QDRANT_URL,
-                    api_key=self.settings.QDRANT_API_KEY or None,
+                    url=qdrant_url,
+                    api_key=api_key or None,
                     timeout=10.0,
                 )
             else:
